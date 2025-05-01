@@ -3,10 +3,6 @@ import TopicList from './TopicList.jsx';
 import FormAddCategory from './FormAddCategory.jsx';
 import PropTypes from 'prop-types';
 
-Sidebar.propTypes = {
-    onCategorySelect: PropTypes.func.isRequired,
-};
-
 export default function Sidebar({ onCategorySelect }) {
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);

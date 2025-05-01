@@ -8,7 +8,6 @@ import Form from '../components/Form';
 import Info from '../components/Info';
 import InfoList from '../components/InfoList';
 import Footer from '../components/Footer';
-import TopicList from '../components/TopicList';
 import DeleteModal from '../components/DeleteModal';
 import ClearModal from '../components/ClearModal';
 
@@ -16,76 +15,53 @@ export default function Main() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
+  const [items, setItems] = useState([]);
+  const [sum, setSum] = useState(0);
+  const [quote, setQuote] = useState(null);
+  const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
+  const [isClearModalClose, setIsClearModalClose] = useState(true);
+  const [itemIdToDelete, setItemIdToDelete] = useState(null);
+
+
+
   useEffect(() => {
     if (!currentUser) {
       navigate('/login');
     }
   }, [currentUser, navigate]);
 
-  const [categories, setCategories] = useState(() => {
-    const storedCategories = localStorage.getItem(
-      `categories_${currentUser.id}`
-    );
-    return storedCategories ? JSON.parse(storedCategories) : ['Default'];
-  });
-
-  const [selectedCategory, setSelectedCategory] = useState(null);
-
-  const [sum, setSum] = useState(0);
-  const [items, setItems] = useState([]);
-  const [quote, setQuote] = useState(null);
-  const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
-  const [isClearModalClose, setIsClearModalClose] = useState(true);
-  const [itemIdToDelete, setItemIdToDelete] = useState(null);
-
+  // ✅ Завантаження транзакцій з бекенда
   useEffect(() => {
-    if (selectedCategory) {
-      const storeSum = localStorage.getItem(
-        `sum_${currentUser.id}_${selectedCategory}`
-      );
-      setSum(storeSum ? JSON.parse(storeSum) : 0);
-
-      const storeItems = localStorage.getItem(
-        `items_${currentUser.id}_${selectedCategory}`
-      );
-      setItems(storeItems ? JSON.parse(storeItems) : []);
+    async function fetchTransactions() {
+      try {
+        const res = await fetch('http://localhost:8080/api/transactions');
+        const data = await res.json();
+        setItems(data);
+        const total = data.reduce((acc, item) => acc + Number(item.amount), 0);
+        setSum(total);
+      } catch (err) {
+        console.error('Error loading transactions:', err);
+      }
     }
-  }, [selectedCategory, currentUser.id]);
-
-  async function fetchQuote() {
-    try {
-      const response = await fetch('https://api.quotable.io/random');
-      const data = await response.json();
-      setQuote(data.content);
-    } catch (error) {
-      console.error('Error fetching quote:', error);
-    }
-  }
-
-  useEffect(() => {
-    fetchQuote();
+    fetchTransactions();
   }, []);
 
-  function handleDeleteModalCloseClick() {
-    if (items.length === 0) {
-      return;
-    }
-    setIsDeleteModalClose(!isDeleteModalClose);
-  }
-
-  function handleClearModalCloseClick() {
-    if (items.length === 0) {
-      return;
-    }
-    setIsClearModalClose(!isClearModalClose);
-  }
-
-  function handleChangeSum(data) {
-    setSum((sum) => sum + Number(data));
+  function handleChangeSum(amount) {
+    setSum((prev) => prev + Number(amount));
   }
 
   function handleAddItems(item) {
     setItems((items) => [item, ...items]);
+  }
+
+  function handleDeleteModalCloseClick() {
+    if (items.length === 0) return;
+    setIsDeleteModalClose(!isDeleteModalClose);
+  }
+
+  function handleClearModalCloseClick() {
+    if (items.length === 0) return;
+    setIsClearModalClose(!isClearModalClose);
   }
 
   function handleDeleteItem(id) {
@@ -93,25 +69,15 @@ export default function Main() {
     setIsDeleteModalClose(false);
   }
 
-  function handleClearModal() {
-    setIsClearModalClose(false);
-  }
-
   function handleConfirmDelete() {
-    setItems(items.filter((item) => item.id !== itemIdToDelete));
-    setSum(
-      items
-        .filter((item) => item.id !== itemIdToDelete)
-        .reduce((total, amount) => total + Number(amount.income), 0)
-    );
-    setIsDeleteModalClose(true);
-  }
-
-  function handleUpdateItemData(id, updatedItem) {
-    const updatedItems = items.map((item) =>
-      item.id === id ? updatedItem : item
-    );
+    const updatedItems = items.filter((item) => item.id !== itemIdToDelete);
     setItems(updatedItems);
+    const updatedSum = updatedItems.reduce(
+        (acc, item) => acc + Number(item.amount),
+        0
+    );
+    setSum(updatedSum);
+    setIsDeleteModalClose(true);
   }
 
   function handleClearList() {
@@ -120,89 +86,51 @@ export default function Main() {
     setIsClearModalClose(true);
   }
 
-  function handleCategoryChange(newCategory) {
-    setSelectedCategory(newCategory);
+  function handleUpdateItemData(id, updatedItem) {
+    const updatedItems = items.map((item) =>
+        item.id === id ? updatedItem : item
+    );
+    setItems(updatedItems);
   }
-
-  function handleAddCategory(newCategory) {
-    if (!categories.includes(newCategory)) {
-      const updatedCategories = [...categories, newCategory];
-      setCategories(updatedCategories);
-      localStorage.setItem(
-        `categories_${currentUser.id}`,
-        JSON.stringify(updatedCategories)
-      );
-      setSelectedCategory(newCategory);
-    }
-  }
-
-  useEffect(() => {
-    if (selectedCategory) {
-      localStorage.setItem(
-        `items_${currentUser.id}_${selectedCategory}`,
-        JSON.stringify(items)
-      );
-      localStorage.setItem(
-        `sum_${currentUser.id}_${selectedCategory}`,
-        JSON.stringify(sum)
-      );
-    }
-  }, [items, sum, currentUser.id, selectedCategory]);
 
   return (
-    <>
-      <Header />
-      <div className="page-wrap">
-        <div className="container page-wrap-container">
-          <Sidebar onCategorySelect={handleCategoryChange}>
-            <TopicList
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onCategoryChange={handleCategoryChange}
-              onAddCategory={handleAddCategory}
-            />
-          </Sidebar>
-          <main className="main">
-            {!selectedCategory && quote && (
-              <div className="quote">
-                <p>{quote}</p>
-              </div>
-            )}
-            {selectedCategory && (
-              <>
-                <Form
-                  onAddSum={handleChangeSum}
-                  onAddItems={handleAddItems}
-                  selectedCategory={selectedCategory}
-                />
-                <Info sum={sum}>
-                  <InfoList
+      <>
+        <Header />
+        <div className="page-wrap">
+          <div className="container page-wrap-container">
+            <Sidebar>
+              {quote && (
+                  <div className="quote">
+                    <p>{quote}</p>
+                  </div>
+              )}
+            </Sidebar>
+            <main className="main">
+              <Form onAddSum={handleChangeSum} onAddItems={handleAddItems} />
+              <Info sum={sum}>
+                <InfoList
                     items={items}
-                    onDeleteItem={handleConfirmDelete}
+                    setItems={setItems} // <--- ось це додай
                     onDeleteModalOpen={handleDeleteModalCloseClick}
-                    isDeleteModalClose={isDeleteModalClose}
-                    isClearModalClose={isClearModalClose}
-                    onDeleteItemId={handleDeleteItem}
                     onUpdateItemData={handleUpdateItemData}
-                    onClearModal={handleClearModal}
-                  />
-                </Info>
-              </>
-            )}
-          </main>
+                    onClearModal={handleClearModalCloseClick}
+                    isDeleteModalClose={isDeleteModalClose}
+                />
+              </Info>
+            </main>
+          </div>
         </div>
-      </div>
-      <Footer />
-      <DeleteModal
-        onDeleteModalClose={handleDeleteModalCloseClick}
-        isDeleteModalClose={isDeleteModalClose}
-        onItemDelete={handleConfirmDelete}
-      />
-      <ClearModal
-        onClearModalClose={handleClearModalCloseClick}
-        isClearModalClose={isClearModalClose}
-        onClearList={handleClearList}
-      />
-    </>
+        <Footer />
+        <DeleteModal
+            onDeleteModalClose={handleDeleteModalCloseClick}
+            isDeleteModalClose={isDeleteModalClose}
+            onItemDelete={handleConfirmDelete}
+        />
+        <ClearModal
+            onClearModalClose={handleClearModalCloseClick}
+            isClearModalClose={isClearModalClose}
+            onClearList={handleClearList}
+        />
+      </>
   );
 }
