@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 ClearModal.propTypes = {
@@ -10,6 +11,13 @@ export default function ClearModal({
   isClearModalClose,
   onClearList,
 }) {
+  useEffect(() => {
+    if (isClearModalClose) return;
+    const handleKeyDown = (e) => { if (e.key === 'Escape') onClearModalClose(); };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isClearModalClose, onClearModalClose]);
+
   return (
     <div className={isClearModalClose ? 'backdrop clicked' : 'backdrop'}>
       <div className="modal delete-modal ">

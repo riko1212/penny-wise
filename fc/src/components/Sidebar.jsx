@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import TopicList from './TopicList.jsx';
 import FormAddCategory from './FormAddCategory.jsx';
 import DeleteModal from './DeleteModal.jsx';
@@ -63,6 +63,15 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
             .catch((err) => console.error('Delete category error:', err));
     }
 
+    const handleCloseCategoryDelete = useCallback(() => setCategoryToDelete(null), []);
+
+    useEffect(() => {
+        if (categoryToDelete === null) return;
+        const handleKeyDown = (e) => { if (e.key === 'Escape') handleCloseCategoryDelete(); };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [categoryToDelete, handleCloseCategoryDelete]);
+
     function handleCategorySelect(category) {
         onCategorySelect(category.name);
     }
@@ -89,7 +98,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
             </aside>
             <DeleteModal
                 isDeleteModalClose={categoryToDelete === null}
-                onDeleteModalClose={() => setCategoryToDelete(null)}
+                onDeleteModalClose={handleCloseCategoryDelete}
                 onItemDelete={handleConfirmDelete}
             />
         </>
