@@ -17,23 +17,29 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    // Отримати категорії юзера
     @GetMapping
-    public List<CategoryEntity> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryEntity>> getCategoriesByUser(@RequestParam Long userId) {
+        return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));
     }
 
+    // Створити категорію
     @PostMapping
-    public ResponseEntity<CategoryEntity> createCategory(@RequestBody CategoryEntity category) {
+    public ResponseEntity<?> createCategory(@RequestBody CategoryEntity category) {
         if (category.getName() == null || category.getName().isEmpty()) {
-            return ResponseEntity.badRequest().build(); // Відправка помилки, якщо поле name порожнє
+            return ResponseEntity.badRequest().body("Category name is required");
         }
-        category.setId(null);  // Переконатися, що ID порожнє перед збереженням
+        if (category.getUserId() == null) {
+            return ResponseEntity.badRequest().body("userId is required");
+        }
+        category.setId(null);
         return ResponseEntity.ok(categoryService.saveCategory(category));
     }
 
+    // Видалити категорію
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id, @RequestParam Long userId) {
+        categoryService.deleteCategory(id, userId);
         return ResponseEntity.noContent().build();
     }
 }
