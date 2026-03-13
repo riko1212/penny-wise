@@ -50,6 +50,7 @@ public class TransactionService {
         return transactionRepository.save(existing);
     }
 
+    @Transactional
     public void deleteTransaction(Long id, Long userId) {
         transactionRepository.deleteByIdAndUserId(id, userId);
     }
