@@ -154,7 +154,7 @@ export default function Main() {
                   onAddItems={handleAddItems}
                   selectedCategory={selectedCategory}
                 />
-                <Info sum={sum}>
+                <Info sum={sum} type="expense">
                   <InfoList
                     items={items}
                     onDeleteItem={handleConfirmDelete}

@@ -326,6 +326,14 @@ address {
   margin-bottom: 24px;
 }
 
+.info-amount--expense {
+  color: #ff6b6b;
+}
+
+.info-amount--income {
+  color: #69db7c;
+}
+
 .info-list {
   max-height: 180px;
   overflow: auto;
