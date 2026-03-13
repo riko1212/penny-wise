@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import TopicList from './TopicList.jsx';
 import FormAddCategory from './FormAddCategory.jsx';
+import DeleteModal from './DeleteModal.jsx';
 import PropTypes from 'prop-types';
 
 Sidebar.propTypes = {
@@ -12,6 +13,7 @@ Sidebar.propTypes = {
 export default function Sidebar({ onCategorySelect, userId, type }) {
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState(null);
 
     useEffect(() => {
         fetch(`/api/categories?userId=${userId}&type=${type}`)
@@ -40,15 +42,20 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
             .catch((err) => console.error('Add category error:', err));
     }
 
-    function handleDeleteCategory(categoryToDelete) {
+    function handleDeleteClick(category) {
+        setCategoryToDelete(category);
+    }
+
+    function handleConfirmDelete() {
         fetch(`/api/categories/${categoryToDelete.id}?userId=${userId}`, {
             method: 'DELETE',
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to delete category');
                 setCategories((prev) =>
-                    prev.filter((category) => category.id !== categoryToDelete.id)
+                    prev.filter((c) => c.id !== categoryToDelete.id)
                 );
+                setCategoryToDelete(null);
             })
             .catch((err) => console.error('Delete category error:', err));
     }
@@ -58,22 +65,29 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
     }
 
     return (
-        <aside className="sidebar">
-            <TopicList
-                categories={categories}
-                onDelete={handleDeleteCategory}
-                onSelect={handleCategorySelect}
+        <>
+            <aside className="sidebar">
+                <TopicList
+                    categories={categories}
+                    onDelete={handleDeleteClick}
+                    onSelect={handleCategorySelect}
+                />
+                {showAddCategory && (
+                    <FormAddCategory onAddCategory={handleAddCategory} />
+                )}
+                <button
+                    onClick={() => setShowAddCategory((prev) => !prev)}
+                    type="button"
+                    className={!showAddCategory ? 'add-category-btn' : 'add-category-btn close'}
+                >
+                    {!showAddCategory ? 'Add category' : 'Close'}
+                </button>
+            </aside>
+            <DeleteModal
+                isDeleteModalClose={categoryToDelete === null}
+                onDeleteModalClose={() => setCategoryToDelete(null)}
+                onItemDelete={handleConfirmDelete}
             />
-            {showAddCategory && (
-                <FormAddCategory onAddCategory={handleAddCategory} />
-            )}
-            <button
-                onClick={() => setShowAddCategory((prev) => !prev)}
-                type="button"
-                className={!showAddCategory ? 'add-category-btn' : 'add-category-btn close'}
-            >
-                {!showAddCategory ? 'Add category' : 'Close'}
-            </button>
-        </aside>
+        </>
     );
 }
