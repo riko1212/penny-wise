@@ -14,15 +14,18 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        setLoading(true);
         fetch(`/api/categories?userId=${userId}&type=${type}`)
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch categories');
                 return res.json();
             })
             .then(setCategories)
-            .catch((err) => console.error('Fetch categories error:', err));
+            .catch((err) => console.error('Fetch categories error:', err))
+            .finally(() => setLoading(false));
     }, [userId, type]);
 
     function handleAddCategory(categoryName) {
@@ -67,6 +70,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
     return (
         <>
             <aside className="sidebar">
+                {loading && <p className="loading">Loading...</p>}
                 <TopicList
                     categories={categories}
                     onDelete={handleDeleteClick}

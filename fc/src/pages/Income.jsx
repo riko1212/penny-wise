@@ -15,6 +15,7 @@ export default function Income() {
     currentUser,
     selectedCategory,
     items,
+    loading,
     sum,
     isDeleteModalClose,
     isClearModalClose,
@@ -45,7 +46,10 @@ export default function Income() {
                 <p>Track your income — know what you earn. 💰</p>
               </div>
             )}
-            {selectedCategory && (
+            {selectedCategory && loading && (
+              <div className="loading">Loading...</div>
+            )}
+            {selectedCategory && !loading && (
               <>
                 <Form
                   onAddItems={handleAddItems}

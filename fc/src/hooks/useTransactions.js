@@ -13,6 +13,7 @@ export function useTransactions(type) {
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
   const [isClearModalClose, setIsClearModalClose] = useState(true);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
@@ -21,13 +22,15 @@ export function useTransactions(type) {
 
   useEffect(() => {
     if (!selectedCategory || !currentUser) return;
+    setLoading(true);
     fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch transactions');
         return res.json();
       })
       .then(setItems)
-      .catch((err) => console.error('Fetch transactions error:', err));
+      .catch((err) => console.error('Fetch transactions error:', err))
+      .finally(() => setLoading(false));
   }, [selectedCategory, currentUser?.id, type, currentUser]);
 
   function handleCategoryChange(newCategory) {
@@ -120,6 +123,7 @@ export function useTransactions(type) {
     currentUser,
     selectedCategory,
     items,
+    loading,
     sum,
     isDeleteModalClose,
     isClearModalClose,
