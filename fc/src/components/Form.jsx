@@ -2,12 +2,11 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 Form.propTypes = {
-  onAddSum: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedCategory: PropTypes.string.isRequired,
 };
 
-export default function Form({ onAddSum, onAddItems, selectedCategory }) {
+export default function Form({ onAddItems, selectedCategory }) {
   const [income, setIncome] = useState('');
   const [topic, setTopic] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -15,25 +14,14 @@ export default function Form({ onAddSum, onAddItems, selectedCategory }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!income || !topic) {
-      console.error("Income and topic are required");
-      return;
-    }
+    if (!income || !topic) return;
 
-    const result = {
-      income: parseFloat(income), // Упевніться, що income є числом
+    onAddItems({
+      income: parseFloat(income),
       topic,
-      date,
-      id: Date.now(),
-      category: selectedCategory,
-    };
-
-    try {
-      onAddSum(result.income);
-      onAddItems(result);
-    } catch (error) {
-      console.error("Error in onAddSum or onAddItems:", error);
-    }
+      date: new Date(date).getTime(),
+      categoryName: selectedCategory,
+    });
 
     setIncome('');
     setTopic('');
@@ -67,7 +55,6 @@ export default function Form({ onAddSum, onAddItems, selectedCategory }) {
           onChange={(e) => setDate(e.target.value)}
         />
       </div>
-
       <button type="submit" className="form-btn btn">
         Save
       </button>

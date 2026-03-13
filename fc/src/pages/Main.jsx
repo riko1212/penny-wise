@@ -17,107 +17,120 @@ export default function Main() {
 
   useEffect(() => {
     if (!currentUser) {
-      navigate('/login');
+      navigate('/');
     }
   }, [currentUser, navigate]);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
-
-  const [sum, setSum] = useState(0);
   const [items, setItems] = useState([]);
   const [quote, setQuote] = useState(null);
   const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
   const [isClearModalClose, setIsClearModalClose] = useState(true);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
+  const sum = items.reduce((total, item) => total + Number(item.income), 0);
+
   useEffect(() => {
-    if (selectedCategory) {
-      const storeSum = localStorage.getItem(
-        `sum_${currentUser.id}_${selectedCategory}`
-      );
-      setSum(storeSum ? JSON.parse(storeSum) : 0);
+    setQuote('Small steps every day → big results. 💸');
+  }, []);
 
-      const storeItems = localStorage.getItem(
-        `items_${currentUser.id}_${selectedCategory}`
-      );
-      setItems(storeItems ? JSON.parse(storeItems) : []);
-    }
+  // Завантажити транзакції при зміні категорії
+  useEffect(() => {
+    if (!selectedCategory) return;
+    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch transactions');
+        return res.json();
+      })
+      .then(setItems)
+      .catch((err) => console.error('Fetch transactions error:', err));
   }, [selectedCategory, currentUser.id]);
-
-    useEffect(() => {
-        setQuote('Small steps every day → big results. 💸');
-    }, []);
-
-  function handleDeleteModalCloseClick() {
-    if (items.length === 0) {
-      return;
-    }
-    setIsDeleteModalClose(!isDeleteModalClose);
-  }
-
-  function handleClearModalCloseClick() {
-    if (items.length === 0) {
-      return;
-    }
-    setIsClearModalClose(!isClearModalClose);
-  }
-
-  function handleChangeSum(data) {
-    setSum((sum) => sum + Number(data));
-  }
-
-  function handleAddItems(item) {
-    setItems((items) => [item, ...items]);
-  }
-
-  function handleDeleteItem(id) {
-    setItemIdToDelete(id);
-    setIsDeleteModalClose(false);
-  }
-
-  function handleClearModal() {
-    setIsClearModalClose(false);
-  }
-
-  function handleConfirmDelete() {
-    setItems(items.filter((item) => item.id !== itemIdToDelete));
-    setSum(
-      items
-        .filter((item) => item.id !== itemIdToDelete)
-        .reduce((total, amount) => total + Number(amount.income), 0)
-    );
-    setIsDeleteModalClose(true);
-  }
-
-  function handleUpdateItemData(id, updatedItem) {
-    const updatedItems = items.map((item) =>
-      item.id === id ? updatedItem : item
-    );
-    setItems(updatedItems);
-  }
-
-  function handleClearList() {
-    setItems([]);
-    setSum(0);
-    setIsClearModalClose(true);
-  }
 
   function handleCategoryChange(newCategory) {
     setSelectedCategory(newCategory);
   }
 
-  useEffect(() => {
-    if (selectedCategory) {
-      localStorage.setItem(
-        `items_${currentUser.id}_${selectedCategory}`,
-        JSON.stringify(items)
-      );
-      localStorage.setItem(
-        `sum_${currentUser.id}_${selectedCategory}`,
-        JSON.stringify(sum)
-      );
-    }
-  }, [items, sum, currentUser.id, selectedCategory]);
+  // Додати транзакцію
+  function handleAddItems(formData) {
+    fetch('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        userId: currentUser.id,
+        categoryName: selectedCategory,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to create transaction');
+        return res.json();
+      })
+      .then((saved) => setItems((prev) => [saved, ...prev]))
+      .catch((err) => console.error('Create transaction error:', err));
+  }
+
+  // Відкрити модалку видалення
+  function handleDeleteItem(id) {
+    setItemIdToDelete(id);
+    setIsDeleteModalClose(false);
+  }
+
+  // Підтвердити видалення
+  function handleConfirmDelete() {
+    fetch(`/api/transactions/${itemIdToDelete}?userId=${currentUser.id}`, {
+      method: 'DELETE',
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to delete transaction');
+        setItems((prev) => prev.filter((item) => item.id !== itemIdToDelete));
+        setIsDeleteModalClose(true);
+      })
+      .catch((err) => console.error('Delete transaction error:', err));
+  }
+
+  // Оновити транзакцію
+  function handleUpdateItemData(id, updatedItem) {
+    fetch(`/api/transactions/${id}?userId=${currentUser.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedItem),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to update transaction');
+        return res.json();
+      })
+      .then((saved) =>
+        setItems((prev) => prev.map((item) => (item.id === id ? saved : item)))
+      )
+      .catch((err) => console.error('Update transaction error:', err));
+  }
+
+  // Очистити всі транзакції категорії
+  function handleClearList() {
+    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}`, {
+      method: 'DELETE',
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to clear transactions');
+        setItems([]);
+        setIsClearModalClose(true);
+      })
+      .catch((err) => console.error('Clear transactions error:', err));
+  }
+
+  function handleDeleteModalCloseClick() {
+    if (items.length === 0) return;
+    setIsDeleteModalClose(!isDeleteModalClose);
+  }
+
+  function handleClearModalCloseClick() {
+    if (items.length === 0) return;
+    setIsClearModalClose(!isClearModalClose);
+  }
+
+  function handleClearModal() {
+    setIsClearModalClose(false);
+  }
 
   return (
     <>
@@ -137,7 +150,6 @@ export default function Main() {
             {selectedCategory && (
               <>
                 <Form
-                  onAddSum={handleChangeSum}
                   onAddItems={handleAddItems}
                   selectedCategory={selectedCategory}
                 />

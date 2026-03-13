@@ -8,4 +8,5 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
     List<TransactionEntity> findByUserIdAndCategoryName(Long userId, String categoryName);
     void deleteByIdAndUserId(Long id, Long userId);
+    void deleteByUserIdAndCategoryName(Long userId, String categoryName);
 }

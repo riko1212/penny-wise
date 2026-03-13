@@ -3,6 +3,7 @@ package com.example.pennywisev1.service;
 import com.example.pennywisev1.repository.TransactionRepository;
 import com.example.pennywisev1.repository.entity.TransactionEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,5 +52,10 @@ public class TransactionService {
 
     public void deleteTransaction(Long id, Long userId) {
         transactionRepository.deleteByIdAndUserId(id, userId);
+    }
+
+    @Transactional
+    public void clearTransactions(Long userId, String categoryName) {
+        transactionRepository.deleteByUserIdAndCategoryName(userId, categoryName);
     }
 }

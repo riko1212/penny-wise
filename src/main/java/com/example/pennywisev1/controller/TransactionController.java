@@ -54,4 +54,11 @@ public class TransactionController {
         transactionService.deleteTransaction(id, userId);
         return ResponseEntity.noContent().build();
     }
+
+    // Clear all transactions for user + category
+    @DeleteMapping
+    public ResponseEntity<Void> clearTransactions(@RequestParam Long userId, @RequestParam String categoryName) {
+        transactionService.clearTransactions(userId, categoryName);
+        return ResponseEntity.noContent().build();
+    }
 }
