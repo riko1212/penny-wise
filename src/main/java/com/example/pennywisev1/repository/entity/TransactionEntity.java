@@ -22,6 +22,9 @@ public class TransactionEntity {
 
     private Long date;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(10) DEFAULT 'EXPENSE'")
+    private String type = "EXPENSE";
+
     public Long getId() { return id; }
 
     public Long getUserId() { return userId; }
@@ -38,4 +41,7 @@ public class TransactionEntity {
 
     public Long getDate() { return date; }
     public void setDate(Long date) { this.date = date; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 }

@@ -15,8 +15,8 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    public List<TransactionEntity> getTransactions(Long userId, String categoryName) {
-        return transactionRepository.findByUserIdAndCategoryName(userId, categoryName);
+    public List<TransactionEntity> getTransactions(Long userId, String categoryName, String type) {
+        return transactionRepository.findByUserIdAndCategoryNameAndType(userId, categoryName, type);
     }
 
     public TransactionEntity createTransaction(TransactionEntity transaction) {
@@ -31,6 +31,9 @@ public class TransactionService {
         }
         if (transaction.getIncome() == null) {
             throw new IllegalArgumentException("income is required");
+        }
+        if (!List.of("INCOME", "EXPENSE").contains(transaction.getType())) {
+            throw new IllegalArgumentException("type must be INCOME or EXPENSE");
         }
         return transactionRepository.save(transaction);
     }
@@ -56,7 +59,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void clearTransactions(Long userId, String categoryName) {
-        transactionRepository.deleteByUserIdAndCategoryName(userId, categoryName);
+    public void clearTransactions(Long userId, String categoryName, String type) {
+        transactionRepository.deleteByUserIdAndCategoryNameAndType(userId, categoryName, type);
     }
 }

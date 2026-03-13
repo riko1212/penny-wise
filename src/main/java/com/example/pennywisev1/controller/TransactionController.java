@@ -17,12 +17,13 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    // Get transactions by user and category
+    // Get transactions by user, category and type
     @GetMapping
     public ResponseEntity<List<TransactionEntity>> getTransactions(
             @RequestParam Long userId,
-            @RequestParam String categoryName) {
-        return ResponseEntity.ok(transactionService.getTransactions(userId, categoryName));
+            @RequestParam String categoryName,
+            @RequestParam String type) {
+        return ResponseEntity.ok(transactionService.getTransactions(userId, categoryName, type));
     }
 
     // Create transaction
@@ -55,10 +56,13 @@ public class TransactionController {
         return ResponseEntity.noContent().build();
     }
 
-    // Clear all transactions for user + category
+    // Clear all transactions for user + category + type
     @DeleteMapping
-    public ResponseEntity<Void> clearTransactions(@RequestParam Long userId, @RequestParam String categoryName) {
-        transactionService.clearTransactions(userId, categoryName);
+    public ResponseEntity<Void> clearTransactions(
+            @RequestParam Long userId,
+            @RequestParam String categoryName,
+            @RequestParam String type) {
+        transactionService.clearTransactions(userId, categoryName, type);
         return ResponseEntity.noContent().build();
     }
 }
