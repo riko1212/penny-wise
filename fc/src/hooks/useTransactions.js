@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export function useTransactions(type) {
   const navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const [currentUser] = useState(() => JSON.parse(localStorage.getItem('loggedInUser')));
 
   useEffect(() => {
     if (!currentUser) {
@@ -21,13 +21,14 @@ export function useTransactions(type) {
 
   const sum = items.reduce((total, item) => total + Number(item.income), 0);
 
+  // Fetch total whenever items change (add/delete/clear)
   useEffect(() => {
     if (!currentUser) return;
     fetch(`/api/transactions/total?userId=${currentUser.id}&type=${type}`)
       .then((res) => res.json())
       .then(setTotalSum)
       .catch((err) => console.error('Fetch total error:', err));
-  }, [currentUser, currentUser?.id, type, items]);
+  }, [currentUser, type, items]);
 
   useEffect(() => {
     if (!selectedCategory || !currentUser) return;
@@ -40,7 +41,7 @@ export function useTransactions(type) {
       .then(setItems)
       .catch((err) => console.error('Fetch transactions error:', err))
       .finally(() => setLoading(false));
-  }, [selectedCategory, currentUser?.id, type, currentUser]);
+  }, [selectedCategory, currentUser, type]);
 
   function handleCategoryChange(newCategory) {
     setSelectedCategory(newCategory);
