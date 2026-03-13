@@ -1,5 +1,6 @@
 package com.example.pennywisev1.controller;
 
+import com.example.pennywisev1.dto.UserResponseDTO;
 import com.example.pennywisev1.repository.entity.UserEntity;
 import com.example.pennywisev1.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,13 @@ public class UserController {
 
     // Отримати всіх користувачів
     @GetMapping
-    public List<UserEntity> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
     // Отримати користувача за ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -36,7 +37,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserEntity userEntity) {
         try {
-            UserEntity savedUser = userService.registerUser(userEntity);
+            UserResponseDTO savedUser = userService.registerUser(userEntity);
             return ResponseEntity.ok(savedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -48,11 +49,11 @@ public class UserController {
     // Логін користувача
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserEntity loginRequest) {
-        return userService.getAllUsers().stream()
-                .filter(user -> user.getName().equals(loginRequest.getName()) &&
-                        user.getPassword().equals(loginRequest.getPassword()))
-                .findFirst()
-                .<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(401).body("Invalid credentials"));
+        try {
+            UserResponseDTO user = userService.loginUser(loginRequest.getName(), loginRequest.getPassword());
+            return ResponseEntity.ok(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
     }
 }
