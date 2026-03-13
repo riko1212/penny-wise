@@ -37,7 +37,7 @@ export default function Main() {
   // Завантажити транзакції при зміні категорії
   useEffect(() => {
     if (!selectedCategory) return;
-    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}`)
+    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=EXPENSE`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch transactions');
         return res.json();
@@ -59,6 +59,7 @@ export default function Main() {
         ...formData,
         userId: currentUser.id,
         categoryName: selectedCategory,
+        type: 'EXPENSE',
       }),
     })
       .then((res) => {
@@ -107,7 +108,7 @@ export default function Main() {
 
   // Очистити всі транзакції категорії
   function handleClearList() {
-    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}`, {
+    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=EXPENSE`, {
       method: 'DELETE',
     })
       .then((res) => {
