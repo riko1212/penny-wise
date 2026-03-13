@@ -52,16 +52,20 @@ export default function InfoList({
   return (
     <>
       <ul className="info-list">
-        {sortedItems.map((item) => (
-          <InfoItem
-            item={item}
-            key={item.id}
-            onDeleteModalOpen={onDeleteModalOpen}
-            isDeleteModalClose={isDeleteModalClose}
-            onDeleteItemId={onDeleteItemId}
-            onUpdateItemData={onUpdateItemData}
-          />
-        ))}
+        {sortedItems.length === 0 ? (
+          <li className="info-list__empty">No transactions yet. Add your first one above.</li>
+        ) : (
+          sortedItems.map((item) => (
+            <InfoItem
+              item={item}
+              key={item.id}
+              onDeleteModalOpen={onDeleteModalOpen}
+              isDeleteModalClose={isDeleteModalClose}
+              onDeleteItemId={onDeleteItemId}
+              onUpdateItemData={onUpdateItemData}
+            />
+          ))
+        )}
       </ul>
       <div className="info-actions">
         <div className="info-sorting">
