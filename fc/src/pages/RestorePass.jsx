@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function RestorePass() {
   const navigate = useNavigate();
 
-  const handleRestorePass = (e) => {
+  const handleRestorePass = async (e) => {
     e.preventDefault();
     const name = e.target.elements['login-name'].value;
     const newPassword = e.target.elements['new-pass'].value;
@@ -14,19 +14,25 @@ function RestorePass() {
       return;
     }
 
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-    const userIndex = users.findIndex((user) => user.name === name);
+    try {
+      const res = await fetch('/api/users/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, newPassword }),
+      });
 
-    if (userIndex === -1) {
-      alert('User not found');
-      return;
+      const text = await res.text();
+
+      if (!res.ok) {
+        alert(text);
+        return;
+      }
+
+      alert('Password successfully updated');
+      navigate('/');
+    } catch {
+      alert('Server error. Please try again.');
     }
-
-    users[userIndex].password = newPassword;
-    localStorage.setItem('users', JSON.stringify(users));
-    alert('Password successfully updated');
-
-    navigate('/');
   };
 
   return (

@@ -54,4 +54,16 @@ public class UserService {
 
         return toDTO(user);
     }
+
+    public void resetPassword(String name, String newPassword) {
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new IllegalArgumentException("Password must be at least 8 characters long");
+        }
+
+        UserEntity user = userRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

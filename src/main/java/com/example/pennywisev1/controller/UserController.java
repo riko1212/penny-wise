@@ -46,6 +46,17 @@ public class UserController {
         }
     }
 
+    // Скидання пароля
+    @PutMapping("/password")
+    public ResponseEntity<?> resetPassword(@RequestBody java.util.Map<String, String> body) {
+        try {
+            userService.resetPassword(body.get("name"), body.get("newPassword"));
+            return ResponseEntity.ok("Password updated");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     // Логін користувача
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserEntity loginRequest) {
