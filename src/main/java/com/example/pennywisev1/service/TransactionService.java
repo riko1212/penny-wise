@@ -19,6 +19,13 @@ public class TransactionService {
         return transactionRepository.findByUserIdAndCategoryNameAndType(userId, categoryName, type);
     }
 
+    public Double getTotalByType(Long userId, String type) {
+        return transactionRepository.findByUserIdAndType(userId, type)
+                .stream()
+                .mapToDouble(t -> t.getIncome() != null ? t.getIncome() : 0.0)
+                .sum();
+    }
+
     public TransactionEntity createTransaction(TransactionEntity transaction) {
         if (transaction.getUserId() == null) {
             throw new IllegalArgumentException("userId is required");

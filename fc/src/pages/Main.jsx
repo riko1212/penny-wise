@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import DeleteModal from '../components/DeleteModal';
 import ClearModal from '../components/ClearModal';
 import { useTransactions } from '../hooks/useTransactions';
+import TotalCard from '../components/TotalCard';
 
 export default function Main() {
   const {
@@ -17,6 +18,7 @@ export default function Main() {
     items,
     loading,
     sum,
+    totalSum,
     isDeleteModalClose,
     isClearModalClose,
     handleCategoryChange,
@@ -41,6 +43,7 @@ export default function Main() {
             type="EXPENSE"
           />
           <main className="main">
+            <TotalCard total={totalSum} type="expense" />
             {!selectedCategory && (
               <div className="quote">
                 <p>Small steps every day → big results. 💸</p>

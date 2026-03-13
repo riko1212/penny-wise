@@ -14,11 +14,20 @@ export function useTransactions(type) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalSum, setTotalSum] = useState(0);
   const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
   const [isClearModalClose, setIsClearModalClose] = useState(true);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
   const sum = items.reduce((total, item) => total + Number(item.income), 0);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    fetch(`/api/transactions/total?userId=${currentUser.id}&type=${type}`)
+      .then((res) => res.json())
+      .then(setTotalSum)
+      .catch((err) => console.error('Fetch total error:', err));
+  }, [currentUser, currentUser?.id, type, items]);
 
   useEffect(() => {
     if (!selectedCategory || !currentUser) return;
@@ -125,6 +134,7 @@ export function useTransactions(type) {
     items,
     loading,
     sum,
+    totalSum,
     isDeleteModalClose,
     isClearModalClose,
     handleCategoryChange,

@@ -26,6 +26,14 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getTransactions(userId, categoryName, type));
     }
 
+    // Get total sum by user and type
+    @GetMapping("/total")
+    public ResponseEntity<Double> getTotal(
+            @RequestParam Long userId,
+            @RequestParam String type) {
+        return ResponseEntity.ok(transactionService.getTotalByType(userId, type));
+    }
+
     // Create transaction
     @PostMapping
     public ResponseEntity<?> createTransaction(@RequestBody TransactionEntity transaction) {
