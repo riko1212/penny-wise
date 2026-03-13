@@ -6,27 +6,28 @@ import PropTypes from 'prop-types';
 Sidebar.propTypes = {
     onCategorySelect: PropTypes.func.isRequired,
     userId: PropTypes.number.isRequired,
+    type: PropTypes.oneOf(['INCOME', 'EXPENSE']).isRequired,
 };
 
-export default function Sidebar({ onCategorySelect, userId }) {
+export default function Sidebar({ onCategorySelect, userId, type }) {
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
 
     useEffect(() => {
-        fetch(`/api/categories?userId=${userId}`)
+        fetch(`/api/categories?userId=${userId}&type=${type}`)
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch categories');
                 return res.json();
             })
             .then(setCategories)
             .catch((err) => console.error('Fetch categories error:', err));
-    }, [userId]);
+    }, [userId, type]);
 
     function handleAddCategory(categoryName) {
         fetch('/api/categories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: categoryName, userId }),
+            body: JSON.stringify({ name: categoryName, userId, type }),
         })
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to add category');

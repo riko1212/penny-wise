@@ -16,6 +16,9 @@ public class CategoryEntity {
 
     private Long userId;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(10) DEFAULT 'EXPENSE'")
+    private String type = "EXPENSE";
+
     public Long getId() {
         return id;
     }
@@ -38,5 +41,13 @@ public class CategoryEntity {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

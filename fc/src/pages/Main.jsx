@@ -141,6 +141,7 @@ export default function Main() {
           <Sidebar
             onCategorySelect={handleCategoryChange}
             userId={currentUser.id}
+            type="EXPENSE"
           />
           <main className="main">
             {!selectedCategory && quote && (

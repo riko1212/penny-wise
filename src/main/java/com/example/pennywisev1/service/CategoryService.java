@@ -15,8 +15,8 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryEntity> getCategoriesByUser(Long userId) {
-        return categoryRepository.findByUserId(userId);
+    public List<CategoryEntity> getCategoriesByUser(Long userId, String type) {
+        return categoryRepository.findByUserIdAndType(userId, type);
     }
 
     public CategoryEntity saveCategory(CategoryEntity category) {

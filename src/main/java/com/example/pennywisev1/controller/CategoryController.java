@@ -17,10 +17,12 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    // Отримати категорії юзера
+    // Отримати категорії юзера за типом
     @GetMapping
-    public ResponseEntity<List<CategoryEntity>> getCategoriesByUser(@RequestParam Long userId) {
-        return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));
+    public ResponseEntity<List<CategoryEntity>> getCategoriesByUser(
+            @RequestParam Long userId,
+            @RequestParam String type) {
+        return ResponseEntity.ok(categoryService.getCategoriesByUser(userId, type));
     }
 
     // Створити категорію
@@ -31,6 +33,9 @@ public class CategoryController {
         }
         if (category.getUserId() == null) {
             return ResponseEntity.badRequest().body("userId is required");
+        }
+        if (!List.of("INCOME", "EXPENSE").contains(category.getType())) {
+            return ResponseEntity.badRequest().body("type must be INCOME or EXPENSE");
         }
         category.setId(null);
         return ResponseEntity.ok(categoryService.saveCategory(category));

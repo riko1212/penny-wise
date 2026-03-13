@@ -130,6 +130,7 @@ export default function Income() {
           <Sidebar
             onCategorySelect={handleCategoryChange}
             userId={currentUser.id}
+            type="INCOME"
           />
           <main className="main">
             {!selectedCategory && (
