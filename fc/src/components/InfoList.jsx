@@ -22,40 +22,144 @@ export default function InfoList({
   onUpdateItemData,
 }) {
   const [sortBy, setSortBy] = useState('order');
+  const [search, setSearch] = useState('');
+  const [minAmount, setMinAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  let sortedItems = [];
+  const hasActiveFilters = search || minAmount || maxAmount || dateFrom || dateTo;
 
-  if (items && items.length > 0) {
-    sortedItems = [...items]; // Create a copy of items
+  let filtered = [...items];
 
+  if (search) {
+    filtered = filtered.filter((item) =>
+      item.topic.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+  if (minAmount !== '') {
+    filtered = filtered.filter((item) => Number(item.income) >= Number(minAmount));
+  }
+  if (maxAmount !== '') {
+    filtered = filtered.filter((item) => Number(item.income) <= Number(maxAmount));
+  }
+  if (dateFrom) {
+    filtered = filtered.filter((item) => item.date >= new Date(dateFrom).getTime());
+  }
+  if (dateTo) {
+    filtered = filtered.filter(
+      (item) => item.date <= new Date(dateTo).getTime() + 86399999
+    );
+  }
+
+  if (filtered.length > 0) {
     switch (sortBy) {
       case 'description':
-        sortedItems.sort((a, b) => a.topic.localeCompare(b.topic));
+        filtered.sort((a, b) => a.topic.localeCompare(b.topic));
         break;
       case 'highest':
-        sortedItems.sort((a, b) => b.income - a.income);
+        filtered.sort((a, b) => b.income - a.income);
         break;
       case 'lowest':
-        sortedItems.sort((a, b) => a.income - b.income);
+        filtered.sort((a, b) => a.income - b.income);
         break;
       case 'first':
-        sortedItems.sort((a, b) => new Date(a.date) - new Date(b.date));
+        filtered.sort((a, b) => a.date - b.date);
         break;
       case 'last':
-        sortedItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+        filtered.sort((a, b) => b.date - a.date);
         break;
       default:
         break;
     }
   }
 
+  function handleClearFilters() {
+    setSearch('');
+    setMinAmount('');
+    setMaxAmount('');
+    setDateFrom('');
+    setDateTo('');
+  }
+
   return (
     <>
+      {/* Search & filter bar */}
+      <div className="filter-bar">
+        <input
+          type="text"
+          className="filter-search"
+          placeholder="Search by description..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button
+          className={`btn filter-toggle-btn ${filtersOpen ? 'filter-toggle-btn--active' : ''}`}
+          onClick={() => setFiltersOpen((p) => !p)}
+        >
+          {filtersOpen ? 'Hide filters' : 'Filters'}
+          {hasActiveFilters && !filtersOpen && <span className="filter-dot" />}
+        </button>
+        {hasActiveFilters && (
+          <button className="btn filter-clear-btn" onClick={handleClearFilters}>
+            Clear
+          </button>
+        )}
+      </div>
+
+      {filtersOpen && (
+        <div className="filter-panel">
+          <div className="filter-group">
+            <label className="filter-label">Amount</label>
+            <div className="filter-range">
+              <input
+                type="number"
+                className="filter-input"
+                placeholder="Min"
+                value={minAmount}
+                min="0"
+                onChange={(e) => setMinAmount(e.target.value)}
+              />
+              <span className="filter-range-sep">—</span>
+              <input
+                type="number"
+                className="filter-input"
+                placeholder="Max"
+                value={maxAmount}
+                min="0"
+                onChange={(e) => setMaxAmount(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="filter-group">
+            <label className="filter-label">Date range</label>
+            <div className="filter-range">
+              <input
+                type="date"
+                className="filter-input"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+              />
+              <span className="filter-range-sep">—</span>
+              <input
+                type="date"
+                className="filter-input"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <ul className="info-list">
-        {sortedItems.length === 0 ? (
+        {items.length === 0 ? (
           <li className="info-list__empty">No transactions yet. Add your first one above.</li>
+        ) : filtered.length === 0 ? (
+          <li className="info-list__empty">No transactions match your filters.</li>
         ) : (
-          sortedItems.map((item) => (
+          filtered.map((item) => (
             <InfoItem
               item={item}
               key={item.id}
@@ -67,6 +171,7 @@ export default function InfoList({
           ))
         )}
       </ul>
+
       <div className="info-actions">
         <div className="info-sorting">
           <label className="info-sort-text" htmlFor="sort-select">
