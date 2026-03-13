@@ -642,6 +642,37 @@ address {
   max-width: 520px;
 }
 
+.history__controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.history__toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.history__toggle-btn--active {
+  background: #5c7cfa;
+  color: #fff;
+}
+
+.history__change {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.history__change--up {
+  color: #69db7c;
+}
+
+.history__change--down {
+  color: #ff6b6b;
+}
+
 .dashboard__chart-title {
   font-size: 16px;
   font-weight: 600;

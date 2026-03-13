@@ -5,6 +5,9 @@ import eslint from 'vite-plugin-eslint';
 export default defineConfig({
     base: '/fc/',
     plugins: [react(), eslint()],
+    define: {
+        global: 'globalThis',
+    },
     server: {
         proxy: {
             '/api': {

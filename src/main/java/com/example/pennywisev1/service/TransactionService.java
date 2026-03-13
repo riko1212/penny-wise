@@ -5,7 +5,13 @@ import com.example.pennywisev1.repository.entity.TransactionEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -17,6 +23,28 @@ public class TransactionService {
 
     public List<TransactionEntity> getTransactions(Long userId, String categoryName, String type) {
         return transactionRepository.findByUserIdAndCategoryNameAndType(userId, categoryName, type);
+    }
+
+    public List<Map<String, Object>> getHistory(Long userId, String type, String groupBy) {
+        List<TransactionEntity> transactions = transactionRepository.findByUserIdAndType(userId, type);
+        Map<String, Double> grouped = new LinkedHashMap<>();
+        for (TransactionEntity t : transactions) {
+            if (t.getDate() == null) continue;
+            LocalDate date = Instant.ofEpochMilli(t.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+            String key = "year".equals(groupBy)
+                    ? String.valueOf(date.getYear())
+                    : date.getYear() + "-" + String.format("%02d", date.getMonthValue());
+            grouped.merge(key, t.getIncome() != null ? t.getIncome() : 0.0, Double::sum);
+        }
+        return grouped.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> {
+                    Map<String, Object> entry = new LinkedHashMap<>();
+                    entry.put("period", e.getKey());
+                    entry.put("total", Math.round(e.getValue() * 100.0) / 100.0);
+                    return entry;
+                })
+                .collect(Collectors.toList());
     }
 
     public List<java.util.Map<String, Object>> getSummaryByType(Long userId, String type) {

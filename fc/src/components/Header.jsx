@@ -29,6 +29,14 @@ export default function Header() {
             </li>
             <li className="menu-item">
               <Link
+                to="/history"
+                className={`menu-link ${location.pathname === '/history' ? 'menu-link--active' : ''}`}
+              >
+                History
+              </Link>
+            </li>
+            <li className="menu-item">
+              <Link
                 to="/main"
                 className={`menu-link ${location.pathname === '/main' ? 'menu-link--active' : ''}`}
               >
