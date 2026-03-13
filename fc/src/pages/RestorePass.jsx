@@ -1,16 +1,27 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function RestorePass() {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleRestorePass = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
+
     const name = e.target.elements['login-name'].value;
     const newPassword = e.target.elements['new-pass'].value;
     const repeatPassword = e.target.elements['repeat-pass'].value;
 
+    if (newPassword.length < 8) {
+      setErrorMessage('Password must be at least 8 characters long');
+      return;
+    }
+
     if (newPassword !== repeatPassword) {
-      alert('Passwords do not match');
+      setErrorMessage('Passwords do not match');
       return;
     }
 
@@ -24,14 +35,14 @@ function RestorePass() {
       const text = await res.text();
 
       if (!res.ok) {
-        alert(text);
+        setErrorMessage(text || 'Failed to update password');
         return;
       }
 
-      alert('Password successfully updated');
-      navigate('/');
+      setSuccessMessage('Password successfully updated');
+      setTimeout(() => navigate('/'), 1500);
     } catch {
-      alert('Server error. Please try again.');
+      setErrorMessage('Server error. Please try again.');
     }
   };
 
@@ -39,24 +50,29 @@ function RestorePass() {
     <div className="login-wrapper">
       <div className="login-block">
         <p className="login-text">Restore Pass</p>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        {successMessage && <p className="success-message">{successMessage}</p>}
         <form className="login-form" onSubmit={handleRestorePass}>
           <input
             type="text"
             name="login-name"
             className="form-input"
             placeholder="Enter name"
+            required
           />
           <input
             type="password"
             name="new-pass"
             className="form-input"
             placeholder="Enter new password"
+            required
           />
           <input
             type="password"
             name="repeat-pass"
             className="form-input"
             placeholder="Repeat new password"
+            required
           />
           <button type="submit" className="btn form-btn">
             Restore Password

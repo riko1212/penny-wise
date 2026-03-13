@@ -1,31 +1,34 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     const name = e.target.elements['login-name'].value;
     const password = e.target.elements['login-pass'].value;
 
     try {
-        const response = await fetch('/api/users/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, password }),
-        });
+      const response = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, password }),
+      });
 
       if (!response.ok) {
         const text = await response.text();
-        alert(text || "Login failed");
+        setErrorMessage(text || 'Login failed');
         return;
       }
 
       const user = await response.json();
       localStorage.setItem('loggedInUser', JSON.stringify(user));
       navigate('/main');
-    } catch (error) {
-      alert("Network error. Please try again later.");
+    } catch {
+      setErrorMessage('Network error. Please try again later.');
     }
   };
 
@@ -33,6 +36,7 @@ function Login() {
     <div className="login-wrapper">
       <div className="login-block">
         <p className="login-text">Login</p>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form className="login-form" onSubmit={handleLogin}>
           <input
             type="text"
