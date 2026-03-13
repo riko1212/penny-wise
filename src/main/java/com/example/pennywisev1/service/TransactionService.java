@@ -19,6 +19,17 @@ public class TransactionService {
         return transactionRepository.findByUserIdAndCategoryNameAndType(userId, categoryName, type);
     }
 
+    public List<java.util.Map<String, Object>> getSummaryByType(Long userId, String type) {
+        return transactionRepository.sumByCategory(userId, type).stream()
+                .map(row -> {
+                    java.util.Map<String, Object> entry = new java.util.LinkedHashMap<>();
+                    entry.put("categoryName", row[0]);
+                    entry.put("total", row[1]);
+                    return entry;
+                })
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     public Double getTotalByType(Long userId, String type) {
         return transactionRepository.findByUserIdAndType(userId, type)
                 .stream()
