@@ -12,13 +12,13 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   const [editedTopic, setEditedTopic] = useState(item.topic);
   const [editedIncome, setEditedIncome] = useState(item.income);
   const [editedDate, setEditedDate] = useState(
-    new Date(item.date).toISOString().substr(0, 10)
+    new Date(item.date).toISOString().slice(0, 10)
   );
 
   useEffect(() => {
     setEditedTopic(item.topic);
     setEditedIncome(item.income);
-    setEditedDate(new Date(item.date).toISOString().substr(0, 10));
+    setEditedDate(new Date(item.date).toISOString().slice(0, 10));
   }, [item]);
 
   function isToday(date) {
