@@ -14,6 +14,7 @@ import TotalCard from '../components/TotalCard';
 export default function Main() {
   const {
     currentUser,
+    currentMonthLabel,
     selectedCategory,
     items,
     loading,
@@ -43,7 +44,7 @@ export default function Main() {
             type="EXPENSE"
           />
           <main className="main">
-            <TotalCard total={totalSum} type="expense" />
+            <TotalCard total={totalSum} type="expense" monthLabel={currentMonthLabel} />
             {!selectedCategory && (
               <div className="quote">
                 <p>Small steps every day → big results. 💸</p>

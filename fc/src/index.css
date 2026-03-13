@@ -563,6 +563,13 @@ address {
   color: #69db7c;
 }
 
+.total-card__month {
+  font-size: 12px;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 /* Dashboard */
 .dashboard {
   padding: 40px 0;

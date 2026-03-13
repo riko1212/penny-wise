@@ -14,6 +14,7 @@ import TotalCard from '../components/TotalCard';
 export default function Income() {
   const {
     currentUser,
+    currentMonthLabel,
     selectedCategory,
     items,
     loading,
@@ -43,7 +44,7 @@ export default function Income() {
             type="INCOME"
           />
           <main className="main">
-            <TotalCard total={totalSum} type="income" />
+            <TotalCard total={totalSum} type="income" monthLabel={currentMonthLabel} />
             {!selectedCategory && (
               <div className="quote">
                 <p>Track your income — know what you earn. 💰</p>

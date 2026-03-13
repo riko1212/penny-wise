@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const now = new Date();
+const CURRENT_MONTH = now.getMonth() + 1;
+const CURRENT_YEAR = now.getFullYear();
+const CURRENT_MONTH_LABEL = now.toLocaleString('en', { month: 'long', year: 'numeric' });
+
 export function useTransactions(type) {
   const navigate = useNavigate();
   const [currentUser] = useState(() => JSON.parse(localStorage.getItem('loggedInUser')));
@@ -24,7 +29,7 @@ export function useTransactions(type) {
   // Fetch total whenever items change (add/delete/clear)
   useEffect(() => {
     if (!currentUser) return;
-    fetch(`/api/transactions/total?userId=${currentUser.id}&type=${type}`)
+    fetch(`/api/transactions/total?userId=${currentUser.id}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
       .then((res) => res.json())
       .then(setTotalSum)
       .catch((err) => console.error('Fetch total error:', err));
@@ -33,7 +38,7 @@ export function useTransactions(type) {
   useEffect(() => {
     if (!selectedCategory || !currentUser) return;
     setLoading(true);
-    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}`)
+    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch transactions');
         return res.json();
@@ -131,6 +136,7 @@ export function useTransactions(type) {
 
   return {
     currentUser,
+    currentMonthLabel: CURRENT_MONTH_LABEL,
     selectedCategory,
     items,
     loading,

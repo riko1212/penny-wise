@@ -17,13 +17,15 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    // Get transactions by user, category and type
+    // Get transactions by user, category and type (optional month/year filter)
     @GetMapping
     public ResponseEntity<List<TransactionEntity>> getTransactions(
             @RequestParam Long userId,
             @RequestParam String categoryName,
-            @RequestParam String type) {
-        return ResponseEntity.ok(transactionService.getTransactions(userId, categoryName, type));
+            @RequestParam String type,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(transactionService.getTransactions(userId, categoryName, type, month, year));
     }
 
     // Get history grouped by month or year
@@ -43,12 +45,14 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getSummaryByType(userId, type));
     }
 
-    // Get total sum by user and type
+    // Get total sum by user and type (optional month/year filter)
     @GetMapping("/total")
     public ResponseEntity<Double> getTotal(
             @RequestParam Long userId,
-            @RequestParam String type) {
-        return ResponseEntity.ok(transactionService.getTotalByType(userId, type));
+            @RequestParam String type,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(transactionService.getTotalByType(userId, type, month, year));
     }
 
     // Create transaction
