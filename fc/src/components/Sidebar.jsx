@@ -5,49 +5,42 @@ import PropTypes from 'prop-types';
 
 Sidebar.propTypes = {
     onCategorySelect: PropTypes.func.isRequired,
+    userId: PropTypes.number.isRequired,
 };
 
-export default function Sidebar({ onCategorySelect }) {
+export default function Sidebar({ onCategorySelect, userId }) {
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
 
-    // Завантаження всіх категорій з бекенду при старті
     useEffect(() => {
-        fetch('/api/categories')
+        fetch(`/api/categories?userId=${userId}`)
             .then((res) => {
-                if (!res.ok) throw new Error('Network response was not ok');
+                if (!res.ok) throw new Error('Failed to fetch categories');
                 return res.json();
             })
             .then(setCategories)
-            .catch((err) => console.error('Fetch error:', err));
-    }, []);
+            .catch((err) => console.error('Fetch categories error:', err));
+    }, [userId]);
 
-    // Додавання нової категорії
     function handleAddCategory(categoryName) {
-        const newCategory = { name: categoryName };
-        console.log(JSON.stringify(newCategory))
-
         fetch('/api/categories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newCategory),
+            body: JSON.stringify({ name: categoryName, userId }),
         })
             .then((res) => {
-                console.log('Response status:', res.status); // Дивимося на код статусу
                 if (!res.ok) throw new Error('Failed to add category');
                 return res.json();
             })
             .then((savedCategory) => {
-                console.log('Saved category:', savedCategory); // Логуємо результат
                 setCategories((prev) => [...prev, savedCategory]);
                 setShowAddCategory(false);
             })
             .catch((err) => console.error('Add category error:', err));
     }
 
-    // Видалення категорії
     function handleDeleteCategory(categoryToDelete) {
-        fetch(`/api/categories/${categoryToDelete.id}`, {
+        fetch(`/api/categories/${categoryToDelete.id}?userId=${userId}`, {
             method: 'DELETE',
         })
             .then((res) => {
@@ -59,7 +52,6 @@ export default function Sidebar({ onCategorySelect }) {
             .catch((err) => console.error('Delete category error:', err));
     }
 
-    // Вибір категорії
     function handleCategorySelect(category) {
         onCategorySelect(category.name);
     }

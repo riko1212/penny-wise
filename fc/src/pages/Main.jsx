@@ -8,7 +8,6 @@ import Form from '../components/Form';
 import Info from '../components/Info';
 import InfoList from '../components/InfoList';
 import Footer from '../components/Footer';
-import TopicList from '../components/TopicList';
 import DeleteModal from '../components/DeleteModal';
 import ClearModal from '../components/ClearModal';
 
@@ -21,13 +20,6 @@ export default function Main() {
       navigate('/login');
     }
   }, [currentUser, navigate]);
-
-  const [categories, setCategories] = useState(() => {
-    const storedCategories = localStorage.getItem(
-      `categories_${currentUser.id}`
-    );
-    return storedCategories ? JSON.parse(storedCategories) : ['Default'];
-  });
 
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -114,18 +106,6 @@ export default function Main() {
     setSelectedCategory(newCategory);
   }
 
-  function handleAddCategory(newCategory) {
-    if (!categories.includes(newCategory)) {
-      const updatedCategories = [...categories, newCategory];
-      setCategories(updatedCategories);
-      localStorage.setItem(
-        `categories_${currentUser.id}`,
-        JSON.stringify(updatedCategories)
-      );
-      setSelectedCategory(newCategory);
-    }
-  }
-
   useEffect(() => {
     if (selectedCategory) {
       localStorage.setItem(
@@ -144,14 +124,10 @@ export default function Main() {
       <Header />
       <div className="page-wrap">
         <div className="container page-wrap-container">
-          <Sidebar onCategorySelect={handleCategoryChange}>
-            <TopicList
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onCategoryChange={handleCategoryChange}
-              onAddCategory={handleAddCategory}
-            />
-          </Sidebar>
+          <Sidebar
+            onCategorySelect={handleCategoryChange}
+            userId={currentUser.id}
+          />
           <main className="main">
             {!selectedCategory && quote && (
               <div className="quote">
