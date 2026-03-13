@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 
-CleareModal.propTypes = {
+ClearModal.propTypes = {
   onClearModalClose: PropTypes.func,
   onClearList: PropTypes.func,
   isClearModalClose: PropTypes.bool,
 };
-export default function CleareModal({
+export default function ClearModal({
   onClearModalClose,
   isClearModalClose,
   onClearList,

@@ -24,7 +24,7 @@ export default function TopicItem({ item, onDelete, onClick, className }) {
             handleDelete();
           }}
         >
-          +
+          &times;
         </button>
       </div>
     </li>

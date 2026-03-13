@@ -6,6 +6,7 @@ export default function Header() {
   const userName = JSON.parse(user);
 
   const handleLogout = () => {
+    localStorage.removeItem('loggedInUser');
     navigate('/');
   };
   return (
