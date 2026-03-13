@@ -3,13 +3,17 @@ import TopicList from './TopicList.jsx';
 import FormAddCategory from './FormAddCategory.jsx';
 import PropTypes from 'prop-types';
 
+Sidebar.propTypes = {
+    onCategorySelect: PropTypes.func.isRequired,
+};
+
 export default function Sidebar({ onCategorySelect }) {
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
 
     // Завантаження всіх категорій з бекенду при старті
     useEffect(() => {
-        fetch('http://localhost:8080/api/categories')
+        fetch('/api/categories')
             .then((res) => {
                 if (!res.ok) throw new Error('Network response was not ok');
                 return res.json();
@@ -23,7 +27,7 @@ export default function Sidebar({ onCategorySelect }) {
         const newCategory = { name: categoryName };
         console.log(JSON.stringify(newCategory))
 
-        fetch('http://localhost:8080/api/categories', {
+        fetch('/api/categories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newCategory),
@@ -43,7 +47,7 @@ export default function Sidebar({ onCategorySelect }) {
 
     // Видалення категорії
     function handleDeleteCategory(categoryToDelete) {
-        fetch(`http://localhost:8080/api/categories/${categoryToDelete.id}`, {
+        fetch(`/api/categories/${categoryToDelete.id}`, {
             method: 'DELETE',
         })
             .then((res) => {

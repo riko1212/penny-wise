@@ -9,13 +9,11 @@ function Login() {
     const password = e.target.elements['login-pass'].value;
 
     try {
-      const response = await fetch('http://localhost:8080/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, password }),
-      });
+        const response = await fetch('/api/users/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, password }),
+        });
 
       if (!response.ok) {
         const text = await response.text();

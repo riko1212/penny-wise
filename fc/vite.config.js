@@ -2,8 +2,16 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  base: '/fc/',
-  plugins: [react(), eslint()],
+    base: '/fc/',
+    plugins: [react(), eslint()],
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                secure: false,
+            },
+        },
+    },
 });

@@ -19,14 +19,14 @@ export default function UpdateModal({
           name="user-text"
           className="form-input"
           placeholder="Enter type"
-          value={itemToUpdate.type}
+          value={itemToUpdate.topic}
         />
         <input
           type="number"
           name="user-sum"
           className="form-input"
           placeholder="Enter sum"
-          value={itemToUpdate.amount}
+          value={itemToUpdate.income}
         />
         <input
           type="text"

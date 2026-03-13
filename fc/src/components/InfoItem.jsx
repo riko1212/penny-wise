@@ -9,17 +9,15 @@ InfoItem.propTypes = {
 
 export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedType, setEditedType] = useState(item.type);
-  const [editedAmount, setEditedAmount] = useState(item.amount);
+  const [editedTopic, setEditedTopic] = useState(item.topic);
+  const [editedIncome, setEditedIncome] = useState(item.income);
   const [editedDate, setEditedDate] = useState(
     new Date(item.date).toISOString().substr(0, 10)
   );
 
-  console.log('📌 InfoItem отримав item:', item);
-
   useEffect(() => {
-    setEditedType(item.type);
-    setEditedAmount(item.amount);
+    setEditedTopic(item.topic);
+    setEditedIncome(item.income);
     setEditedDate(new Date(item.date).toISOString().substr(0, 10));
   }, [item]);
 
@@ -36,7 +34,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   }
 
   function handleSave() {
-    onUpdateItemData(item.id, editedType, editedAmount, editedDate);
+    onUpdateItemData(item.id, editedTopic, editedIncome, editedDate);
     setIsEditing(false);
   }
 
@@ -44,6 +42,8 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     if (!isEditing) {
       const updatedItem = {
         ...item,
+        topic: editedTopic,
+        income: editedIncome,
         date: new Date(editedDate).getTime(),
       };
       const storedItems = JSON.parse(localStorage.getItem('items')) || [];
@@ -52,7 +52,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
       );
       localStorage.setItem('items', JSON.stringify(updatedItems));
     }
-  }, [isEditing, editedType, editedAmount, editedDate]);
+  }, [isEditing, editedTopic, editedIncome, editedDate]);
 
   return (
     <li className="info-item">
@@ -61,14 +61,14 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
           <>
             <input
               type="text"
-              value={editedType}
-              onChange={(e) => setEditedType(e.target.value)}
+              value={editedTopic}
+              onChange={(e) => setEditedTopic(e.target.value)}
               className="form-input form-input-edit"
             />
             <input
               type="number"
-              value={editedAmount}
-              onChange={(e) => setEditedAmount(e.target.value)}
+              value={editedIncome}
+              onChange={(e) => setEditedIncome(e.target.value)}
               className="form-input form-input-edit"
             />
             <input
@@ -80,8 +80,8 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
           </>
         ) : (
           <>
-            <p className="info-item-text">{item.type}:</p>
-            <p className="info-item-count"> {item.amount} UAH</p>
+            <p className="info-item-text">{item.topic}:</p>
+            <p className="info-item-count">{item.income} UAH</p>
             <p className="info-item-data">
               {isToday(item.date)
                 ? 'Today'
