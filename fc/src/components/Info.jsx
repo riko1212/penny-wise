@@ -13,7 +13,7 @@ export default function Info({ sum, children, type = 'expense' }) {
   return (
     <div className="info">
       <p className="info-text">
-        {label}: <span className={amountClass}>{sum} UAH</span>
+        {label}: <span className={amountClass}>{sum.toFixed(2)} UAH</span>
       </p>
       {children}
     </div>
