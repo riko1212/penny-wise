@@ -26,7 +26,7 @@ function Login() {
 
       const user = await response.json();
       localStorage.setItem('loggedInUser', JSON.stringify(user));
-      navigate('/main');
+      navigate('/dashboard');
     } catch {
       setErrorMessage('Network error. Please try again later.');
     }

@@ -5,6 +5,7 @@ import RestorePass from './pages/RestorePass';
 import NotFound from './pages/NotFound';
 import Main from './pages/Main';
 import Income from './pages/Income';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/restore-pass" element={<RestorePass />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/main" element={<Main />} />
         <Route path="/income" element={<Income />} />
         <Route path="*" element={<NotFound />} />

@@ -563,6 +563,67 @@ address {
   color: #69db7c;
 }
 
+/* Dashboard */
+.dashboard {
+  padding: 40px 0;
+}
+
+.dashboard__title {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 32px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.dashboard__cards {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dashboard__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 40px;
+  border-radius: 20px;
+  background: #1e1e2e;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  min-width: 220px;
+}
+
+.dashboard__card-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #aaa;
+}
+
+.dashboard__card-amount {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.dashboard__card--income .dashboard__card-amount {
+  color: #69db7c;
+}
+
+.dashboard__card--expense .dashboard__card-amount {
+  color: #ff6b6b;
+}
+
+.dashboard__card--positive .dashboard__card-amount {
+  color: #69db7c;
+}
+
+.dashboard__card--negative .dashboard__card-amount {
+  color: #ff6b6b;
+}
+
 .login-actions {
   margin-top: 30px;
   display: flex;

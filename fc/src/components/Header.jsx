@@ -14,11 +14,19 @@ export default function Header() {
   return (
     <header className="header">
       <div className="container header-container">
-        <Link to="/main" className="header-logo">
+        <Link to="/dashboard" className="header-logo">
           Logo
         </Link>
         <nav className="header-nav">
           <ul className="menu-list">
+            <li className="menu-item">
+              <Link
+                to="/dashboard"
+                className={`menu-link ${location.pathname === '/dashboard' ? 'menu-link--active' : ''}`}
+              >
+                Dashboard
+              </Link>
+            </li>
             <li className="menu-item">
               <Link
                 to="/main"
