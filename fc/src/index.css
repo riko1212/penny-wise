@@ -1,8 +1,64 @@
+/* ── Base palette ─────────────────────────────────────── */
 :root {
   --color-one: #dde6ed;
   --color-two: #526d82;
   --color-three: #9db2bf;
   --color-four: #27374d;
+
+  /* Theme variables — default (slate) */
+  --theme-bg-page:         var(--color-one);
+  --theme-bg-header:       var(--color-three);
+  --theme-bg-sidebar-link: var(--color-two);
+  --theme-bg-sidebar-hover: rgb(240, 99, 48);
+  --theme-bg-panel:        var(--color-four);
+  --theme-bg-card:         #1e1e2e;
+  --theme-bg-login:        var(--color-two);
+  --theme-bg-filter-panel: var(--color-two);
+  --theme-bg-modal:        var(--color-one);
+  --theme-text-on-panel:   #ffffff;
+  --theme-text-on-sidebar: var(--color-one);
+  --theme-text-muted:      #aaa;
+  --theme-card-shadow:     rgba(0, 0, 0, 0.3);
+  --theme-input-border:    var(--color-three);
+  --theme-input-color:     var(--color-one);
+}
+
+/* ── Dark theme ───────────────────────────────────────── */
+[data-theme="dark"] {
+  --theme-bg-page:         #0f172a;
+  --theme-bg-header:       #1e293b;
+  --theme-bg-sidebar-link: #1e3a5f;
+  --theme-bg-sidebar-hover: #2d5a8e;
+  --theme-bg-panel:        #1e293b;
+  --theme-bg-card:         #0d1117;
+  --theme-bg-login:        #1e293b;
+  --theme-bg-filter-panel: #1e293b;
+  --theme-bg-modal:        #1e293b;
+  --theme-text-on-panel:   #e2e8f0;
+  --theme-text-on-sidebar: #e2e8f0;
+  --theme-text-muted:      #94a3b8;
+  --theme-card-shadow:     rgba(0, 0, 0, 0.6);
+  --theme-input-border:    #334155;
+  --theme-input-color:     #e2e8f0;
+}
+
+/* ── Light theme ──────────────────────────────────────── */
+[data-theme="light"] {
+  --theme-bg-page:         #f8fafc;
+  --theme-bg-header:       #e2e8f0;
+  --theme-bg-sidebar-link: #64748b;
+  --theme-bg-sidebar-hover: #475569;
+  --theme-bg-panel:        #ffffff;
+  --theme-bg-card:         #f1f5f9;
+  --theme-bg-login:        #64748b;
+  --theme-bg-filter-panel: #e2e8f0;
+  --theme-bg-modal:        #ffffff;
+  --theme-text-on-panel:   #1e293b;
+  --theme-text-on-sidebar: #ffffff;
+  --theme-text-muted:      #64748b;
+  --theme-card-shadow:     rgba(0, 0, 0, 0.1);
+  --theme-input-border:    #94a3b8;
+  --theme-input-color:     #1e293b;
 }
 
 *,
@@ -82,7 +138,7 @@ address {
 
 .page-wrap {
   flex-grow: 1;
-  background-color: var(--color-one);
+  background-color: var(--theme-bg-page);
 }
 
 .page-wrap-container {
@@ -94,7 +150,7 @@ address {
 .header {
   padding-top: 24px;
   padding-bottom: 24px;
-  background-color: var(--color-three);
+  background-color: var(--theme-bg-header);
 }
 
 .header-container {
@@ -136,6 +192,20 @@ address {
   background-color: var(--color-two);
 }
 
+.theme-toggle-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
 .sidebar {
   width: 300px;
   padding: 40px 20px;
@@ -149,9 +219,9 @@ address {
 .sidebar-link {
   display: block;
   padding: 16px 8px;
-  background-color: var(--color-two);
+  background-color: var(--theme-bg-sidebar-link);
   font-size: 20px;
-  color: var(--color-one);
+  color: var(--theme-text-on-sidebar);
   font-weight: bold;
   border-radius: 5px;
   transition-duration: 300ms;
@@ -172,7 +242,7 @@ address {
 }
 
 .sidebar-link:is(:hover, :focus) {
-  background-color: rgb(240, 99, 48);
+  background-color: var(--theme-bg-sidebar-hover);
 }
 
 .add-category-btn {
@@ -271,12 +341,11 @@ address {
 
 .form {
   padding: 40px;
-  background-color: var(--color-four);
+  background-color: var(--theme-bg-panel);
   border-radius: 10px;
   display: flex;
   justify-content: center;
   flex-direction: column;
-
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -291,10 +360,10 @@ address {
   width: 50%;
   height: 50px;
   background-color: transparent;
-  border: 3px solid var(--color-three);
+  border: 3px solid var(--theme-input-border);
   border-radius: 20px;
   outline: transparent;
-  color: var(--color-one);
+  color: var(--theme-input-color);
   padding-left: 16px;
   padding-right: 16px;
   width: 100%;
@@ -309,12 +378,12 @@ address {
 }
 
 .form-input::placeholder {
-  color: var(--color-one);
+  color: var(--theme-text-muted);
 }
 
 .info {
   padding: 40px;
-  background-color: var(--color-four);
+  background-color: var(--theme-bg-panel);
   border-radius: 10px;
 }
 
@@ -410,7 +479,7 @@ address {
 .footer {
   padding-top: 24px;
   padding-bottom: 24px;
-  background-color: var(--color-three);
+  background-color: var(--theme-bg-header);
 }
 
 .footer-container {
@@ -433,7 +502,7 @@ address {
   width: 300px;
   min-height: 200px;
   padding: 40px;
-  background-color: var(--color-one);
+  background-color: var(--theme-bg-modal);
   border-radius: 15px;
   top: 50%;
   left: 50%;
@@ -479,7 +548,7 @@ address {
 .login-wrapper {
   width: 100vw;
   height: 100vh;
-  background-color: var(--color-one);
+  background-color: var(--theme-bg-page);
   position: relative;
 }
 
@@ -487,7 +556,7 @@ address {
   width: 500px;
   min-height: 300px;
   padding: 40px;
-  background-color: var(--color-two);
+  background-color: var(--theme-bg-login);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -537,9 +606,9 @@ address {
   gap: 8px;
   padding: 20px 32px;
   margin-bottom: 24px;
-  background: #1e1e2e;
+  background: var(--theme-bg-card);
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px var(--theme-card-shadow);
 }
 
 .total-card__label {
@@ -598,8 +667,8 @@ address {
   gap: 12px;
   padding: 32px 40px;
   border-radius: 20px;
-  background: #1e1e2e;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  background: var(--theme-bg-card);
+  box-shadow: 0 4px 24px var(--theme-card-shadow);
   min-width: 220px;
 }
 
@@ -640,10 +709,10 @@ address {
 }
 
 .dashboard__chart {
-  background: #1e1e2e;
+  background: var(--theme-bg-card);
   border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 24px var(--theme-card-shadow);
   flex: 1;
   min-width: 300px;
   max-width: 520px;
@@ -740,15 +809,15 @@ address {
   height: 40px;
   padding: 0 14px;
   border-radius: 20px;
-  border: 2px solid var(--color-three);
+  border: 2px solid var(--theme-input-border);
   background: transparent;
-  color: var(--color-one);
+  color: var(--theme-input-color);
   font-size: 14px;
   outline: none;
 }
 
 .filter-search::placeholder {
-  color: var(--color-three);
+  color: var(--theme-text-muted);
 }
 
 .filter-toggle-btn {
@@ -783,7 +852,7 @@ address {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-  background: var(--color-two);
+  background: var(--theme-bg-filter-panel);
   border-radius: 10px;
   padding: 14px 16px;
   margin-bottom: 12px;
@@ -820,9 +889,9 @@ address {
   height: 36px;
   padding: 0 10px;
   border-radius: 10px;
-  border: 2px solid var(--color-three);
+  border: 2px solid var(--theme-input-border);
   background: transparent;
-  color: var(--color-one);
+  color: var(--theme-input-color);
   font-size: 13px;
   outline: none;
   min-width: 0;
