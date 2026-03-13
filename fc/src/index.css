@@ -112,6 +112,24 @@ address {
 .menu-list {
   display: flex;
   gap: 24px;
+  list-style: none;
+}
+
+.menu-link {
+  color: var(--color-white);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.menu-link:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.menu-link--active {
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .logout-btn {
