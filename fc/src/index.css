@@ -199,9 +199,9 @@ address {
 }
 
 .header-logo {
-  font-size: 20px;
-  font-weight: bold;
-  color: var(--theme-text-on-header);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .greet-text {
@@ -577,6 +577,12 @@ address {
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 15px;
+}
+
+.login-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .login-text {

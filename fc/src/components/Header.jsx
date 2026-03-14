@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import Logo from './Logo';
 
 function getInitialTheme() {
   return localStorage.getItem('theme') || 'default';
@@ -37,7 +38,7 @@ export default function Header() {
     <header className="header">
       <div className="container header-container">
         <Link to="/dashboard" className="header-logo">
-          Logo
+          <Logo />
         </Link>
         <nav className="header-nav">
           <ul className="menu-list">

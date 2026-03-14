@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from '../components/Logo';
 
 function Login() {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ function Login() {
   return (
     <div className="login-wrapper">
       <div className="login-block">
+        <div className="login-logo">
+          <Logo />
+        </div>
         <p className="login-text">Login</p>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form className="login-form" onSubmit={handleLogin}>
