@@ -16,7 +16,7 @@ public class CategoryEntity {
 
     private Long userId;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(10) DEFAULT 'EXPENSE'")
+    @Column(nullable = false, length = 10)
     private String type = "EXPENSE";
 
     public Long getId() {
