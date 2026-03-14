@@ -1,0 +1,178 @@
+/* ── Tablet (≤ 768px) ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Header */
+  .header-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .header-nav {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .menu-list {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Page layout: sidebar above main */
+  .page-wrap-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 20px 16px;
+  }
+
+  .main {
+    padding: 20px 16px;
+  }
+
+  /* Form */
+  .form {
+    padding: 20px 16px;
+  }
+
+  /* Info */
+  .info {
+    padding: 20px 16px;
+  }
+
+  .info-text {
+    font-size: 24px;
+  }
+
+  .info-list {
+    max-height: 300px;
+  }
+
+  /* Login */
+  .login-block {
+    width: 90%;
+    padding: 24px;
+  }
+
+  /* Dashboard */
+  .dashboard {
+    padding: 24px 0;
+  }
+
+  .dashboard__card {
+    padding: 20px 24px;
+    min-width: 140px;
+  }
+
+  .dashboard__card-amount {
+    font-size: 22px;
+  }
+
+  .dashboard__chart {
+    min-width: 100%;
+  }
+
+  /* Total card */
+  .total-card {
+    padding: 16px 20px;
+  }
+
+  .total-card__amount {
+    font-size: 26px;
+  }
+
+  /* Quote */
+  .quote p {
+    font-size: 20px;
+  }
+}
+
+/* ── Mobile (≤ 480px) ─────────────────────────────────── */
+@media (max-width: 480px) {
+  /* Header */
+  .greet-text {
+    font-size: 14px;
+  }
+
+  .logout-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  /* Info item */
+  .info-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .info-item-text {
+    width: 100%;
+  }
+
+  .info-item-count {
+    width: auto;
+  }
+
+  /* Dashboard cards */
+  .dashboard__cards {
+    gap: 12px;
+  }
+
+  .dashboard__card {
+    padding: 16px;
+    min-width: 120px;
+  }
+
+  .dashboard__card-amount {
+    font-size: 18px;
+  }
+
+  .dashboard__card-label {
+    font-size: 11px;
+  }
+
+  /* History controls */
+  .history__controls {
+    gap: 8px;
+  }
+
+  .history__toggle .btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  /* Total card */
+  .total-card__amount {
+    font-size: 22px;
+  }
+
+  /* Form buttons */
+  .form-btn {
+    width: 100%;
+  }
+
+  /* Info actions */
+  .info-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Login */
+  .login-block {
+    width: 95%;
+    padding: 20px 16px;
+  }
+
+  .login-text {
+    font-size: 24px;
+  }
+}

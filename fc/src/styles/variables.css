@@ -1,0 +1,98 @@
+/* ── Base palette ─────────────────────────────────────── */
+:root {
+  --color-one: #dde6ed;
+  --color-two: #526d82;
+  --color-three: #9db2bf;
+  --color-four: #27374d;
+
+  /* ── Glassmorphism default theme ── */
+  --theme-gradient:        linear-gradient(135deg, #1e1b4b 0%, #312e81 35%, #1e3a8a 70%, #0f172a 100%);
+  --theme-accent:          #818cf8;
+  --theme-accent-hover:    #6366f1;
+
+  --glass-bg:              rgba(255, 255, 255, 0.07);
+  --glass-bg-strong:       rgba(255, 255, 255, 0.11);
+  --glass-border:          rgba(255, 255, 255, 0.13);
+  --glass-shadow:          0 8px 32px rgba(0, 0, 0, 0.35);
+
+  --theme-bg-page:         transparent;
+  --theme-bg-header:       rgba(15, 12, 41, 0.55);
+  --theme-bg-sidebar-link: var(--glass-bg);
+  --theme-bg-sidebar-hover: rgba(99, 102, 241, 0.35);
+  --theme-bg-panel:        var(--glass-bg);
+  --theme-bg-card:         var(--glass-bg);
+  --theme-bg-login:        rgba(30, 27, 75, 0.6);
+  --theme-bg-filter-panel: var(--glass-bg);
+  --theme-bg-modal:        rgba(15, 12, 41, 0.75);
+
+  --theme-text-on-panel:   #e2e8f0;
+  --theme-text-on-sidebar: #e2e8f0;
+  --theme-text-on-header:  #e2e8f0;
+  --theme-text-primary:    #e2e8f0;
+  --theme-text-muted:      rgba(226, 232, 240, 0.55);
+  --theme-card-shadow:     rgba(0, 0, 0, 0.4);
+  --theme-input-border:    rgba(255, 255, 255, 0.18);
+  --theme-input-color:     #e2e8f0;
+}
+
+/* ── Dark theme ───────────────────────────────────────── */
+[data-theme="dark"] {
+  --theme-gradient:        linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
+  --theme-accent:          #6366f1;
+  --theme-accent-hover:    #4f46e5;
+
+  --glass-bg:              rgba(255, 255, 255, 0.04);
+  --glass-bg-strong:       rgba(255, 255, 255, 0.07);
+  --glass-border:          rgba(255, 255, 255, 0.08);
+  --glass-shadow:          0 8px 32px rgba(0, 0, 0, 0.6);
+
+  --theme-bg-page:         transparent;
+  --theme-bg-header:       rgba(2, 6, 23, 0.7);
+  --theme-bg-sidebar-link: var(--glass-bg);
+  --theme-bg-sidebar-hover: rgba(99, 102, 241, 0.25);
+  --theme-bg-panel:        var(--glass-bg);
+  --theme-bg-card:         var(--glass-bg);
+  --theme-bg-login:        rgba(2, 6, 23, 0.7);
+  --theme-bg-filter-panel: var(--glass-bg);
+  --theme-bg-modal:        rgba(2, 6, 23, 0.85);
+
+  --theme-text-on-panel:   #e2e8f0;
+  --theme-text-on-sidebar: #e2e8f0;
+  --theme-text-on-header:  #e2e8f0;
+  --theme-text-primary:    #e2e8f0;
+  --theme-text-muted:      #64748b;
+  --theme-card-shadow:     rgba(0, 0, 0, 0.6);
+  --theme-input-border:    rgba(255, 255, 255, 0.1);
+  --theme-input-color:     #e2e8f0;
+}
+
+/* ── Light theme ──────────────────────────────────────── */
+[data-theme="light"] {
+  --theme-gradient:        linear-gradient(135deg, #ede9fe 0%, #ddd6fe 35%, #bfdbfe 70%, #e0f2fe 100%);
+  --theme-accent:          #6366f1;
+  --theme-accent-hover:    #4f46e5;
+
+  --glass-bg:              rgba(255, 255, 255, 0.55);
+  --glass-bg-strong:       rgba(255, 255, 255, 0.75);
+  --glass-border:          rgba(255, 255, 255, 0.85);
+  --glass-shadow:          0 8px 32px rgba(99, 102, 241, 0.12);
+
+  --theme-bg-page:         transparent;
+  --theme-bg-header:       rgba(255, 255, 255, 0.6);
+  --theme-bg-sidebar-link: rgba(255, 255, 255, 0.5);
+  --theme-bg-sidebar-hover: rgba(99, 102, 241, 0.15);
+  --theme-bg-panel:        var(--glass-bg);
+  --theme-bg-card:         rgba(255, 255, 255, 0.5);
+  --theme-bg-login:        rgba(255, 255, 255, 0.6);
+  --theme-bg-filter-panel: rgba(255, 255, 255, 0.5);
+  --theme-bg-modal:        rgba(255, 255, 255, 0.85);
+
+  --theme-text-on-panel:   #1e1b4b;
+  --theme-text-on-sidebar: #1e1b4b;
+  --theme-text-on-header:  #1e1b4b;
+  --theme-text-primary:    #1e1b4b;
+  --theme-text-muted:      #6b7280;
+  --theme-card-shadow:     rgba(99, 102, 241, 0.15);
+  --theme-input-border:    rgba(99, 102, 241, 0.25);
+  --theme-input-color:     #1e1b4b;
+}

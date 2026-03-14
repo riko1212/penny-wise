@@ -1,0 +1,212 @@
+/* ── Dashboard ────────────────────────────────────────── */
+.dashboard {
+  padding: 40px 0;
+}
+
+.dashboard__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.dashboard__empty-icon {
+  font-size: 64px;
+  line-height: 1;
+}
+
+.dashboard__empty-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin: 0;
+}
+
+.dashboard__empty-text {
+  font-size: 16px;
+  color: var(--theme-text-muted);
+  max-width: 360px;
+  margin: 0;
+}
+
+.dashboard__empty-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dashboard__title {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 32px;
+  color: var(--theme-text-primary);
+  letter-spacing: 1px;
+}
+
+.dashboard__cards {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dashboard__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 40px;
+  border-radius: 24px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  min-width: 220px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.dashboard__card-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #aaa;
+}
+
+.dashboard__card-amount {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.dashboard__card--income .dashboard__card-amount {
+  color: #69db7c;
+}
+
+.dashboard__card--expense .dashboard__card-amount {
+  color: #ff6b6b;
+}
+
+.dashboard__card--positive .dashboard__card-amount {
+  color: #69db7c;
+}
+
+.dashboard__card--negative .dashboard__card-amount {
+  color: #ff6b6b;
+}
+
+.dashboard__charts {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 48px;
+}
+
+.dashboard__chart {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: var(--glass-shadow);
+  flex: 1;
+  min-width: 300px;
+  max-width: 520px;
+}
+
+.dashboard__chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--theme-text-muted);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Chart tooltip ────────────────────────────────────── */
+.chart-tooltip {
+  background: var(--theme-bg-modal);
+  border: 1px solid var(--theme-input-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 16px var(--theme-card-shadow);
+  min-width: 160px;
+}
+
+.chart-tooltip__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--theme-input-border);
+}
+
+.chart-tooltip__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--theme-text-primary);
+  margin-top: 4px;
+}
+
+.chart-tooltip__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chart-tooltip__name {
+  color: var(--theme-text-muted);
+  flex: 1;
+}
+
+.chart-tooltip__value {
+  font-weight: 700;
+}
+
+/* ── History ──────────────────────────────────────────── */
+.history__controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.history__toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.history__toggle-btn--active {
+  background: #5c7cfa;
+  color: #fff;
+}
+
+.history__change {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.history__change--up {
+  color: #69db7c;
+}
+
+.history__change--down {
+  color: #ff6b6b;
+}
