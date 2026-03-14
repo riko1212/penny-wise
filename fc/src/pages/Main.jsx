@@ -24,6 +24,7 @@ export default function Main() {
     totalSum,
     isDeleteModalClose,
     isClearModalClose,
+    apiError,
     handleCategoryChange,
     handleAddItems,
     handleDeleteItem,
@@ -46,6 +47,7 @@ export default function Main() {
             type="EXPENSE"
           />
           <main className="main">
+            {apiError && <div className="api-error">{apiError}</div>}
             <TotalCard total={totalSum} type="expense" monthLabel={currentMonthLabel} />
             {!selectedCategory && (
               <div className="quote">

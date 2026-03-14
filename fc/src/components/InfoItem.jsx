@@ -9,6 +9,37 @@ InfoItem.propTypes = {
   item: PropTypes.object.isRequired,
 };
 
+function validateEdit(topic, income, date) {
+  const errors = {};
+
+  if (!topic.trim()) {
+    errors.topic = 'Description is required.';
+  } else if (topic.trim().length > 100) {
+    errors.topic = 'Max 100 characters.';
+  }
+
+  const amount = parseFloat(income);
+  if (!String(income)) {
+    errors.income = 'Amount is required.';
+  } else if (isNaN(amount) || amount <= 0) {
+    errors.income = 'Must be a positive number.';
+  } else if (amount > 1_000_000) {
+    errors.income = 'Max 1 000 000.';
+  }
+
+  if (!date) {
+    errors.date = 'Date is required.';
+  } else {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    if (new Date(date) > today) {
+      errors.date = 'Cannot be in the future.';
+    }
+  }
+
+  return errors;
+}
+
 export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTopic, setEditedTopic] = useState(item.topic);
@@ -16,11 +47,13 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   const [editedDate, setEditedDate] = useState(
     new Date(item.date).toISOString().slice(0, 10)
   );
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setEditedTopic(item.topic);
     setEditedIncome(item.income);
     setEditedDate(new Date(item.date).toISOString().slice(0, 10));
+    setErrors({});
   }, [item]);
 
   function isToday(date) {
@@ -35,14 +68,38 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     return today.getTime() === timestampDate.getTime();
   }
 
+  function handleFieldChange(field, value) {
+    const next = { topic: editedTopic, income: editedIncome, date: editedDate, [field]: value };
+    if (field === 'topic') setEditedTopic(value);
+    if (field === 'income') setEditedIncome(value);
+    if (field === 'date') setEditedDate(value);
+    if (Object.keys(errors).length > 0) {
+      setErrors(validateEdit(next.topic, next.income, next.date));
+    }
+  }
+
   function handleSave() {
+    const errs = validateEdit(editedTopic, editedIncome, editedDate);
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
     const updatedItem = {
       ...item,
-      topic: editedTopic,
-      income: editedIncome,
+      topic: editedTopic.trim(),
+      income: parseFloat(editedIncome),
       date: new Date(editedDate).getTime(),
     };
     onUpdateItemData(item.id, updatedItem);
+    setIsEditing(false);
+    setErrors({});
+  }
+
+  function handleCancel() {
+    setEditedTopic(item.topic);
+    setEditedIncome(item.income);
+    setEditedDate(new Date(item.date).toISOString().slice(0, 10));
+    setErrors({});
     setIsEditing(false);
   }
 
@@ -50,29 +107,42 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     <li className="info-item">
       <div className="info-item-wrap">
         {isEditing ? (
-          <>
-            <input
-              type="text"
-              value={editedTopic}
-              onChange={(e) => setEditedTopic(e.target.value)}
-              className="form-input form-input-edit"
-            />
-            <input
-              type="number"
-              value={editedIncome}
-              onChange={(e) => setEditedIncome(e.target.value)}
-              className="form-input form-input-edit"
-            />
-            <div className="date-input-wrap">
-              <Calendar size={15} className="date-input-icon" />
+          <div className="info-item-edit-fields">
+            <div className="info-item-edit-field">
               <input
-                type="date"
-                value={editedDate}
-                onChange={(e) => setEditedDate(e.target.value)}
-                className="form-input form-input-edit"
+                type="text"
+                value={editedTopic}
+                onChange={(e) => handleFieldChange('topic', e.target.value)}
+                className={`form-input form-input-edit${errors.topic ? ' form-input--error' : ''}`}
+                maxLength={110}
               />
+              {errors.topic && <span className="form-error">{errors.topic}</span>}
             </div>
-          </>
+            <div className="info-item-edit-field">
+              <input
+                type="number"
+                value={editedIncome}
+                min="0.01"
+                step="0.01"
+                onChange={(e) => handleFieldChange('income', e.target.value)}
+                className={`form-input form-input-edit${errors.income ? ' form-input--error' : ''}`}
+              />
+              {errors.income && <span className="form-error">{errors.income}</span>}
+            </div>
+            <div className="info-item-edit-field">
+              <div className="date-input-wrap">
+                <Calendar size={15} className="date-input-icon" />
+                <input
+                  type="date"
+                  value={editedDate}
+                  max={new Date().toISOString().slice(0, 10)}
+                  onChange={(e) => handleFieldChange('date', e.target.value)}
+                  className={`form-input form-input-edit${errors.date ? ' form-input--error' : ''}`}
+                />
+              </div>
+              {errors.date && <span className="form-error">{errors.date}</span>}
+            </div>
+          </div>
         ) : (
           <>
             <p className="info-item-text">{item.topic}:</p>
@@ -100,7 +170,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
             <button
               type="button"
               className="info-icon-btn info-icon-btn--cancel"
-              onClick={() => setIsEditing(false)}
+              onClick={handleCancel}
               title="Cancel"
             >
               <X size={16} strokeWidth={2.5} />

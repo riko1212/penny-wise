@@ -7,6 +7,7 @@ import Main from './pages/Main';
 import Income from './pages/Income';
 import Dashboard from './pages/Dashboard';
 import History from './pages/History';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -15,10 +16,10 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/restore-pass" element={<RestorePass />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/main" element={<Main />} />
-        <Route path="/income" element={<Income />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+        <Route path="/main" element={<ProtectedRoute><Main /></ProtectedRoute>} />
+        <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </HashRouter>

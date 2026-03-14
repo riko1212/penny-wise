@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const now = new Date();
@@ -23,16 +23,21 @@ export function useTransactions(type) {
   const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
   const [isClearModalClose, setIsClearModalClose] = useState(true);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
+  const [apiError, setApiError] = useState(null);
 
   const sum = items.reduce((total, item) => total + Number(item.income), 0);
 
-  // Fetch total whenever items change (add/delete/clear)
+  const showError = useCallback((message) => {
+    setApiError(message);
+    setTimeout(() => setApiError(null), 5000);
+  }, []);
+
   useEffect(() => {
     if (!currentUser) return;
     fetch(`/api/transactions/total?userId=${currentUser.id}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
       .then((res) => res.json())
       .then(setTotalSum)
-      .catch((err) => console.error('Fetch total error:', err));
+      .catch(() => showError('Failed to load total. Check your connection.'));
   }, [currentUser, type, items]);
 
   useEffect(() => {
@@ -40,11 +45,11 @@ export function useTransactions(type) {
     setLoading(true);
     fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch transactions');
+        if (!res.ok) throw new Error();
         return res.json();
       })
       .then(setItems)
-      .catch((err) => console.error('Fetch transactions error:', err))
+      .catch(() => showError('Failed to load transactions. Check your connection.'))
       .finally(() => setLoading(false));
   }, [selectedCategory, currentUser, type]);
 
@@ -65,11 +70,11 @@ export function useTransactions(type) {
       }),
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to create transaction');
+        if (!res.ok) throw new Error();
         return res.json();
       })
       .then((saved) => setItems((prev) => [saved, ...prev]))
-      .catch((err) => console.error('Create transaction error:', err));
+      .catch(() => showError('Failed to save transaction. Please try again.'));
   }
 
   function handleDeleteItem(id) {
@@ -83,11 +88,11 @@ export function useTransactions(type) {
       method: 'DELETE',
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to delete transaction');
+        if (!res.ok) throw new Error();
         setItems((prev) => prev.filter((item) => item.id !== itemIdToDelete));
         setIsDeleteModalClose(true);
       })
-      .catch((err) => console.error('Delete transaction error:', err));
+      .catch(() => showError('Failed to delete transaction. Please try again.'));
   }
 
   function handleUpdateItemData(id, updatedItem) {
@@ -98,13 +103,13 @@ export function useTransactions(type) {
       body: JSON.stringify(updatedItem),
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to update transaction');
+        if (!res.ok) throw new Error();
         return res.json();
       })
       .then((saved) =>
         setItems((prev) => prev.map((item) => (item.id === id ? saved : item)))
       )
-      .catch((err) => console.error('Update transaction error:', err));
+      .catch(() => showError('Failed to update transaction. Please try again.'));
   }
 
   function handleClearList() {
@@ -113,20 +118,18 @@ export function useTransactions(type) {
       method: 'DELETE',
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to clear transactions');
+        if (!res.ok) throw new Error();
         setItems([]);
         setIsClearModalClose(true);
       })
-      .catch((err) => console.error('Clear transactions error:', err));
+      .catch(() => showError('Failed to clear transactions. Please try again.'));
   }
 
   function handleDeleteModalCloseClick() {
-    if (items.length === 0) return;
     setIsDeleteModalClose((prev) => !prev);
   }
 
   function handleClearModalCloseClick() {
-    if (items.length === 0) return;
     setIsClearModalClose((prev) => !prev);
   }
 
@@ -144,6 +147,7 @@ export function useTransactions(type) {
     totalSum,
     isDeleteModalClose,
     isClearModalClose,
+    apiError,
     handleCategoryChange,
     handleAddItems,
     handleDeleteItem,
