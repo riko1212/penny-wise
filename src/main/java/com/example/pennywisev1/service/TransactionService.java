@@ -53,6 +53,33 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
+    public List<Map<String, Object>> getCategoryHistory(Long userId, String type, String groupBy) {
+        List<TransactionEntity> transactions = transactionRepository.findByUserIdAndType(userId, type);
+        // period -> categoryName -> sum
+        Map<String, Map<String, Double>> grouped = new LinkedHashMap<>();
+        for (TransactionEntity t : transactions) {
+            if (t.getDate() == null) continue;
+            LocalDate date = Instant.ofEpochMilli(t.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+            String period = "year".equals(groupBy)
+                    ? String.valueOf(date.getYear())
+                    : date.getYear() + "-" + String.format("%02d", date.getMonthValue());
+            String cat = t.getCategoryName() != null ? t.getCategoryName() : "Uncategorized";
+            grouped.computeIfAbsent(period, k -> new LinkedHashMap<>())
+                   .merge(cat, t.getIncome() != null ? t.getIncome() : 0.0, Double::sum);
+        }
+        return grouped.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .flatMap(periodEntry -> periodEntry.getValue().entrySet().stream()
+                        .map(catEntry -> {
+                            Map<String, Object> row = new LinkedHashMap<>();
+                            row.put("period", periodEntry.getKey());
+                            row.put("categoryName", catEntry.getKey());
+                            row.put("total", Math.round(catEntry.getValue() * 100.0) / 100.0);
+                            return row;
+                        }))
+                .collect(Collectors.toList());
+    }
+
     public List<java.util.Map<String, Object>> getSummaryByType(Long userId, String type) {
         return transactionRepository.sumByCategory(userId, type).stream()
                 .map(row -> {

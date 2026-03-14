@@ -37,6 +37,15 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getHistory(userId, type, groupBy));
     }
 
+    // Get history grouped by month/year AND category
+    @GetMapping("/history/categories")
+    public ResponseEntity<List<java.util.Map<String, Object>>> getCategoryHistory(
+            @RequestParam Long userId,
+            @RequestParam String type,
+            @RequestParam(defaultValue = "month") String groupBy) {
+        return ResponseEntity.ok(transactionService.getCategoryHistory(userId, type, groupBy));
+    }
+
     // Get per-category summary by user and type
     @GetMapping("/summary")
     public ResponseEntity<List<java.util.Map<String, Object>>> getSummary(
