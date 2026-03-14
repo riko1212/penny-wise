@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
+import { formatUAH } from '../utils/format';
 
 InfoItem.propTypes = {
   onDeleteItemId: PropTypes.func,
@@ -71,7 +72,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
         ) : (
           <>
             <p className="info-item-text">{item.topic}:</p>
-            <p className="info-item-count">{item.income} UAH</p>
+            <p className="info-item-count">{formatUAH(item.income)}</p>
             <p className="info-item-data">
               {isToday(item.date)
                 ? 'Today'

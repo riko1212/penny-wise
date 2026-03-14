@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
+import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../index.css';
@@ -102,25 +103,25 @@ export default function History() {
                 <div className="dashboard__cards" style={{ marginBottom: 40 }}>
                   <div className="dashboard__card">
                     <span className="dashboard__card-label">This month</span>
-                    <span className="dashboard__card-amount" style={{ color }}>{thisMonth.toFixed(2)} UAH</span>
+                    <span className="dashboard__card-amount" style={{ color }}>{formatUAH(thisMonth)}</span>
                     <span className={`history__change ${monthChange >= 0 ? 'history__change--up' : 'history__change--down'}`}>
                       {monthChange >= 0 ? '↑' : '↓'} {Math.abs(monthChange)}% vs last month
                     </span>
                   </div>
                   <div className="dashboard__card">
                     <span className="dashboard__card-label">Last month</span>
-                    <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{lastMonth.toFixed(2)} UAH</span>
+                    <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{formatUAH(lastMonth)}</span>
                   </div>
                   <div className="dashboard__card">
                     <span className="dashboard__card-label">This year</span>
-                    <span className="dashboard__card-amount" style={{ color }}>{thisYear.toFixed(2)} UAH</span>
+                    <span className="dashboard__card-amount" style={{ color }}>{formatUAH(thisYear)}</span>
                     <span className={`history__change ${yearChange >= 0 ? 'history__change--up' : 'history__change--down'}`}>
                       {yearChange >= 0 ? '↑' : '↓'} {Math.abs(yearChange)}% vs last year
                     </span>
                   </div>
                   <div className="dashboard__card">
                     <span className="dashboard__card-label">Last year</span>
-                    <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{lastYear.toFixed(2)} UAH</span>
+                    <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{formatUAH(lastYear)}</span>
                   </div>
                 </div>
 
@@ -134,7 +135,7 @@ export default function History() {
                         <XAxis dataKey="period" stroke="#aaa" tick={{ fontSize: 12 }} />
                         <YAxis stroke="#aaa" tick={{ fontSize: 12 }} />
                         <Tooltip
-                          formatter={(v) => [`${Number(v).toFixed(2)} UAH`, type === 'EXPENSE' ? 'Expenses' : 'Income']}
+                          formatter={(v) => [formatUAH(Number(v)), type === 'EXPENSE' ? 'Expenses' : 'Income']}
                           contentStyle={{ background: '#1e1e2e', border: 'none', borderRadius: 8 }}
                         />
                         <Bar dataKey="total" radius={[6, 6, 0, 0]}>

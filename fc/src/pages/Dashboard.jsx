@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../index.css';
@@ -56,16 +57,16 @@ export default function Dashboard() {
                 <div className="dashboard__cards">
                   <div className="dashboard__card dashboard__card--income">
                     <span className="dashboard__card-label">Total Income</span>
-                    <span className="dashboard__card-amount">{income.toFixed(2)} UAH</span>
+                    <span className="dashboard__card-amount">{formatUAH(income)}</span>
                   </div>
                   <div className="dashboard__card dashboard__card--expense">
                     <span className="dashboard__card-label">Total Expenses</span>
-                    <span className="dashboard__card-amount">{expense.toFixed(2)} UAH</span>
+                    <span className="dashboard__card-amount">{formatUAH(expense)}</span>
                   </div>
                   <div className={`dashboard__card dashboard__card--balance ${balance >= 0 ? 'dashboard__card--positive' : 'dashboard__card--negative'}`}>
                     <span className="dashboard__card-label">Balance</span>
                     <span className="dashboard__card-amount">
-                      {balance >= 0 ? '+' : ''}{balance.toFixed(2)} UAH
+                      {balance >= 0 ? '+' : ''}{formatUAH(Math.abs(balance))}
                     </span>
                   </div>
                 </div>
@@ -81,7 +82,7 @@ export default function Dashboard() {
                               <Cell key={i} fill={EXPENSE_COLORS[i % EXPENSE_COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(v) => `${v.toFixed(2)} UAH`} />
+                          <Tooltip formatter={(v) => formatUAH(v)} />
                           <Legend />
                         </PieChart>
                       </ResponsiveContainer>
@@ -97,7 +98,7 @@ export default function Dashboard() {
                               <Cell key={i} fill={INCOME_COLORS[i % INCOME_COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(v) => `${v.toFixed(2)} UAH`} />
+                          <Tooltip formatter={(v) => formatUAH(v)} />
                           <Legend />
                         </PieChart>
                       </ResponsiveContainer>

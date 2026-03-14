@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { formatUAH } from '../utils/format';
 
 TotalCard.propTypes = {
   total: PropTypes.number.isRequired,
@@ -13,7 +14,7 @@ export default function TotalCard({ total, type, monthLabel }) {
   return (
     <div className="total-card">
       <span className="total-card__label">{label}</span>
-      <span className={amountClass}>{total.toFixed(2)} UAH</span>
+      <span className={amountClass}>{formatUAH(total)}</span>
       {monthLabel && <span className="total-card__month">{monthLabel}</span>}
     </div>
   );

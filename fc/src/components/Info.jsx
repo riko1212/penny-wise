@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { formatUAH } from '../utils/format';
 
 Info.propTypes = {
   sum: PropTypes.number,
@@ -13,7 +14,7 @@ export default function Info({ sum, children, type = 'expense' }) {
   return (
     <div className="info">
       <p className="info-text">
-        {label}: <span className={amountClass}>{sum.toFixed(2)} UAH</span>
+        {label}: <span className={amountClass}>{formatUAH(sum)}</span>
       </p>
       {children}
     </div>
