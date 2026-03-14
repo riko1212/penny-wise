@@ -427,14 +427,26 @@ address {
 }
 
 .sidebar-item-delete {
-  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
   border: none;
-  font-size: 34px;
-  font-weight: 700;
-  line-height: 0;
-  transform: rotate(45deg);
+  border-radius: 6px;
   color: var(--theme-text-on-sidebar);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  flex-shrink: 0;
   padding: 0;
+}
+
+.sidebar-item-delete:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+  opacity: 1;
 }
 
 .sidebar-link:is(:hover, :focus) {

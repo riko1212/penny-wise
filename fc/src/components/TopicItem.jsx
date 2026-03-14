@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { X } from 'lucide-react';
 
 TopicItem.propTypes = {
   item: PropTypes.object.isRequired,
@@ -24,7 +25,7 @@ export default function TopicItem({ item, onDelete, onClick, className }) {
             handleDelete();
           }}
         >
-          &times;
+          <X size={16} strokeWidth={2.5} />
         </button>
       </div>
     </li>
