@@ -15,6 +15,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
     const [showAddCategory, setShowAddCategory] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [collapsed, setCollapsed] = useState(
         () => localStorage.getItem('sidebarCollapsed') === 'true'
     );
@@ -31,7 +32,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 return res.json();
             })
             .then(setCategories)
-            .catch((err) => console.error('Fetch categories error:', err))
+            .catch(() => setError('Failed to load categories.'))
             .finally(() => setLoading(false));
     }, [userId, type]);
 
@@ -49,7 +50,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 setCategories((prev) => [...prev, savedCategory]);
                 setShowAddCategory(false);
             })
-            .catch((err) => console.error('Add category error:', err));
+            .catch(() => setError('Failed to add category.'));
     }
 
     function handleDeleteClick(category) {
@@ -67,7 +68,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 );
                 setCategoryToDelete(null);
             })
-            .catch((err) => console.error('Delete category error:', err));
+            .catch(() => setError('Failed to delete category.'));
     }
 
     const handleCloseCategoryDelete = useCallback(() => setCategoryToDelete(null), []);
@@ -98,6 +99,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 {!collapsed && (
                     <>
                         {loading && <p className="loading">Loading...</p>}
+                        {error && <p className="api-error">{error}</p>}
                         <TopicList
                             categories={categories}
                             onDelete={handleDeleteClick}

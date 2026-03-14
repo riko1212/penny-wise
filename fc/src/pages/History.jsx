@@ -25,7 +25,9 @@ function getChange(current, previous) {
 
 export default function History() {
   const navigate = useNavigate();
-  const [currentUser] = useState(() => JSON.parse(localStorage.getItem('loggedInUser')));
+  const [currentUser] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('loggedInUser')); } catch { return null; }
+  });
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -35,14 +37,16 @@ export default function History() {
   const [groupBy, setGroupBy] = useState('month');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!currentUser) return;
     setLoading(true);
+    setError(null);
     fetch(`/api/transactions/history?userId=${currentUser.id}&type=${type}&groupBy=${groupBy}`)
       .then((r) => r.json())
       .then(setData)
-      .catch((err) => console.error('History fetch error:', err))
+      .catch(() => setError('Failed to load history. Check your connection.'))
       .finally(() => setLoading(false));
   }, [currentUser, type, groupBy]);
 
@@ -99,6 +103,8 @@ export default function History() {
 
             {loading ? (
               <p className="loading">Loading...</p>
+            ) : error ? (
+              <p className="api-error">{error}</p>
             ) : (
               <>
                 <div className="dashboard__cards" style={{ marginBottom: 40 }}>

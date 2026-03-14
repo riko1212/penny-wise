@@ -12,7 +12,9 @@ const INCOME_COLORS  = ['#69db7c', '#38d9a9', '#4dabf7', '#74c0fc', '#a9e34b', '
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [currentUser] = useState(() => JSON.parse(localStorage.getItem('loggedInUser')));
+  const [currentUser] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('loggedInUser')); } catch { return null; }
+  });
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const [expenseSummary, setExpenseSummary] = useState([]);
   const [incomeSummary, setIncomeSummary] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -38,7 +41,7 @@ export default function Dashboard() {
         setExpenseSummary(expSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
         setIncomeSummary(incSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
       })
-      .catch((err) => console.error('Dashboard fetch error:', err))
+      .catch(() => setError('Failed to load dashboard data. Check your connection.'))
       .finally(() => setLoading(false));
   }, [currentUser]);
 
@@ -54,6 +57,8 @@ export default function Dashboard() {
             <h1 className="dashboard__title">Overview</h1>
             {loading ? (
               <p className="loading">Loading...</p>
+            ) : error ? (
+              <p className="api-error">{error}</p>
             ) : isEmpty ? (
               <div className="dashboard__empty">
                 <span className="dashboard__empty-icon">📊</span>

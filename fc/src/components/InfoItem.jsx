@@ -78,7 +78,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     }
   }
 
-  function handleSave() {
+  async function handleSave() {
     const errs = validateEdit(editedTopic, editedIncome, editedDate);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -90,9 +90,13 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
       income: parseFloat(editedIncome),
       date: new Date(editedDate).getTime(),
     };
-    onUpdateItemData(item.id, updatedItem);
-    setIsEditing(false);
-    setErrors({});
+    try {
+      await onUpdateItemData(item.id, updatedItem);
+      setIsEditing(false);
+      setErrors({});
+    } catch {
+      // error already shown via showError in the hook; keep edit mode open
+    }
   }
 
   function handleCancel() {

@@ -30,6 +30,8 @@ export default function InfoList({
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const hasActiveFilters = search || minAmount || maxAmount || dateFrom || dateTo;
+  const amountRangeError = minAmount !== '' && maxAmount !== '' && Number(minAmount) > Number(maxAmount);
+  const dateRangeError = dateFrom && dateTo && dateFrom > dateTo;
 
   let filtered = [...items];
 
@@ -115,7 +117,7 @@ export default function InfoList({
             <div className="filter-range">
               <input
                 type="number"
-                className="filter-input"
+                className={`filter-input${amountRangeError ? ' form-input--error' : ''}`}
                 placeholder="Min"
                 value={minAmount}
                 min="0"
@@ -124,31 +126,33 @@ export default function InfoList({
               <span className="filter-range-sep">—</span>
               <input
                 type="number"
-                className="filter-input"
+                className={`filter-input${amountRangeError ? ' form-input--error' : ''}`}
                 placeholder="Max"
                 value={maxAmount}
                 min="0"
                 onChange={(e) => setMaxAmount(e.target.value)}
               />
             </div>
+            {amountRangeError && <span className="form-error">Min cannot exceed Max.</span>}
           </div>
           <div className="filter-group">
             <label className="filter-label">Date range</label>
             <div className="filter-range">
               <input
                 type="date"
-                className="filter-input"
+                className={`filter-input${dateRangeError ? ' form-input--error' : ''}`}
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
               />
               <span className="filter-range-sep">—</span>
               <input
                 type="date"
-                className="filter-input"
+                className={`filter-input${dateRangeError ? ' form-input--error' : ''}`}
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
               />
             </div>
+            {dateRangeError && <span className="form-error">Start date cannot be after end date.</span>}
           </div>
         </div>
       )}

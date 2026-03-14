@@ -24,8 +24,8 @@ function getInitials(name) {
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const user = localStorage.getItem('loggedInUser');
-  const userName = JSON.parse(user);
+  let userName = null;
+  try { userName = JSON.parse(localStorage.getItem('loggedInUser')); } catch { }
 
   const [theme, setTheme] = useState(getInitialTheme);
   const [dropdownOpen, setDropdownOpen] = useState(false);

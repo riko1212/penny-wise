@@ -1,6 +1,8 @@
 package com.example.pennywisev1.service;
 
 import com.example.pennywisev1.dto.UserResponseDTO;
+import com.example.pennywisev1.repository.CategoryRepository;
+import com.example.pennywisev1.repository.TransactionRepository;
 import com.example.pennywisev1.repository.UserRepository;
 import com.example.pennywisev1.repository.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,12 +24,14 @@ class UserServiceTest {
 
     @Mock UserRepository userRepository;
     @Mock BCryptPasswordEncoder passwordEncoder;
+    @Mock TransactionRepository transactionRepository;
+    @Mock CategoryRepository categoryRepository;
 
     UserService userService;
 
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, passwordEncoder);
+        userService = new UserService(userRepository, passwordEncoder, transactionRepository, categoryRepository);
     }
 
     private UserEntity entity(Long id, String name, String email, String password) {
@@ -210,6 +214,8 @@ class UserServiceTest {
 
         userService.deleteUser(1L);
 
+        verify(transactionRepository).deleteByUserId(1L);
+        verify(categoryRepository).deleteByUserId(1L);
         verify(userRepository).deleteById(1L);
     }
 

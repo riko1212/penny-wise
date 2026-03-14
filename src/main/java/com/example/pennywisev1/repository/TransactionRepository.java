@@ -17,4 +17,5 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
                                   @org.springframework.data.repository.query.Param("type") String type);
     void deleteByIdAndUserId(Long id, Long userId);
     void deleteByUserIdAndCategoryNameAndType(Long userId, String categoryName, String type);
+    void deleteByUserId(Long userId);
 }

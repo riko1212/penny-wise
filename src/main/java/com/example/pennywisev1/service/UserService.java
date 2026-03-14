@@ -1,10 +1,13 @@
 package com.example.pennywisev1.service;
 
 import com.example.pennywisev1.dto.UserResponseDTO;
+import com.example.pennywisev1.repository.CategoryRepository;
+import com.example.pennywisev1.repository.TransactionRepository;
 import com.example.pennywisev1.repository.UserRepository;
 import com.example.pennywisev1.repository.entity.UserEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +16,15 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TransactionRepository transactionRepository;
+    private final CategoryRepository categoryRepository;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
+                       TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     private UserResponseDTO toDTO(UserEntity user) {
@@ -101,10 +109,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("User not found");
         }
+        transactionRepository.deleteByUserId(id);
+        categoryRepository.deleteByUserId(id);
         userRepository.deleteById(id);
     }
 }

@@ -8,7 +8,9 @@ const CURRENT_MONTH_LABEL = now.toLocaleString('en', { month: 'long', year: 'num
 
 export function useTransactions(type) {
   const navigate = useNavigate();
-  const [currentUser] = useState(() => JSON.parse(localStorage.getItem('loggedInUser')));
+  const [currentUser] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('loggedInUser')); } catch { return null; }
+  });
 
   useEffect(() => {
     if (!currentUser) {
@@ -96,8 +98,8 @@ export function useTransactions(type) {
   }
 
   function handleUpdateItemData(id, updatedItem) {
-    if (!currentUser) return;
-    fetch(`/api/transactions/${id}?userId=${currentUser.id}`, {
+    if (!currentUser) return Promise.resolve();
+    return fetch(`/api/transactions/${id}?userId=${currentUser.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedItem),
@@ -109,7 +111,10 @@ export function useTransactions(type) {
       .then((saved) =>
         setItems((prev) => prev.map((item) => (item.id === id ? saved : item)))
       )
-      .catch(() => showError('Failed to update transaction. Please try again.'));
+      .catch((err) => {
+        showError('Failed to update transaction. Please try again.');
+        throw err;
+      });
   }
 
   function handleClearList() {
