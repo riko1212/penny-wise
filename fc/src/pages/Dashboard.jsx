@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
@@ -42,6 +42,7 @@ export default function Dashboard() {
   }, [currentUser]);
 
   const balance = income - expense;
+  const isEmpty = income === 0 && expense === 0 && expenseSummary.length === 0 && incomeSummary.length === 0;
 
   return (
     <>
@@ -52,6 +53,18 @@ export default function Dashboard() {
             <h1 className="dashboard__title">Overview</h1>
             {loading ? (
               <p className="loading">Loading...</p>
+            ) : isEmpty ? (
+              <div className="dashboard__empty">
+                <span className="dashboard__empty-icon">📊</span>
+                <h2 className="dashboard__empty-title">No transactions yet</h2>
+                <p className="dashboard__empty-text">
+                  Start tracking your finances by adding income or expenses.
+                </p>
+                <div className="dashboard__empty-actions">
+                  <Link to="/income" className="btn">Add Income</Link>
+                  <Link to="/main" className="btn">Add Expenses</Link>
+                </div>
+              </div>
             ) : (
               <>
                 <div className="dashboard__cards">

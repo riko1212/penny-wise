@@ -665,6 +665,42 @@ address {
   padding: 40px 0;
 }
 
+.dashboard__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.dashboard__empty-icon {
+  font-size: 64px;
+  line-height: 1;
+}
+
+.dashboard__empty-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin: 0;
+}
+
+.dashboard__empty-text {
+  font-size: 16px;
+  color: var(--theme-text-muted);
+  max-width: 360px;
+  margin: 0;
+}
+
+.dashboard__empty-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .dashboard__title {
   font-size: 28px;
   font-weight: 700;
