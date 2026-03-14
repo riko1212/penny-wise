@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Logo from './Logo';
 
 function getInitialTheme() {
   return localStorage.getItem('theme') || 'default';
+}
+
+function getInitials(name) {
+  if (!name) return '?';
+  return name.slice(0, 2).toUpperCase();
 }
 
 export default function Header() {
@@ -13,11 +18,31 @@ export default function Header() {
   const userName = JSON.parse(user);
 
   const [theme, setTheme] = useState(getInitialTheme);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme === 'default' ? '' : theme;
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    function handleKey(e) {
+      if (e.key === 'Escape') setDropdownOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [dropdownOpen]);
 
   const handleThemeToggle = () => {
     setTheme((prev) => {
@@ -28,6 +53,7 @@ export default function Header() {
   };
 
   const themeIcon = theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🌤';
+  const themeLabel = theme === 'dark' ? 'Dark' : theme === 'light' ? 'Light' : 'Default';
 
   const handleLogout = () => {
     localStorage.removeItem('loggedInUser');
@@ -75,22 +101,47 @@ export default function Header() {
               </Link>
             </li>
           </ul>
-          <p className="greet-text">Welcome, {userName.name}!</p>
-          <button
-            type="button"
-            className="theme-toggle-btn"
-            onClick={handleThemeToggle}
-            title="Toggle theme"
-          >
-            {themeIcon}
-          </button>
-          <button
-            type="button"
-            className="logout-btn btn"
-            onClick={handleLogout}
-          >
-            Log Out
-          </button>
+
+          <div className="user-menu" ref={dropdownRef}>
+            <button
+              type="button"
+              className="user-avatar"
+              onClick={() => setDropdownOpen((o) => !o)}
+              aria-expanded={dropdownOpen}
+              title="User menu"
+            >
+              {getInitials(userName?.name)}
+            </button>
+
+            {dropdownOpen && (
+              <div className="user-dropdown">
+                <div className="user-dropdown__info">
+                  <span className="user-dropdown__name">{userName?.name}</span>
+                  {userName?.email && (
+                    <span className="user-dropdown__email">{userName.email}</span>
+                  )}
+                </div>
+                <div className="user-dropdown__divider" />
+                <button
+                  type="button"
+                  className="user-dropdown__item"
+                  onClick={handleThemeToggle}
+                >
+                  <span>{themeIcon}</span>
+                  <span>Theme: {themeLabel}</span>
+                </button>
+                <div className="user-dropdown__divider" />
+                <button
+                  type="button"
+                  className="user-dropdown__item user-dropdown__item--danger"
+                  onClick={handleLogout}
+                >
+                  <span>↩</span>
+                  <span>Log Out</span>
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
       </div>
     </header>

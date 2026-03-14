@@ -15,6 +15,13 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
     const [showAddCategory, setShowAddCategory] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [collapsed, setCollapsed] = useState(
+        () => localStorage.getItem('sidebarCollapsed') === 'true'
+    );
+
+    useEffect(() => {
+        localStorage.setItem('sidebarCollapsed', collapsed);
+    }, [collapsed]);
 
     useEffect(() => {
         setLoading(true);
@@ -78,23 +85,36 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
 
     return (
         <>
-            <aside className="sidebar">
-                {loading && <p className="loading">Loading...</p>}
-                <TopicList
-                    categories={categories}
-                    onDelete={handleDeleteClick}
-                    onSelect={handleCategorySelect}
-                />
-                {showAddCategory && (
-                    <FormAddCategory onAddCategory={handleAddCategory} />
-                )}
+            <aside className={`sidebar${collapsed ? ' sidebar--collapsed' : ''}`}>
                 <button
-                    onClick={() => setShowAddCategory((prev) => !prev)}
                     type="button"
-                    className={!showAddCategory ? 'add-category-btn' : 'add-category-btn close'}
+                    className="sidebar-toggle"
+                    onClick={() => setCollapsed((c) => !c)}
+                    title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
-                    {!showAddCategory ? 'Add category' : 'Close'}
+                    {collapsed ? '›' : '‹'}
                 </button>
+
+                {!collapsed && (
+                    <>
+                        {loading && <p className="loading">Loading...</p>}
+                        <TopicList
+                            categories={categories}
+                            onDelete={handleDeleteClick}
+                            onSelect={handleCategorySelect}
+                        />
+                        {showAddCategory && (
+                            <FormAddCategory onAddCategory={handleAddCategory} />
+                        )}
+                        <button
+                            onClick={() => setShowAddCategory((prev) => !prev)}
+                            type="button"
+                            className={!showAddCategory ? 'add-category-btn' : 'add-category-btn close'}
+                        >
+                            {!showAddCategory ? 'Add category' : 'Close'}
+                        </button>
+                    </>
+                )}
             </aside>
             <DeleteModal
                 isDeleteModalClose={categoryToDelete === null}
