@@ -765,6 +765,50 @@ address {
   margin-top: 48px;
 }
 
+/* Chart tooltip */
+.chart-tooltip {
+  background: var(--theme-bg-modal);
+  border: 1px solid var(--theme-input-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 16px var(--theme-card-shadow);
+  min-width: 160px;
+}
+
+.chart-tooltip__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--theme-input-border);
+}
+
+.chart-tooltip__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--theme-text-primary);
+  margin-top: 4px;
+}
+
+.chart-tooltip__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chart-tooltip__name {
+  color: var(--theme-text-muted);
+  flex: 1;
+}
+
+.chart-tooltip__value {
+  font-weight: 700;
+}
+
 .dashboard__chart {
   background: var(--theme-bg-card);
   border-radius: 20px;

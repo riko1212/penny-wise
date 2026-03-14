@@ -6,6 +6,7 @@ import {
 import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ChartTooltip from '../components/ChartTooltip';
 import '../index.css';
 
 const now = new Date();
@@ -135,8 +136,7 @@ export default function History() {
                         <XAxis dataKey="period" stroke="#aaa" tick={{ fontSize: 12 }} />
                         <YAxis stroke="#aaa" tick={{ fontSize: 12 }} />
                         <Tooltip
-                          formatter={(v) => [formatUAH(Number(v)), type === 'EXPENSE' ? 'Expenses' : 'Income']}
-                          contentStyle={{ background: '#1e1e2e', border: 'none', borderRadius: 8 }}
+                          content={<ChartTooltip valueLabel={type === 'EXPENSE' ? 'Expenses' : 'Income'} />}
                         />
                         <Bar dataKey="total" radius={[6, 6, 0, 0]}>
                           {data.map((_, i) => (

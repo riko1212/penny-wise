@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recha
 import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ChartTooltip from '../components/ChartTooltip';
 import '../index.css';
 
 const EXPENSE_COLORS = ['#ff6b6b', '#ff8e53', '#ffd43b', '#ff922b', '#f783ac', '#e64980', '#cc5de8', '#845ef7', '#5c7cfa', '#339af0'];
@@ -95,7 +96,7 @@ export default function Dashboard() {
                               <Cell key={i} fill={EXPENSE_COLORS[i % EXPENSE_COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(v) => formatUAH(v)} />
+                          <Tooltip content={<ChartTooltip />} />
                           <Legend />
                         </PieChart>
                       </ResponsiveContainer>
@@ -111,7 +112,7 @@ export default function Dashboard() {
                               <Cell key={i} fill={INCOME_COLORS[i % INCOME_COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(v) => formatUAH(v)} />
+                          <Tooltip content={<ChartTooltip />} />
                           <Legend />
                         </PieChart>
                       </ResponsiveContainer>
