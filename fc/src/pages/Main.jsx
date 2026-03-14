@@ -1,5 +1,6 @@
 import '../index.css';
 
+import { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import Form from '../components/Form';
@@ -12,6 +13,7 @@ import { useTransactions } from '../hooks/useTransactions';
 import TotalCard from '../components/TotalCard';
 
 export default function Main() {
+  const [showForm, setShowForm] = useState(false);
   const {
     currentUser,
     currentMonthLabel,
@@ -39,7 +41,7 @@ export default function Main() {
       <div className="page-wrap">
         <div className="container page-wrap-container">
           <Sidebar
-            onCategorySelect={handleCategoryChange}
+            onCategorySelect={(cat) => { setShowForm(false); handleCategoryChange(cat); }}
             userId={currentUser.id}
             type="EXPENSE"
           />
@@ -55,11 +57,18 @@ export default function Main() {
             )}
             {selectedCategory && !loading && (
               <>
-                <Form
-                  onAddItems={handleAddItems}
-                  selectedCategory={selectedCategory}
-                />
-                <Info sum={sum} type="expense">
+                {showForm && (
+                  <Form
+                    onAddItems={(item) => { handleAddItems(item); setShowForm(false); }}
+                    selectedCategory={selectedCategory}
+                  />
+                )}
+                <Info
+                  sum={sum}
+                  type="expense"
+                  onAddClick={() => setShowForm((v) => !v)}
+                  showForm={showForm}
+                >
                   <InfoList
                     items={items}
                     onDeleteItem={handleConfirmDelete}
