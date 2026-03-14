@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
+import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
 import { formatUAH } from '../utils/format';
 
 InfoItem.propTypes = {
@@ -62,18 +63,22 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
               onChange={(e) => setEditedIncome(e.target.value)}
               className="form-input form-input-edit"
             />
-            <input
-              type="date"
-              value={editedDate}
-              onChange={(e) => setEditedDate(e.target.value)}
-              className="form-input form-input-edit"
-            />
+            <div className="date-input-wrap">
+              <Calendar size={15} className="date-input-icon" />
+              <input
+                type="date"
+                value={editedDate}
+                onChange={(e) => setEditedDate(e.target.value)}
+                className="form-input form-input-edit"
+              />
+            </div>
           </>
         ) : (
           <>
             <p className="info-item-text">{item.topic}:</p>
             <p className="info-item-count">{formatUAH(item.income)}</p>
             <p className="info-item-data">
+              <Calendar size={13} style={{ opacity: 0.5, verticalAlign: 'middle', marginRight: 4 }} />
               {isToday(item.date)
                 ? 'Today'
                 : new Date(item.date).toLocaleDateString('uk-UA')}
@@ -83,28 +88,41 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
       </div>
       <div className="info-icons">
         {isEditing ? (
-          <button
-            type="button"
-            className="info-icon-btn info-save"
-            onClick={handleSave}
-          >
-            &#10003;
-          </button>
+          <>
+            <button
+              type="button"
+              className="info-icon-btn info-icon-btn--save"
+              onClick={handleSave}
+              title="Save"
+            >
+              <Check size={16} strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              className="info-icon-btn info-icon-btn--cancel"
+              onClick={() => setIsEditing(false)}
+              title="Cancel"
+            >
+              <X size={16} strokeWidth={2.5} />
+            </button>
+          </>
         ) : (
           <button
             type="button"
-            className="info-icon-btn info-edit"
+            className="info-icon-btn info-icon-btn--edit"
             onClick={() => setIsEditing(true)}
+            title="Edit"
           >
-            &#9998;
+            <Pencil size={15} strokeWidth={2} />
           </button>
         )}
         <button
           type="button"
-          className="info-icon-btn info-delete"
+          className="info-icon-btn info-icon-btn--delete"
           onClick={() => onDeleteItemId(item.id)}
+          title="Delete"
         >
-          &#10060;
+          <Trash2 size={15} strokeWidth={2} />
         </button>
       </div>
     </li>

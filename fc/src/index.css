@@ -642,10 +642,65 @@ address {
 }
 
 .info-icon-btn {
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  color: var(--theme-text-on-panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  color: var(--theme-text-muted);
+}
+
+.info-icon-btn:hover {
+  transform: scale(1.1);
+}
+
+.info-icon-btn--edit:hover {
+  background: rgba(129, 140, 248, 0.15);
+  border-color: rgba(129, 140, 248, 0.3);
+  color: #818cf8;
+}
+
+.info-icon-btn--save:hover {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #34d399;
+}
+
+.info-icon-btn--cancel:hover {
+  background: rgba(156, 163, 175, 0.15);
+  border-color: rgba(156, 163, 175, 0.3);
+  color: #9ca3af;
+}
+
+.info-icon-btn--delete:hover {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.date-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.date-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--theme-text-muted);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.date-input-wrap .form-input {
+  padding-left: 36px;
+  margin-bottom: 0;
 }
 
 .info-item-wrap {
@@ -1226,7 +1281,20 @@ address {
 }
 
 .filter-input::-webkit-calendar-picker-indicator {
-  filter: invert(1);
+  filter: invert(0.7) sepia(1) saturate(3) hue-rotate(200deg);
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 2px;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.filter-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+[data-theme="light"] .filter-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.2) sepia(1) saturate(3) hue-rotate(200deg);
 }
 
 /* ── Tablet (≤ 768px) ─────────────────────────────────── */
