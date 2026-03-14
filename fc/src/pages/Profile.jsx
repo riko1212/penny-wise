@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -37,6 +37,10 @@ export default function Profile() {
   const [avatarColor, setAvatarColor] = useState(
     () => localStorage.getItem('avatarColor') || AVATAR_COLORS[0].id
   );
+  const [avatarImage, setAvatarImage] = useState(
+    () => localStorage.getItem('avatarImage') || null
+  );
+  const fileInputRef = useRef(null);
   const [profileMsg, setProfileMsg] = useState(null);
 
   // Security tab state
@@ -89,6 +93,39 @@ export default function Profile() {
   function handleAvatarColorChange(colorId) {
     setAvatarColor(colorId);
     localStorage.setItem('avatarColor', colorId);
+  }
+
+  function handleAvatarUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        const ctx = canvas.getContext('2d');
+        // crop to square from center
+        const size = Math.min(img.width, img.height);
+        const sx = (img.width - size) / 2;
+        const sy = (img.height - size) / 2;
+        ctx.drawImage(img, sx, sy, size, size, 0, 0, 100, 100);
+        const base64 = canvas.toDataURL('image/jpeg', 0.85);
+        setAvatarImage(base64);
+        localStorage.setItem('avatarImage', base64);
+        window.dispatchEvent(new StorageEvent('storage', { key: 'avatarImage', newValue: base64 }));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+
+  function handleAvatarRemove() {
+    setAvatarImage(null);
+    localStorage.removeItem('avatarImage');
+    window.dispatchEvent(new StorageEvent('storage', { key: 'avatarImage', newValue: null }));
   }
 
   // ── Security save ─────────────────────────────────────
@@ -160,8 +197,14 @@ export default function Profile() {
 
             {/* Avatar + name header */}
             <div className="profile-hero">
-              <div className="avatar-preview" style={{ background: selectedColor }}>
-                {getInitials(currentUser?.name)}
+              <div
+                className="avatar-preview"
+                style={avatarImage ? {} : { background: selectedColor }}
+              >
+                {avatarImage
+                  ? <img src={avatarImage} alt="avatar" className="avatar-preview__img" />
+                  : getInitials(currentUser?.name)
+                }
               </div>
               <div>
                 <h1 className="profile-hero__name">{currentUser?.name}</h1>
@@ -208,6 +251,33 @@ export default function Profile() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
+
+                  <label className="profile-label">Avatar photo</label>
+                  <div className="avatar-upload-row">
+                    <button
+                      type="button"
+                      className="btn avatar-upload-btn"
+                      onClick={() => fileInputRef.current.click()}
+                    >
+                      Upload photo
+                    </button>
+                    {avatarImage && (
+                      <button
+                        type="button"
+                        className="btn avatar-remove-btn"
+                        onClick={handleAvatarRemove}
+                      >
+                        Remove
+                      </button>
+                    )}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={handleAvatarUpload}
+                    />
+                  </div>
 
                   <label className="profile-label">Avatar color</label>
                   <div className="avatar-colors">

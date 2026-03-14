@@ -32,12 +32,16 @@ export default function Header() {
   const [avatarColor, setAvatarColor] = useState(
     () => localStorage.getItem('avatarColor') || 'indigo'
   );
+  const [avatarImage, setAvatarImage] = useState(
+    () => localStorage.getItem('avatarImage') || null
+  );
   const dropdownRef = useRef(null);
 
-  // Sync avatar color when localStorage changes (e.g. from Profile page)
+  // Sync avatar color/image when localStorage changes (e.g. from Profile page)
   useEffect(() => {
     function onStorage(e) {
       if (e.key === 'avatarColor') setAvatarColor(e.newValue || 'indigo');
+      if (e.key === 'avatarImage') setAvatarImage(e.newValue || null);
     }
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
@@ -131,9 +135,12 @@ export default function Header() {
               onClick={() => setDropdownOpen((o) => !o)}
               aria-expanded={dropdownOpen}
               title="User menu"
-              style={{ background: AVATAR_COLORS[avatarColor] || AVATAR_COLORS.indigo }}
+              style={avatarImage ? {} : { background: AVATAR_COLORS[avatarColor] || AVATAR_COLORS.indigo }}
             >
-              {getInitials(userName?.name)}
+              {avatarImage
+                ? <img src={avatarImage} alt="avatar" className="user-avatar__img" />
+                : getInitials(userName?.name)
+              }
             </button>
 
             {dropdownOpen && (
