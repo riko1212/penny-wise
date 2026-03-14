@@ -66,4 +66,45 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
+    public UserResponseDTO updateUser(Long id, String name, String email) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (name != null && !name.isBlank() && !name.equals(user.getName())) {
+            if (userRepository.existsByName(name)) {
+                throw new IllegalArgumentException("This name is already taken");
+            }
+            user.setName(name);
+        }
+
+        if (email != null && !email.isBlank()) {
+            user.setEmail(email);
+        }
+
+        return toDTO(userRepository.save(user));
+    }
+
+    public void changePassword(Long id, String currentPassword, String newPassword) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new IllegalArgumentException("New password must be at least 8 characters long");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        userRepository.deleteById(id);
+    }
 }

@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { User } from 'lucide-react';
 import Logo from './Logo';
+
+const AVATAR_COLORS = {
+  indigo:  'linear-gradient(135deg, #6366f1, #38b2ac)',
+  rose:    'linear-gradient(135deg, #f43f5e, #fb923c)',
+  violet:  'linear-gradient(135deg, #8b5cf6, #ec4899)',
+  teal:    'linear-gradient(135deg, #14b8a6, #3b82f6)',
+  amber:   'linear-gradient(135deg, #f59e0b, #ef4444)',
+  emerald: 'linear-gradient(135deg, #10b981, #06b6d4)',
+};
 
 function getInitialTheme() {
   return localStorage.getItem('theme') || 'default';
@@ -19,7 +29,19 @@ export default function Header() {
 
   const [theme, setTheme] = useState(getInitialTheme);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [avatarColor, setAvatarColor] = useState(
+    () => localStorage.getItem('avatarColor') || 'indigo'
+  );
   const dropdownRef = useRef(null);
+
+  // Sync avatar color when localStorage changes (e.g. from Profile page)
+  useEffect(() => {
+    function onStorage(e) {
+      if (e.key === 'avatarColor') setAvatarColor(e.newValue || 'indigo');
+    }
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme === 'default' ? '' : theme;
@@ -109,6 +131,7 @@ export default function Header() {
               onClick={() => setDropdownOpen((o) => !o)}
               aria-expanded={dropdownOpen}
               title="User menu"
+              style={{ background: AVATAR_COLORS[avatarColor] || AVATAR_COLORS.indigo }}
             >
               {getInitials(userName?.name)}
             </button>
@@ -121,6 +144,15 @@ export default function Header() {
                     <span className="user-dropdown__email">{userName.email}</span>
                   )}
                 </div>
+                <div className="user-dropdown__divider" />
+                <Link
+                  to="/profile"
+                  className="user-dropdown__item"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <User size={15} />
+                  <span>Profile</span>
+                </Link>
                 <div className="user-dropdown__divider" />
                 <button
                   type="button"

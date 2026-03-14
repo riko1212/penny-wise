@@ -1,3 +1,236 @@
+/* ── Profile page ─────────────────────────────────────── */
+.profile-page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 0 60px;
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.profile-hero__name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin: 0 0 4px;
+}
+
+.profile-hero__email {
+  font-size: 14px;
+  color: var(--theme-text-muted);
+  margin: 0;
+}
+
+.avatar-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-colors {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.avatar-color-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.avatar-color-btn:hover {
+  transform: scale(1.15);
+}
+
+.avatar-color-btn--active {
+  border-color: #fff;
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px var(--theme-accent);
+}
+
+.profile-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 4px;
+}
+
+.profile-tab {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--theme-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.profile-tab:hover {
+  background: var(--glass-bg-strong);
+  color: var(--theme-text-primary);
+}
+
+.profile-tab--active {
+  background: var(--theme-accent);
+  color: #fff;
+}
+
+.profile-tab--danger.profile-tab--active {
+  background: #ef4444;
+}
+
+.profile-tab--danger:hover:not(.profile-tab--active) {
+  color: #f87171;
+}
+
+.profile-section {
+  padding: 32px;
+  background: var(--theme-bg-panel);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+}
+
+.profile-section__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin: 0 0 24px;
+}
+
+.profile-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--theme-text-muted);
+  margin-bottom: 6px;
+}
+
+.profile-theme-cards {
+  display: flex;
+  gap: 16px;
+}
+
+.profile-theme-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--theme-text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.profile-theme-card:hover {
+  background: var(--glass-bg-strong);
+  transform: translateY(-2px);
+}
+
+.profile-theme-card--active {
+  border-color: var(--theme-accent);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.profile-theme-card__icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.profile-theme-card__label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.danger-zone {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.danger-zone__title {
+  color: #f87171;
+}
+
+.danger-zone__text {
+  font-size: 14px;
+  color: var(--theme-text-muted);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.danger-zone__btn {
+  background: #ef4444;
+  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.3);
+}
+
+.danger-zone__btn:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5);
+}
+
+.danger-zone__confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.danger-zone__confirm-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f87171;
+}
+
+.danger-zone__confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.danger-zone__cancel {
+  background: var(--glass-bg-strong);
+  color: var(--theme-text-primary);
+  border-color: var(--glass-border);
+  box-shadow: none;
+}
+
+.danger-zone__cancel:hover {
+  background: var(--glass-bg);
+  box-shadow: none;
+}
+
 /* ── Button ───────────────────────────────────────────── */
 .btn {
   border-radius: 20px;
