@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { showToast } from '../utils/toast';
 
 const now = new Date();
 const CURRENT_MONTH = now.getMonth() + 1;
@@ -25,14 +26,10 @@ export function useTransactions(type) {
   const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
   const [isClearModalClose, setIsClearModalClose] = useState(true);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
-  const [apiError, setApiError] = useState(null);
 
   const sum = items.reduce((total, item) => total + Number(item.income), 0);
 
-  const showError = useCallback((message) => {
-    setApiError(message);
-    setTimeout(() => setApiError(null), 5000);
-  }, []);
+  function showError(message) { showToast('error', message); }
 
   useEffect(() => {
     if (!currentUser) return;
@@ -152,7 +149,6 @@ export function useTransactions(type) {
     totalSum,
     isDeleteModalClose,
     isClearModalClose,
-    apiError,
     handleCategoryChange,
     handleAddItems,
     handleDeleteItem,

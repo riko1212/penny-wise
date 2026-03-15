@@ -4,6 +4,7 @@ import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { DashboardSkeleton } from '../components/Skeleton';
+import { showToast } from '../utils/toast';
 import '../index.css';
 
 const EMPTY_FORM = { name: '', targetAmount: '', categoryName: '', note: '', dueDate: '' };
@@ -37,7 +38,6 @@ export default function Goals() {
   const [showForm, setShowForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
   const [formData, setFormData] = useState(EMPTY_FORM);
-  const [formError, setFormError] = useState(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -61,7 +61,6 @@ export default function Goals() {
   function openAdd() {
     setEditingGoal(null);
     setFormData(EMPTY_FORM);
-    setFormError(null);
     setShowForm(true);
   }
 
@@ -74,21 +73,19 @@ export default function Goals() {
       note: goal.note || '',
       dueDate: goal.dueDate ? new Date(goal.dueDate).toISOString().slice(0, 10) : '',
     });
-    setFormError(null);
     setShowForm(true);
   }
 
   function closeForm() {
     setShowForm(false);
     setEditingGoal(null);
-    setFormError(null);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!formData.name.trim()) { setFormError('Name is required.'); return; }
-    if (!formData.targetAmount || Number(formData.targetAmount) <= 0) { setFormError('Target amount must be greater than 0.'); return; }
-    if (!formData.categoryName) { setFormError('Please select a category.'); return; }
+    if (!formData.name.trim()) { showToast('error', 'Name is required.'); return; }
+    if (!formData.targetAmount || Number(formData.targetAmount) <= 0) { showToast('error', 'Target amount must be greater than 0.'); return; }
+    if (!formData.categoryName) { showToast('error', 'Please select a category.'); return; }
 
     const payload = {
       userId: currentUser.id,
@@ -100,7 +97,6 @@ export default function Goals() {
     };
 
     setSaving(true);
-    setFormError(null);
     try {
       if (editingGoal) {
         const res = await fetch(`/api/goals/${editingGoal.id}?userId=${currentUser.id}`, {
@@ -122,9 +118,10 @@ export default function Goals() {
         const refreshed = await fetch(`/api/goals?userId=${currentUser.id}`).then((r) => r.json());
         setGoals(refreshed);
       }
+      showToast('success', editingGoal ? 'Goal updated.' : 'Goal created.');
       closeForm();
     } catch (err) {
-      setFormError(err.message || 'Failed to save goal.');
+      showToast('error', err.message || 'Failed to save goal.');
     } finally {
       setSaving(false);
     }
@@ -193,7 +190,6 @@ export default function Goals() {
                   value={formData.dueDate}
                   onChange={(e) => setFormData((p) => ({ ...p, dueDate: e.target.value }))}
                 />
-                {formError && <p className="error-message">{formError}</p>}
                 <div className="goals__form-actions">
                   <button className="btn" type="submit" disabled={saving}>
                     {saving ? 'Saving…' : editingGoal ? 'Save changes' : 'Create goal'}

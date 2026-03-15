@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { showToast } from '../utils/toast';
 import '../index.css';
 
 const AVATAR_COLORS = [
@@ -41,31 +42,22 @@ export default function Profile() {
     () => localStorage.getItem('avatarImage') || null
   );
   const fileInputRef = useRef(null);
-  const [profileMsg, setProfileMsg] = useState(null);
-
   // Security tab state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [securityMsg, setSecurityMsg] = useState(null);
 
   // Appearance tab state
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'default');
 
   // Danger zone state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteMsg, setDeleteMsg] = useState(null);
-
-  function applyMessage(setter, type, text) {
-    setter({ type, text });
-    if (type === 'success') setTimeout(() => setter(null), 4000);
-  }
 
   // ── Profile save ──────────────────────────────────────
   async function handleProfileSave(e) {
     e.preventDefault();
     if (!name.trim()) {
-      applyMessage(setProfileMsg, 'error', 'Name cannot be empty.');
+      showToast('error', 'Name cannot be empty.');
       return;
     }
     try {
@@ -76,7 +68,7 @@ export default function Profile() {
       });
       if (!res.ok) {
         const text = await res.text();
-        applyMessage(setProfileMsg, 'error', text || 'Update failed.');
+        showToast('error', text || 'Update failed.');
         return;
       }
       const updated = await res.json();
@@ -84,9 +76,9 @@ export default function Profile() {
       localStorage.setItem('loggedInUser', JSON.stringify(stored));
       localStorage.setItem('avatarColor', avatarColor);
       setCurrentUser(stored);
-      applyMessage(setProfileMsg, 'success', 'Profile updated successfully.');
+      showToast('success', 'Profile updated successfully.');
     } catch {
-      applyMessage(setProfileMsg, 'error', 'Network error. Try again.');
+      showToast('error', 'Network error. Try again.');
     }
   }
 
@@ -132,15 +124,15 @@ export default function Profile() {
   async function handlePasswordSave(e) {
     e.preventDefault();
     if (!currentPassword) {
-      applyMessage(setSecurityMsg, 'error', 'Enter your current password.');
+      showToast('error', 'Enter your current password.');
       return;
     }
     if (newPassword.length < 8) {
-      applyMessage(setSecurityMsg, 'error', 'New password must be at least 8 characters.');
+      showToast('error', 'New password must be at least 8 characters.');
       return;
     }
     if (newPassword !== confirmPassword) {
-      applyMessage(setSecurityMsg, 'error', 'Passwords do not match.');
+      showToast('error', 'Passwords do not match.');
       return;
     }
     try {
@@ -151,15 +143,15 @@ export default function Profile() {
       });
       if (!res.ok) {
         const text = await res.text();
-        applyMessage(setSecurityMsg, 'error', text || 'Failed to update password.');
+        showToast('error', text || 'Failed to update password.');
         return;
       }
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-      applyMessage(setSecurityMsg, 'success', 'Password changed successfully.');
+      showToast('success', 'Password changed successfully.');
     } catch {
-      applyMessage(setSecurityMsg, 'error', 'Network error. Try again.');
+      showToast('error', 'Network error. Try again.');
     }
   }
 
@@ -175,13 +167,13 @@ export default function Profile() {
     try {
       const res = await fetch(`/api/users/${currentUser.id}`, { method: 'DELETE' });
       if (!res.ok) {
-        applyMessage(setDeleteMsg, 'error', 'Failed to delete account.');
+        showToast('error', 'Failed to delete account.');
         return;
       }
       localStorage.clear();
       navigate('/');
     } catch {
-      applyMessage(setDeleteMsg, 'error', 'Network error. Try again.');
+      showToast('error', 'Network error. Try again.');
     }
   }
 
@@ -293,11 +285,6 @@ export default function Profile() {
                     ))}
                   </div>
 
-                  {profileMsg && (
-                    <p className={profileMsg.type === 'success' ? 'success-message' : 'error-message'}>
-                      {profileMsg.text}
-                    </p>
-                  )}
                   <button type="submit" className="btn form-btn">Save changes</button>
                 </form>
               </div>
@@ -332,11 +319,6 @@ export default function Profile() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Repeat new password"
                   />
-                  {securityMsg && (
-                    <p className={securityMsg.type === 'success' ? 'success-message' : 'error-message'}>
-                      {securityMsg.text}
-                    </p>
-                  )}
                   <button type="submit" className="btn form-btn">Update password</button>
                 </form>
               </div>
@@ -389,9 +371,6 @@ export default function Profile() {
                       </button>
                     </div>
                   </div>
-                )}
-                {deleteMsg && (
-                  <p className="error-message" style={{ marginTop: 12 }}>{deleteMsg.text}</p>
                 )}
               </div>
             )}

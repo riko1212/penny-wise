@@ -10,6 +10,7 @@ import History from './pages/History';
 import ProtectedRoute from './components/ProtectedRoute';
 import Profile from './pages/Profile';
 import Goals from './pages/Goals';
+import ToastContainer from './components/ToastContainer';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ToastContainer />
     </HashRouter>
   );
 }

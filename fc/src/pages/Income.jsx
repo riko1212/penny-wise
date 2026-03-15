@@ -25,7 +25,6 @@ export default function Income() {
     totalSum,
     isDeleteModalClose,
     isClearModalClose,
-    apiError,
     handleCategoryChange,
     handleAddItems,
     handleDeleteItem,
@@ -48,7 +47,7 @@ export default function Income() {
             type="INCOME"
           />
           <main className="main">
-            {apiError && <div className="api-error">{apiError}</div>}
+
             <TotalCard total={totalSum} type="income" monthLabel={currentMonthLabel} />
             {!selectedCategory && (
               <div className="quote">
