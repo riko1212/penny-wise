@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Profile from './pages/Profile';
 import Goals from './pages/Goals';
 import ToastContainer from './components/ToastContainer';
+import QuickAddFAB from './components/QuickAddFAB';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer />
+      <QuickAddFAB />
     </HashRouter>
   );
 }
