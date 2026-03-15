@@ -5,6 +5,7 @@ import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChartTooltip from '../components/ChartTooltip';
+import { DashboardSkeleton } from '../components/Skeleton';
 import '../index.css';
 
 const EXPENSE_COLORS = ['#ff6b6b', '#ff8e53', '#ffd43b', '#ff922b', '#f783ac', '#e64980', '#cc5de8', '#845ef7', '#5c7cfa', '#339af0'];
@@ -56,7 +57,7 @@ export default function Dashboard() {
           <div className="dashboard">
             <h1 className="dashboard__title">Overview</h1>
             {loading ? (
-              <p className="loading">Loading...</p>
+              <DashboardSkeleton />
             ) : error ? (
               <p className="api-error">{error}</p>
             ) : isEmpty ? (

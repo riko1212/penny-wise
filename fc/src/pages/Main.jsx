@@ -11,6 +11,7 @@ import DeleteModal from '../components/DeleteModal';
 import ClearModal from '../components/ClearModal';
 import { useTransactions } from '../hooks/useTransactions';
 import TotalCard from '../components/TotalCard';
+import { TransactionsSkeleton } from '../components/Skeleton';
 
 export default function Main() {
   const [showForm, setShowForm] = useState(false);
@@ -55,7 +56,7 @@ export default function Main() {
               </div>
             )}
             {selectedCategory && loading && (
-              <div className="loading">Loading...</div>
+              <TransactionsSkeleton />
             )}
             {selectedCategory && !loading && (
               <>

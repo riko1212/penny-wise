@@ -3,6 +3,7 @@ import TopicList from './TopicList.jsx';
 import FormAddCategory from './FormAddCategory.jsx';
 import DeleteModal from './DeleteModal.jsx';
 import PropTypes from 'prop-types';
+import { SidebarSkeleton } from './Skeleton.jsx';
 
 Sidebar.propTypes = {
     onCategorySelect: PropTypes.func.isRequired,
@@ -98,7 +99,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
 
                 {!collapsed && (
                     <>
-                        {loading && <p className="loading">Loading...</p>}
+                        {loading && <SidebarSkeleton />}
                         {error && <p className="api-error">{error}</p>}
                         <TopicList
                             categories={categories}

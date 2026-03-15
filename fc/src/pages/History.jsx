@@ -7,6 +7,7 @@ import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChartTooltip from '../components/ChartTooltip';
+import { HistorySkeleton } from '../components/Skeleton';
 import '../index.css';
 
 const now = new Date();
@@ -150,7 +151,7 @@ export default function History() {
 
             {viewMode === 'total' && (
               loading ? (
-                <p className="loading">Loading...</p>
+                <HistorySkeleton />
               ) : error ? (
                 <p className="api-error">{error}</p>
               ) : (
@@ -207,7 +208,7 @@ export default function History() {
 
             {viewMode === 'category' && (
               catLoading ? (
-                <p className="loading">Loading...</p>
+                <HistorySkeleton />
               ) : catError ? (
                 <p className="api-error">{catError}</p>
               ) : catData.length === 0 ? (
