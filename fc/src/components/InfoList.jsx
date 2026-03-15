@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import InfoItem from './InfoItem';
+
+const PAGE_SIZE = 20;
 
 InfoList.propTypes = {
   onDeleteModalOpen: PropTypes.func.isRequired,
@@ -28,6 +30,8 @@ export default function InfoList({
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinelRef = useRef(null);
 
   const hasActiveFilters = search || minAmount || maxAmount || dateFrom || dateTo;
   const amountRangeError = minAmount !== '' && maxAmount !== '' && Number(minAmount) > Number(maxAmount);
@@ -76,6 +80,27 @@ export default function InfoList({
         break;
     }
   }
+
+  // Reset visible count whenever filters/sort/items change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [search, minAmount, maxAmount, dateFrom, dateTo, sortBy, items]);
+
+  // IntersectionObserver — load next page when sentinel enters viewport
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => prev + PAGE_SIZE);
+        }
+      },
+      { rootMargin: '100px' }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
 
   function handleClearFilters() {
     setSearch('');
@@ -163,7 +188,7 @@ export default function InfoList({
         ) : filtered.length === 0 ? (
           <li className="info-list__empty">No transactions match your filters.</li>
         ) : (
-          filtered.map((item) => (
+          filtered.slice(0, visibleCount).map((item) => (
             <InfoItem
               item={item}
               key={item.id}
@@ -175,6 +200,15 @@ export default function InfoList({
           ))
         )}
       </ul>
+
+      {filtered.length > visibleCount && (
+        <div ref={sentinelRef} className="info-list__sentinel">
+          <span className="info-list__sentinel-text">Loading more…</span>
+        </div>
+      )}
+      {filtered.length > 0 && filtered.length <= visibleCount && filtered.length > PAGE_SIZE && (
+        <p className="info-list__count">Showing all {filtered.length} transactions</p>
+      )}
 
       <div className="info-actions">
         <div className="info-sorting">
