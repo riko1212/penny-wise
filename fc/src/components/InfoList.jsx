@@ -13,6 +13,8 @@ InfoList.propTypes = {
   items: PropTypes.array.isRequired,
   isDeleteModalClose: PropTypes.bool.isRequired,
   isClearModalClose: PropTypes.bool.isRequired,
+  onAddClick: PropTypes.func,
+  type: PropTypes.oneOf(['income', 'expense']),
 };
 
 export default function InfoList({
@@ -22,6 +24,8 @@ export default function InfoList({
   onDeleteItemId,
   onClearModal,
   onUpdateItemData,
+  onAddClick,
+  type = 'expense',
 }) {
   const [sortBy, setSortBy] = useState('order');
   const [search, setSearch] = useState('');
@@ -184,7 +188,16 @@ export default function InfoList({
 
       <ul className="info-list">
         {items.length === 0 ? (
-          <li className="info-list__empty">No transactions yet. Add your first one above.</li>
+          <li className="info-list__empty-state">
+            <span className="info-empty__icon">{type === 'income' ? '💰' : '💸'}</span>
+            <p className="info-empty__title">No transactions yet</p>
+            <p className="info-empty__text">Add your first {type === 'income' ? 'income' : 'expense'} to start tracking.</p>
+            {onAddClick && (
+              <button className="btn info-empty__cta" onClick={onAddClick}>
+                + Add {type === 'income' ? 'income' : 'expense'}
+              </button>
+            )}
+          </li>
         ) : filtered.length === 0 ? (
           <li className="info-list__empty">No transactions match your filters.</li>
         ) : (

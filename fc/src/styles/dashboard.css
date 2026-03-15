@@ -397,3 +397,66 @@
   color: #69db7c;
   margin: 6px 0 0;
 }
+
+/* ── Category empty state (no category selected) ───────── */
+.category-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 72px 24px;
+  text-align: center;
+}
+
+.category-empty__icon {
+  font-size: 56px;
+  line-height: 1;
+}
+
+.category-empty__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin: 0;
+}
+
+.category-empty__text {
+  font-size: 15px;
+  color: var(--theme-text-muted);
+  max-width: 320px;
+  margin: 0;
+}
+
+/* ── InfoList empty state (no transactions) ─────────────── */
+.info-list__empty-state {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 56px 24px;
+  text-align: center;
+}
+
+.info-empty__icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.info-empty__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin: 0;
+}
+
+.info-empty__text {
+  font-size: 14px;
+  color: var(--theme-text-muted);
+  margin: 0;
+  max-width: 280px;
+}
+
+.info-empty__cta {
+  margin-top: 4px;
+}

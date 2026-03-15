@@ -50,8 +50,10 @@ export default function Main() {
 
             <TotalCard total={totalSum} type="expense" monthLabel={currentMonthLabel} />
             {!selectedCategory && (
-              <div className="quote">
-                <p>Small steps every day → big results. 💸</p>
+              <div className="category-empty-state">
+                <span className="category-empty__icon">🗂️</span>
+                <h2 className="category-empty__title">Select a category</h2>
+                <p className="category-empty__text">Choose a category from the sidebar to view and manage your expenses.</p>
               </div>
             )}
             {selectedCategory && loading && (
@@ -80,6 +82,8 @@ export default function Main() {
                     onDeleteItemId={handleDeleteItem}
                     onUpdateItemData={handleUpdateItemData}
                     onClearModal={handleClearModal}
+                    onAddClick={() => setShowForm(true)}
+                    type="expense"
                   />
                 </Info>
               </>

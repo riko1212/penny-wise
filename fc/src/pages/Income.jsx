@@ -50,8 +50,10 @@ export default function Income() {
 
             <TotalCard total={totalSum} type="income" monthLabel={currentMonthLabel} />
             {!selectedCategory && (
-              <div className="quote">
-                <p>Track your income — know what you earn. 💰</p>
+              <div className="category-empty-state">
+                <span className="category-empty__icon">📊</span>
+                <h2 className="category-empty__title">Select a category</h2>
+                <p className="category-empty__text">Choose a category from the sidebar to view and manage your income.</p>
               </div>
             )}
             {selectedCategory && loading && (
@@ -80,6 +82,8 @@ export default function Income() {
                     onDeleteItemId={handleDeleteItem}
                     onUpdateItemData={handleUpdateItemData}
                     onClearModal={handleClearModal}
+                    onAddClick={() => setShowForm(true)}
+                    type="income"
                   />
                 </Info>
               </>
