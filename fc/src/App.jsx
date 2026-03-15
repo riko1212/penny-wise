@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import History from './pages/History';
 import ProtectedRoute from './components/ProtectedRoute';
 import Profile from './pages/Profile';
+import Goals from './pages/Goals';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/main" element={<ProtectedRoute><Main /></ProtectedRoute>} />
         <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </HashRouter>
