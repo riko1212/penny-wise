@@ -5,23 +5,26 @@
     padding-right: 16px;
   }
 
-  /* Header */
+  /* Header: keep single row, hide desktop nav, show hamburger */
   .header-container {
-    flex-direction: column;
-    gap: 16px;
+    flex-direction: row;
+    gap: 0;
   }
 
   .header-nav {
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    align-items: center;
+    display: none;
   }
 
-  .menu-list {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
+  .header-mobile-controls {
+    display: flex;
+  }
+
+  .mobile-nav-backdrop {
+    display: block;
+  }
+
+  .mobile-nav {
+    display: block;
   }
 
   /* Page layout: sidebar above main */

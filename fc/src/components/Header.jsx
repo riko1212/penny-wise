@@ -12,6 +12,14 @@ const AVATAR_COLORS = {
   emerald: 'linear-gradient(135deg, #10b981, #06b6d4)',
 };
 
+const NAV_LINKS = [
+  { to: '/dashboard', label: 'Dashboard' },
+  { to: '/history',   label: 'History' },
+  { to: '/goals',     label: 'Goals' },
+  { to: '/main',      label: 'Expenses' },
+  { to: '/income',    label: 'Income' },
+];
+
 function getInitialTheme() {
   return localStorage.getItem('theme') || 'default';
 }
@@ -29,6 +37,7 @@ export default function Header() {
 
   const [theme, setTheme] = useState(getInitialTheme);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [avatarColor, setAvatarColor] = useState(
     () => localStorage.getItem('avatarColor') || 'indigo'
   );
@@ -36,6 +45,11 @@ export default function Header() {
     () => localStorage.getItem('avatarImage') || null
   );
   const dropdownRef = useRef(null);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   // Sync avatar color/image when localStorage changes (e.g. from Profile page)
   useEffect(() => {
@@ -52,6 +66,7 @@ export default function Header() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  // Close dropdown on outside click / ESC
   useEffect(() => {
     if (!dropdownOpen) return;
     function handleClick(e) {
@@ -70,6 +85,22 @@ export default function Header() {
     };
   }, [dropdownOpen]);
 
+  // Close mobile menu on ESC
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function handleKey(e) {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    }
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [mobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
   const handleThemeToggle = () => {
     setTheme((prev) => {
       if (prev === 'default') return 'dark';
@@ -86,111 +117,140 @@ export default function Header() {
     navigate('/');
   };
 
-  return (
-    <header className="header">
-      <div className="container header-container">
-        <Link to="/dashboard" className="header-logo">
-          <Logo />
-        </Link>
-        <nav className="header-nav">
-          <ul className="menu-list">
-            <li className="menu-item">
-              <Link
-                to="/dashboard"
-                className={`menu-link ${location.pathname === '/dashboard' ? 'menu-link--active' : ''}`}
-              >
-                Dashboard
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link
-                to="/history"
-                className={`menu-link ${location.pathname === '/history' ? 'menu-link--active' : ''}`}
-              >
-                History
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link
-                to="/goals"
-                className={`menu-link ${location.pathname === '/goals' ? 'menu-link--active' : ''}`}
-              >
-                Goals
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link
-                to="/main"
-                className={`menu-link ${location.pathname === '/main' ? 'menu-link--active' : ''}`}
-              >
-                Expenses
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link
-                to="/income"
-                className={`menu-link ${location.pathname === '/income' ? 'menu-link--active' : ''}`}
-              >
-                Income
-              </Link>
-            </li>
-          </ul>
+  const avatarStyle = avatarImage ? {} : { background: AVATAR_COLORS[avatarColor] || AVATAR_COLORS.indigo };
 
-          <div className="user-menu" ref={dropdownRef}>
+  return (
+    <>
+      <header className="header">
+        <div className="container header-container">
+          <Link to="/dashboard" className="header-logo">
+            <Logo />
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className="header-nav">
+            <ul className="menu-list">
+              {NAV_LINKS.map(({ to, label }) => (
+                <li key={to} className="menu-item">
+                  <Link
+                    to={to}
+                    className={`menu-link ${location.pathname === to ? 'menu-link--active' : ''}`}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="user-menu" ref={dropdownRef}>
+              <button
+                type="button"
+                className="user-avatar"
+                onClick={() => setDropdownOpen((o) => !o)}
+                aria-expanded={dropdownOpen}
+                title="User menu"
+                style={avatarStyle}
+              >
+                {avatarImage
+                  ? <img src={avatarImage} alt="avatar" className="user-avatar__img" />
+                  : getInitials(userName?.name)
+                }
+              </button>
+
+              {dropdownOpen && (
+                <div className="user-dropdown">
+                  <div className="user-dropdown__info">
+                    <span className="user-dropdown__name">{userName?.name}</span>
+                    {userName?.email && (
+                      <span className="user-dropdown__email">{userName.email}</span>
+                    )}
+                  </div>
+                  <div className="user-dropdown__divider" />
+                  <Link
+                    to="/profile"
+                    className="user-dropdown__item"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    <User size={15} />
+                    <span>Profile</span>
+                  </Link>
+                  <div className="user-dropdown__divider" />
+                  <button
+                    type="button"
+                    className="user-dropdown__item"
+                    onClick={handleThemeToggle}
+                  >
+                    <span>{themeIcon}</span>
+                    <span>Theme: {themeLabel}</span>
+                  </button>
+                  <div className="user-dropdown__divider" />
+                  <button
+                    type="button"
+                    className="user-dropdown__item user-dropdown__item--danger"
+                    onClick={handleLogout}
+                  >
+                    <span>↩</span>
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </nav>
+
+          {/* Mobile right side: avatar + hamburger */}
+          <div className="header-mobile-controls">
             <button
               type="button"
               className="user-avatar"
-              onClick={() => setDropdownOpen((o) => !o)}
-              aria-expanded={dropdownOpen}
-              title="User menu"
-              style={avatarImage ? {} : { background: AVATAR_COLORS[avatarColor] || AVATAR_COLORS.indigo }}
+              onClick={() => { navigate('/profile'); }}
+              title="Profile"
+              style={avatarStyle}
             >
               {avatarImage
                 ? <img src={avatarImage} alt="avatar" className="user-avatar__img" />
                 : getInitials(userName?.name)
               }
             </button>
-
-            {dropdownOpen && (
-              <div className="user-dropdown">
-                <div className="user-dropdown__info">
-                  <span className="user-dropdown__name">{userName?.name}</span>
-                  {userName?.email && (
-                    <span className="user-dropdown__email">{userName.email}</span>
-                  )}
-                </div>
-                <div className="user-dropdown__divider" />
-                <Link
-                  to="/profile"
-                  className="user-dropdown__item"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  <User size={15} />
-                  <span>Profile</span>
-                </Link>
-                <div className="user-dropdown__divider" />
-                <button
-                  type="button"
-                  className="user-dropdown__item"
-                  onClick={handleThemeToggle}
-                >
-                  <span>{themeIcon}</span>
-                  <span>Theme: {themeLabel}</span>
-                </button>
-                <div className="user-dropdown__divider" />
-                <button
-                  type="button"
-                  className="user-dropdown__item user-dropdown__item--danger"
-                  onClick={handleLogout}
-                >
-                  <span>↩</span>
-                  <span>Log Out</span>
-                </button>
-              </div>
-            )}
+            <button
+              type="button"
+              className="hamburger-btn"
+              onClick={() => setMobileMenuOpen((o) => !o)}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle menu"
+            >
+              <span className={`hamburger-icon ${mobileMenuOpen ? 'hamburger-icon--open' : ''}`} />
+            </button>
           </div>
-        </nav>
-      </div>
-    </header>
+        </div>
+      </header>
+
+      {/* Mobile menu overlay */}
+      {mobileMenuOpen && (
+        <div className="mobile-nav-backdrop" onClick={() => setMobileMenuOpen(false)} />
+      )}
+      <nav className={`mobile-nav ${mobileMenuOpen ? 'mobile-nav--open' : ''}`}>
+        <ul className="mobile-nav__list">
+          {NAV_LINKS.map(({ to, label }) => (
+            <li key={to}>
+              <Link
+                to={to}
+                className={`mobile-nav__link ${location.pathname === to ? 'mobile-nav__link--active' : ''}`}
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="mobile-nav__divider" />
+        <div className="mobile-nav__footer">
+          <button className="mobile-nav__link mobile-nav__link--action" onClick={handleThemeToggle}>
+            {themeIcon} Theme: {themeLabel}
+          </button>
+          <button className="mobile-nav__link mobile-nav__link--danger" onClick={handleLogout}>
+            ↩ Log Out
+          </button>
+        </div>
+      </nav>
+    </>
   );
 }
