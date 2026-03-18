@@ -1,32 +1,24 @@
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useEscapeKey } from '../hooks/useEscapeKey';
 
 ClearModal.propTypes = {
   onClearModalClose: PropTypes.func,
   onClearList: PropTypes.func,
-  isClearModalClose: PropTypes.bool,
+  isOpen: PropTypes.bool,
 };
-export default function ClearModal({
-  onClearModalClose,
-  isClearModalClose,
-  onClearList,
-}) {
-  useEffect(() => {
-    if (isClearModalClose) return;
-    const handleKeyDown = (e) => { if (e.key === 'Escape') onClearModalClose(); };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isClearModalClose, onClearModalClose]);
+
+export default function ClearModal({ onClearModalClose, isOpen, onClearList }) {
+  useEscapeKey(onClearModalClose, isOpen);
 
   return (
-    <div className={isClearModalClose ? 'backdrop clicked' : 'backdrop'}>
-      <div className="modal delete-modal ">
+    <div className={isOpen ? 'backdrop' : 'backdrop clicked'}>
+      <div className="modal delete-modal">
         <button
           type="button"
           className="modal-close-btn"
           onClick={onClearModalClose}
         >
-          X
+          ✕
         </button>
         <p className="modal-text">Sure?</p>
         <div className="modal-btns">

@@ -5,6 +5,7 @@ import DeleteModal from './DeleteModal.jsx';
 import PropTypes from 'prop-types';
 import { SidebarSkeleton } from './Skeleton.jsx';
 import { showToast } from '../utils/toast';
+import { useEscapeKey } from '../hooks/useEscapeKey';
 
 Sidebar.propTypes = {
     onCategorySelect: PropTypes.func.isRequired,
@@ -74,12 +75,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
 
     const handleCloseCategoryDelete = useCallback(() => setCategoryToDelete(null), []);
 
-    useEffect(() => {
-        if (categoryToDelete === null) return;
-        const handleKeyDown = (e) => { if (e.key === 'Escape') handleCloseCategoryDelete(); };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [categoryToDelete, handleCloseCategoryDelete]);
+    useEscapeKey(handleCloseCategoryDelete, categoryToDelete !== null);
 
     function handleCategorySelect(category) {
         onCategorySelect(category.name);
@@ -119,7 +115,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 )}
             </aside>
             <DeleteModal
-                isDeleteModalClose={categoryToDelete === null}
+                isOpen={categoryToDelete !== null}
                 onDeleteModalClose={handleCloseCategoryDelete}
                 onItemDelete={handleConfirmDelete}
             />

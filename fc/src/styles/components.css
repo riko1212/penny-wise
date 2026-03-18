@@ -1,3 +1,20 @@
+/* ── Logo ─────────────────────────────────────────────── */
+.logo__wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo__text {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #4776e6, #38b2ac);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ── Skeleton loaders ─────────────────────────────────── */
 @keyframes skeleton-shimmer {
   0%   { background-position: 200% 0; }

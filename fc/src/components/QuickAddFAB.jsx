@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { showToast } from '../utils/toast';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useEscapeKey } from '../hooks/useEscapeKey';
+import { todayStr } from '../constants';
 
 const HIDDEN_PATHS = ['/', '/register', '/restore-pass'];
 
 export default function QuickAddFAB() {
   const location = useLocation();
-  const [currentUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('loggedInUser')); } catch { return null; }
-  });
+  const currentUser = useCurrentUser();
 
   const [open, setOpen] = useState(false);
   const [type, setType] = useState('EXPENSE');
@@ -16,7 +17,7 @@ export default function QuickAddFAB() {
   const [categoryName, setCategoryName] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayStr);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -30,12 +31,15 @@ export default function QuickAddFAB() {
       .catch(() => {});
   }, [open, type, currentUser]);
 
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e) => { if (e.key === 'Escape') setOpen(false); };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [open]);
+  function handleClose() {
+    setOpen(false);
+    setAmount('');
+    setDescription('');
+    setDate(todayStr());
+    setType('EXPENSE');
+  }
+
+  useEscapeKey(handleClose, open);
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
@@ -48,14 +52,6 @@ export default function QuickAddFAB() {
   function handleTypeChange(newType) {
     setType(newType);
     setCategoryName('');
-  }
-
-  function handleClose() {
-    setOpen(false);
-    setAmount('');
-    setDescription('');
-    setDate(new Date().toISOString().slice(0, 10));
-    setType('EXPENSE');
   }
 
   async function handleSubmit(e) {
@@ -165,7 +161,7 @@ export default function QuickAddFAB() {
                 className="form-input"
                 type="date"
                 value={date}
-                max={new Date().toISOString().slice(0, 10)}
+                max={todayStr()}
                 onChange={(e) => setDate(e.target.value)}
               />
 

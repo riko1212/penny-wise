@@ -1,46 +1,17 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { validateTransaction } from '../utils/validate';
+import { todayStr } from '../constants';
 
 Form.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   selectedCategory: PropTypes.string.isRequired,
 };
 
-function validate(topic, income, date) {
-  const errors = {};
-
-  if (!topic.trim()) {
-    errors.topic = 'Description is required.';
-  } else if (topic.trim().length > 100) {
-    errors.topic = 'Max 100 characters.';
-  }
-
-  const amount = parseFloat(income);
-  if (!income) {
-    errors.income = 'Amount is required.';
-  } else if (isNaN(amount) || amount <= 0) {
-    errors.income = 'Amount must be a positive number.';
-  } else if (amount > 1_000_000) {
-    errors.income = 'Amount cannot exceed 1 000 000.';
-  }
-
-  if (!date) {
-    errors.date = 'Date is required.';
-  } else {
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
-    if (new Date(date) > today) {
-      errors.date = 'Date cannot be in the future.';
-    }
-  }
-
-  return errors;
-}
-
 export default function Form({ onAddItems, selectedCategory }) {
   const [income, setIncome] = useState('');
   const [topic, setTopic] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayStr);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
@@ -48,7 +19,7 @@ export default function Form({ onAddItems, selectedCategory }) {
     e.preventDefault();
     setSubmitted(true);
 
-    const errs = validate(topic, income, date);
+    const errs = validateTransaction(topic, income, date);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
@@ -61,7 +32,7 @@ export default function Form({ onAddItems, selectedCategory }) {
 
     setIncome('');
     setTopic('');
-    setDate(new Date().toISOString().slice(0, 10));
+    setDate(todayStr());
     setErrors({});
     setSubmitted(false);
   }
@@ -70,7 +41,7 @@ export default function Form({ onAddItems, selectedCategory }) {
     setter(value);
     if (submitted) {
       const next = { topic, income, date, [field]: value };
-      const errs = validate(next.topic, next.income, next.date);
+      const errs = validateTransaction(next.topic, next.income, next.date);
       setErrors(errs);
     }
   }
@@ -106,7 +77,7 @@ export default function Form({ onAddItems, selectedCategory }) {
           name="user-date"
           className={`form-input${errors.date ? ' form-input--error' : ''}`}
           value={date}
-          max={new Date().toISOString().slice(0, 10)}
+          max={todayStr()}
           onChange={(e) => handleChange('date', e.target.value, setDate)}
         />
         {errors.date && <span className="form-error">{errors.date}</span>}

@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChartTooltip from '../components/ChartTooltip';
 import { DashboardSkeleton } from '../components/Skeleton';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import '../index.css';
 
 const EXPENSE_COLORS = ['#ff6b6b', '#ff8e53', '#ffd43b', '#ff922b', '#f783ac', '#e64980', '#cc5de8', '#845ef7', '#5c7cfa', '#339af0'];
@@ -13,9 +14,7 @@ const INCOME_COLORS  = ['#69db7c', '#38d9a9', '#4dabf7', '#74c0fc', '#a9e34b', '
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [currentUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('loggedInUser')); } catch { return null; }
-  });
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     if (!currentUser) navigate('/');

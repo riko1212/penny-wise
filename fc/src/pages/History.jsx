@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChartTooltip from '../components/ChartTooltip';
 import { HistorySkeleton } from '../components/Skeleton';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import '../index.css';
 
 const now = new Date();
@@ -28,9 +29,7 @@ function getChange(current, previous) {
 
 export default function History() {
   const navigate = useNavigate();
-  const [currentUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('loggedInUser')); } catch { return null; }
-  });
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -156,7 +155,7 @@ export default function History() {
                 <p className="api-error">{error}</p>
               ) : (
                 <>
-                  <div className="dashboard__cards" style={{ marginBottom: 40 }}>
+                  <div className="dashboard__cards history__cards">
                     <div className="dashboard__card">
                       <span className="dashboard__card-label">This month</span>
                       <span className="dashboard__card-amount" style={{ color }}>{formatUAH(thisMonth)}</span>
@@ -184,7 +183,7 @@ export default function History() {
                   {data.length === 0 ? (
                     <p className="loading">No data for selected period.</p>
                   ) : (
-                    <div className="dashboard__chart" style={{ maxWidth: '100%' }}>
+                    <div className="dashboard__chart history__chart-wide">
                       <ResponsiveContainer width="100%" height={360}>
                         <BarChart data={data} margin={{ top: 8, right: 24, left: 16, bottom: 8 }}>
                           <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -216,7 +215,7 @@ export default function History() {
               ) : (
                 <>
                   {/* Comparison table */}
-                  <div className="dashboard__chart history__cat-section" style={{ maxWidth: '100%', marginBottom: 32 }}>
+                  <div className="dashboard__chart history__cat-section">
                     <table className="history__cat-table">
                       <thead>
                         <tr>
@@ -256,7 +255,7 @@ export default function History() {
                   </div>
 
                   {/* Stacked bar chart */}
-                  <div className="dashboard__chart" style={{ maxWidth: '100%' }}>
+                  <div className="dashboard__chart history__chart-wide">
                     <ResponsiveContainer width="100%" height={360}>
                       <BarChart data={stackedData} margin={{ top: 8, right: 24, left: 16, bottom: 8 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />

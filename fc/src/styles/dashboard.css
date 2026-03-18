@@ -211,9 +211,20 @@
   color: #ff6b6b;
 }
 
+/* ── History — layout helpers ─────────────────────────── */
+.history__cards {
+  margin-bottom: 40px;
+}
+
+.history__chart-wide {
+  max-width: 100%;
+}
+
 /* ── History — category breakdown ────────────────────── */
 .history__cat-section {
   overflow-x: auto;
+  max-width: 100%;
+  margin-bottom: 32px;
 }
 
 .history__cat-table {
@@ -260,6 +271,21 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 32px;
+}
+
+.goals__header-title {
+  margin-bottom: 0;
+}
+
+.goals__cancel-btn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  box-shadow: none;
+}
+
+.goals__cancel-btn:hover {
+  background: var(--glass-bg);
+  box-shadow: none;
 }
 
 .goals__form {

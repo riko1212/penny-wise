@@ -13,7 +13,7 @@ export default function FormAddCategory({ onAddCategory }) {
         e.preventDefault();
         if (!categoryName.trim()) return;
 
-        onAddCategory(categoryName); // ✅ передаємо рядок
+        onAddCategory(categoryName);
         setCategoryName('');
     }
 

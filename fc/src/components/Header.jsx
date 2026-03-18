@@ -2,15 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { User } from 'lucide-react';
 import Logo from './Logo';
-
-const AVATAR_COLORS = {
-  indigo:  'linear-gradient(135deg, #6366f1, #38b2ac)',
-  rose:    'linear-gradient(135deg, #f43f5e, #fb923c)',
-  violet:  'linear-gradient(135deg, #8b5cf6, #ec4899)',
-  teal:    'linear-gradient(135deg, #14b8a6, #3b82f6)',
-  amber:   'linear-gradient(135deg, #f59e0b, #ef4444)',
-  emerald: 'linear-gradient(135deg, #10b981, #06b6d4)',
-};
+import { AVATAR_COLORS, THEMES } from '../constants';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useEscapeKey } from '../hooks/useEscapeKey';
 
 const NAV_LINKS = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -32,8 +26,7 @@ function getInitials(name) {
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  let userName = null;
-  try { userName = JSON.parse(localStorage.getItem('loggedInUser')); } catch { }
+  const userName = useCurrentUser();
 
   const [theme, setTheme] = useState(getInitialTheme);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -66,7 +59,7 @@ export default function Header() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  // Close dropdown on outside click / ESC
+  // Close dropdown on outside click
   useEffect(() => {
     if (!dropdownOpen) return;
     function handleClick(e) {
@@ -74,26 +67,12 @@ export default function Header() {
         setDropdownOpen(false);
       }
     }
-    function handleKey(e) {
-      if (e.key === 'Escape') setDropdownOpen(false);
-    }
     document.addEventListener('mousedown', handleClick);
-    document.addEventListener('keydown', handleKey);
-    return () => {
-      document.removeEventListener('mousedown', handleClick);
-      document.removeEventListener('keydown', handleKey);
-    };
+    return () => document.removeEventListener('mousedown', handleClick);
   }, [dropdownOpen]);
 
-  // Close mobile menu on ESC
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    function handleKey(e) {
-      if (e.key === 'Escape') setMobileMenuOpen(false);
-    }
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [mobileMenuOpen]);
+  useEscapeKey(() => setDropdownOpen(false), dropdownOpen);
+  useEscapeKey(() => setMobileMenuOpen(false), mobileMenuOpen);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -109,15 +88,17 @@ export default function Header() {
     });
   };
 
-  const themeIcon = theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🌤';
-  const themeLabel = theme === 'dark' ? 'Dark' : theme === 'light' ? 'Light' : 'Default';
+  const currentTheme = THEMES.find((t) => t.id === theme) || THEMES[0];
+  const themeIcon = currentTheme.icon;
+  const themeLabel = currentTheme.label;
 
   const handleLogout = () => {
     localStorage.removeItem('loggedInUser');
     navigate('/');
   };
 
-  const avatarStyle = avatarImage ? {} : { background: AVATAR_COLORS[avatarColor] || AVATAR_COLORS.indigo };
+  const avatarBg = AVATAR_COLORS.find((c) => c.id === avatarColor)?.value || AVATAR_COLORS[0].value;
+  const avatarStyle = avatarImage ? {} : { background: avatarBg };
 
   return (
     <>

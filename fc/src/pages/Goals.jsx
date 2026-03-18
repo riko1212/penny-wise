@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { DashboardSkeleton } from '../components/Skeleton';
 import { showToast } from '../utils/toast';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import '../index.css';
 
 const EMPTY_FORM = { name: '', targetAmount: '', categoryName: '', note: '', dueDate: '' };
@@ -22,9 +23,7 @@ function dueDateInfo(dueDate, reached) {
 
 export default function Goals() {
   const navigate = useNavigate();
-  const [currentUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('loggedInUser')); } catch { return null; }
-  });
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -140,7 +139,7 @@ export default function Goals() {
         <div className="container">
           <div className="dashboard">
             <div className="goals__header">
-              <h1 className="dashboard__title" style={{ marginBottom: 0 }}>Goals</h1>
+              <h1 className="dashboard__title goals__header-title">Goals</h1>
               <button className="btn" onClick={openAdd}>+ Add goal</button>
             </div>
 
@@ -194,7 +193,7 @@ export default function Goals() {
                   <button className="btn" type="submit" disabled={saving}>
                     {saving ? 'Saving…' : editingGoal ? 'Save changes' : 'Create goal'}
                   </button>
-                  <button className="btn" type="button" onClick={closeForm} style={{ background: 'transparent', border: '1px solid var(--glass-border)' }}>
+                  <button className="btn goals__cancel-btn" type="button" onClick={closeForm}>
                     Cancel
                   </button>
                 </div>

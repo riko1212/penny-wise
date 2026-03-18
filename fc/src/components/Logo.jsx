@@ -1,6 +1,6 @@
 export default function Logo() {
   return (
-    <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+    <span className="logo__wrap">
       <svg
         width="40"
         height="40"
@@ -33,15 +33,7 @@ export default function Logo() {
           PW
         </text>
       </svg>
-      <span style={{
-        fontWeight: '800',
-        fontSize: '20px',
-        letterSpacing: '0.5px',
-        background: 'linear-gradient(135deg, #4776e6, #38b2ac)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-      }}>
+      <span className="logo__text">
         Penny Wise
       </span>
     </span>

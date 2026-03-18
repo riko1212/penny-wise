@@ -2,43 +2,14 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
 import { formatUAH } from '../utils/format';
+import { validateTransaction } from '../utils/validate';
+import { todayStr } from '../constants';
 
 InfoItem.propTypes = {
   onDeleteItemId: PropTypes.func,
   onUpdateItemData: PropTypes.func,
   item: PropTypes.object.isRequired,
 };
-
-function validateEdit(topic, income, date) {
-  const errors = {};
-
-  if (!topic.trim()) {
-    errors.topic = 'Description is required.';
-  } else if (topic.trim().length > 100) {
-    errors.topic = 'Max 100 characters.';
-  }
-
-  const amount = parseFloat(income);
-  if (!String(income)) {
-    errors.income = 'Amount is required.';
-  } else if (isNaN(amount) || amount <= 0) {
-    errors.income = 'Must be a positive number.';
-  } else if (amount > 1_000_000) {
-    errors.income = 'Max 1 000 000.';
-  }
-
-  if (!date) {
-    errors.date = 'Date is required.';
-  } else {
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
-    if (new Date(date) > today) {
-      errors.date = 'Cannot be in the future.';
-    }
-  }
-
-  return errors;
-}
 
 export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -74,12 +45,12 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     if (field === 'income') setEditedIncome(value);
     if (field === 'date') setEditedDate(value);
     if (Object.keys(errors).length > 0) {
-      setErrors(validateEdit(next.topic, next.income, next.date));
+      setErrors(validateTransaction(next.topic, next.income, next.date));
     }
   }
 
   async function handleSave() {
-    const errs = validateEdit(editedTopic, editedIncome, editedDate);
+    const errs = validateTransaction(editedTopic, editedIncome, editedDate);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
@@ -139,7 +110,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
                 <input
                   type="date"
                   value={editedDate}
-                  max={new Date().toISOString().slice(0, 10)}
+                  max={todayStr()}
                   onChange={(e) => handleFieldChange('date', e.target.value)}
                   className={`form-input form-input-edit${errors.date ? ' form-input--error' : ''}`}
                 />

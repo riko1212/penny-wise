@@ -9,10 +9,7 @@ InfoList.propTypes = {
   onDeleteItemId: PropTypes.func.isRequired,
   onUpdateItemData: PropTypes.func.isRequired,
   onClearModal: PropTypes.func.isRequired,
-  handleClearList: PropTypes.func,
   items: PropTypes.array.isRequired,
-  isDeleteModalClose: PropTypes.bool.isRequired,
-  isClearModalClose: PropTypes.bool.isRequired,
   onAddClick: PropTypes.func,
   type: PropTypes.oneOf(['income', 'expense']),
 };
@@ -20,7 +17,6 @@ InfoList.propTypes = {
 export default function InfoList({
   items = [],
   onDeleteModalOpen,
-  isDeleteModalClose,
   onDeleteItemId,
   onClearModal,
   onUpdateItemData,
@@ -206,7 +202,6 @@ export default function InfoList({
               item={item}
               key={item.id}
               onDeleteModalOpen={onDeleteModalOpen}
-              isDeleteModalClose={isDeleteModalClose}
               onDeleteItemId={onDeleteItemId}
               onUpdateItemData={onUpdateItemData}
             />

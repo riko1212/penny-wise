@@ -3,22 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { showToast } from '../utils/toast';
+import { AVATAR_COLORS, THEMES } from '../constants';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import '../index.css';
-
-const AVATAR_COLORS = [
-  { id: 'indigo', value: 'linear-gradient(135deg, #6366f1, #38b2ac)' },
-  { id: 'rose',   value: 'linear-gradient(135deg, #f43f5e, #fb923c)' },
-  { id: 'violet', value: 'linear-gradient(135deg, #8b5cf6, #ec4899)' },
-  { id: 'teal',   value: 'linear-gradient(135deg, #14b8a6, #3b82f6)' },
-  { id: 'amber',  value: 'linear-gradient(135deg, #f59e0b, #ef4444)' },
-  { id: 'emerald',value: 'linear-gradient(135deg, #10b981, #06b6d4)' },
-];
-
-const THEMES = [
-  { id: 'default', label: 'Default', icon: '🌤' },
-  { id: 'dark',    label: 'Dark',    icon: '🌙' },
-  { id: 'light',   label: 'Light',   icon: '☀️' },
-];
 
 function getInitials(name) {
   if (!name) return '?';
@@ -27,9 +14,8 @@ function getInitials(name) {
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(
-    () => JSON.parse(localStorage.getItem('loggedInUser'))
-  );
+  const storedUser = useCurrentUser();
+  const [currentUser, setCurrentUser] = useState(storedUser);
   const [activeTab, setActiveTab] = useState('profile');
 
   // Profile tab state

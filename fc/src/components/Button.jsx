@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 Button.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.node,
 }
 
 export default function Button({ children }) {

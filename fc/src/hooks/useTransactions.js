@@ -23,8 +23,8 @@ export function useTransactions(type) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalSum, setTotalSum] = useState(0);
-  const [isDeleteModalClose, setIsDeleteModalClose] = useState(true);
-  const [isClearModalClose, setIsClearModalClose] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [clearModalOpen, setClearModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
   const sum = items.reduce((total, item) => total + Number(item.income), 0);
@@ -78,7 +78,7 @@ export function useTransactions(type) {
 
   function handleDeleteItem(id) {
     setItemIdToDelete(id);
-    setIsDeleteModalClose(false);
+    setDeleteModalOpen(true);
   }
 
   function handleConfirmDelete() {
@@ -89,7 +89,7 @@ export function useTransactions(type) {
       .then((res) => {
         if (!res.ok) throw new Error();
         setItems((prev) => prev.filter((item) => item.id !== itemIdToDelete));
-        setIsDeleteModalClose(true);
+        setDeleteModalOpen(false);
       })
       .catch(() => showError('Failed to delete transaction. Please try again.'));
   }
@@ -122,21 +122,21 @@ export function useTransactions(type) {
       .then((res) => {
         if (!res.ok) throw new Error();
         setItems([]);
-        setIsClearModalClose(true);
+        setClearModalOpen(false);
       })
       .catch(() => showError('Failed to clear transactions. Please try again.'));
   }
 
   function handleDeleteModalCloseClick() {
-    setIsDeleteModalClose((prev) => !prev);
+    setDeleteModalOpen((prev) => !prev);
   }
 
   function handleClearModalCloseClick() {
-    setIsClearModalClose((prev) => !prev);
+    setClearModalOpen((prev) => !prev);
   }
 
   function handleClearModal() {
-    setIsClearModalClose(false);
+    setClearModalOpen(true);
   }
 
   return {
@@ -147,8 +147,8 @@ export function useTransactions(type) {
     loading,
     sum,
     totalSum,
-    isDeleteModalClose,
-    isClearModalClose,
+    deleteModalOpen,
+    clearModalOpen,
     handleCategoryChange,
     handleAddItems,
     handleDeleteItem,
