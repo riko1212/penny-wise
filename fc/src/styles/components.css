@@ -671,6 +671,16 @@
   flex-shrink: 0;
 }
 
+.info-item-data {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--theme-text-muted);
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .info-item:last-child {
   margin-bottom: 0;
 }
@@ -687,6 +697,22 @@
   gap: 10px;
   align-items: center;
   color: var(--theme-text-on-panel);
+}
+
+.info-sort-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.info-sort-select {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 20px;
+  cursor: pointer;
 }
 
 .form-input.form-input-edit {

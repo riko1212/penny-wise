@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import InfoItem from './InfoItem';
 
@@ -31,7 +31,7 @@ export default function InfoList({
   const [dateTo, setDateTo] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const sentinelRef = useRef(null);
+  const [sentinelEl, setSentinelEl] = useState(null);
 
   const hasActiveFilters = search || minAmount || maxAmount || dateFrom || dateTo;
   const amountRangeError = minAmount !== '' && maxAmount !== '' && Number(minAmount) > Number(maxAmount);
@@ -88,8 +88,7 @@ export default function InfoList({
 
   // IntersectionObserver — load next page when sentinel enters viewport
   useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
+    if (!sentinelEl) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -98,9 +97,9 @@ export default function InfoList({
       },
       { rootMargin: '100px' }
     );
-    observer.observe(sentinel);
+    observer.observe(sentinelEl);
     return () => observer.disconnect();
-  }, []);
+  }, [sentinelEl]);
 
   function handleClearFilters() {
     setSearch('');
@@ -210,7 +209,7 @@ export default function InfoList({
       </ul>
 
       {filtered.length > visibleCount && (
-        <div ref={sentinelRef} className="info-list__sentinel">
+        <div ref={setSentinelEl} className="info-list__sentinel">
           <span className="info-list__sentinel-text">Loading more…</span>
         </div>
       )}
