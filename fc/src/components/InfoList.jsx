@@ -223,7 +223,7 @@ export default function InfoList({
             Sort by:
           </label>
           <select
-            className="info-sort-select btn"
+            className="info-sort-select"
             id="sort-select"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
