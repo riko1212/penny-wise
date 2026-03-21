@@ -5,6 +5,7 @@ import Logo from '../components/Logo';
 function Login() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,13 +50,22 @@ function Login() {
             placeholder="Enter name"
             required
           />
-          <input
-            type="password"
-            name="login-pass"
-            className="form-input"
-            placeholder="Enter password"
-            required
-          />
+          <div className="password-wrap">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="login-pass"
+              className="form-input"
+              placeholder="Enter password"
+              required
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? '🙈' : '👁'}
+            </button>
+          </div>
           <button type="submit" className="btn form-btn login-btn">
             Login
           </button>

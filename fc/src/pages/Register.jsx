@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 
 function Register() {
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -70,20 +72,38 @@ function Register() {
                 placeholder="Enter email"
                 required
             />
-            <input
-                type="password"
+            <div className="password-wrap">
+              <input
+                type={showPassword ? 'text' : 'password'}
                 name="login-pass"
                 className="form-input"
                 placeholder="Enter password"
                 required
-            />
-            <input
-                type="password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+              >
+                {showPassword ? '🙈' : '👁'}
+              </button>
+            </div>
+            <div className="password-wrap">
+              <input
+                type={showRepeatPassword ? 'text' : 'password'}
                 name="login-pass-repeat"
                 className="form-input"
                 placeholder="Repeat password"
                 required
-            />
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowRepeatPassword((v) => !v)}
+              >
+                {showRepeatPassword ? '🙈' : '👁'}
+              </button>
+            </div>
             <button type="submit" className="btn form-btn">
               Register
             </button>

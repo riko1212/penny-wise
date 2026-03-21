@@ -864,6 +864,30 @@
 }
 
 /* ── Login / Auth ─────────────────────────────────────── */
+.password-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.password-wrap .form-input {
+  margin-bottom: 0;
+  padding-right: 50px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0;
+  line-height: 1;
+}
+
 .login-wrapper {
   width: 100vw;
   height: 100vh;
