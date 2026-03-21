@@ -58,6 +58,7 @@ export default function TransactionPage({ type }) {
             type={type}
           />
           <main className="main">
+            <h1 className="page-type-title">{type === 'EXPENSE' ? 'Expenses' : 'Income'}</h1>
             <TotalCard total={totalSum} type={typeLabel} monthLabel={currentMonthLabel} />
             {!selectedCategory && (
               <div className="category-empty-state">

@@ -241,6 +241,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
 }
 
 .history__cat-row:hover {
@@ -311,6 +312,12 @@
   display: flex;
   gap: 12px;
   margin-top: 8px;
+  flex-wrap: nowrap;
+}
+
+.goals__form-actions .btn {
+  white-space: nowrap;
+  flex: 1;
 }
 
 .goals__grid {
@@ -425,6 +432,13 @@
 }
 
 /* ── Category empty state (no category selected) ───────── */
+.page-type-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  margin: 0 0 16px 0;
+}
+
 .category-empty-state {
   display: flex;
   flex-direction: column;

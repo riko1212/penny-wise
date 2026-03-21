@@ -213,6 +213,7 @@
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 4px;
+  overflow-x: auto;
 }
 
 .profile-tab {
@@ -644,6 +645,7 @@
   display: flex;
   align-items: center;
   flex-grow: 1;
+  min-width: 0;
 }
 
 .info-item-edit-fields {
@@ -1409,5 +1411,35 @@
     width: auto;
     border-radius: 20px;
     padding: 22px 20px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .info-item {
+    gap: 8px;
+  }
+
+  .info-item-text {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .info-item-count {
+    width: auto;
+    flex-shrink: 0;
+    margin-right: 0;
+  }
+
+  .info-item-data {
+    display: none;
+  }
+
+  .profile-tab {
+    font-size: 12px;
+    padding: 8px 10px;
   }
 }
