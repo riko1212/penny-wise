@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
 
 export default defineConfig({
-    base: '/fc/',
+    base: '/',
     plugins: [react(), eslint()],
     define: {
         global: 'globalThis',
