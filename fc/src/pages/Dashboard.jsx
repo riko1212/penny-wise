@@ -124,6 +124,11 @@ export default function Dashboard() {
                   <Link to="/main" className="dashboard__card dashboard__card--expense dashboard__card--link">
                     <span className="dashboard__card-label">{t('dashboard.totalExpenses')}</span>
                     <span className="dashboard__card-amount">{formatUAH(expense)}</span>
+                    {income > 0 && (
+                      <span className={`dashboard__card-pct${expense > income ? ' dashboard__card-pct--over' : ''}`}>
+                        {((expense / income) * 100).toFixed(1)}% {t('dashboard.ofIncome')}
+                      </span>
+                    )}
                   </Link>
                   <div className={`dashboard__card dashboard__card--balance ${balance >= 0 ? 'dashboard__card--positive' : 'dashboard__card--negative'}`}>
                     <span className="dashboard__card-label">{t('dashboard.balance')}</span>

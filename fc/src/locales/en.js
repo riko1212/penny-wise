@@ -52,6 +52,7 @@ export default {
     errorLoad: 'Failed to load dashboard data. Check your connection.',
     recentTransactions: 'Recent transactions',
     incomeVsExpenses: 'Income vs Expenses',
+    ofIncome: 'of income',
     seeAll: 'See all',
     noRecent: 'No recent transactions',
     thisMonth: 'This month',

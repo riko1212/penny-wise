@@ -52,6 +52,7 @@ export default {
     errorLoad: "Не вдалося завантажити дані. Перевірте з'єднання.",
     recentTransactions: 'Останні транзакції',
     incomeVsExpenses: 'Доходи vs Витрати',
+    ofIncome: 'від доходу',
     seeAll: 'Всі',
     noRecent: 'Немає транзакцій',
     thisMonth: 'Цей місяць',
