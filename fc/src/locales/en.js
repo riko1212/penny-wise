@@ -238,4 +238,14 @@ export default {
   notFound: {
     backToMain: '← Back to main',
   },
+  categories: {
+    Food: 'Food',
+    Transport: 'Transport',
+    Utilities: 'Utilities',
+    Entertainment: 'Entertainment',
+    Health: 'Health',
+    Salary: 'Salary',
+    Freelance: 'Freelance',
+    Other: 'Other',
+  },
 };

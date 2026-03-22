@@ -238,4 +238,14 @@ export default {
   notFound: {
     backToMain: '← На головну',
   },
+  categories: {
+    Food: 'Їжа',
+    Transport: 'Транспорт',
+    Utilities: 'Комунальні послуги',
+    Entertainment: 'Розваги',
+    Health: "Здоров'я",
+    Salary: 'Зарплата',
+    Freelance: 'Фріланс',
+    Other: 'Інше',
+  },
 };

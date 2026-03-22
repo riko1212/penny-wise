@@ -31,7 +31,7 @@ function getChange(current, previous) {
 export default function History() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
-  const { t } = useLanguage();
+  const { t, tc } = useLanguage();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -92,7 +92,7 @@ export default function History() {
 
   const stackedData = [...new Set(catData.map((d) => d.period))].sort().map((period) => {
     const entry = { period };
-    categories.forEach((cat) => { entry[cat] = getCatTotal(period, cat); });
+    categories.forEach((cat) => { entry[tc(cat)] = getCatTotal(period, cat); });
     return entry;
   });
 
@@ -238,7 +238,7 @@ export default function History() {
                                   className="history__cat-dot"
                                   style={{ backgroundColor: COLORS[i % COLORS.length] }}
                                 />
-                                {cat}
+                                {tc(cat)}
                               </td>
                               <td className="history__cat-td">{formatUAH(curr)}</td>
                               <td className="history__cat-td history__cat-td--muted">{formatUAH(prev)}</td>
@@ -265,7 +265,7 @@ export default function History() {
                         {categories.map((cat, i) => (
                           <Bar
                             key={cat}
-                            dataKey={cat}
+                            dataKey={tc(cat)}
                             stackId="a"
                             fill={COLORS[i % COLORS.length]}
                           />

@@ -39,8 +39,18 @@ export function LanguageProvider({ children }) {
     [lang]
   );
 
+  // Translate a category name: known defaults get translated, custom names stay as-is
+  const tc = useCallback(
+    (name) => {
+      if (!name) return name;
+      const translated = locales[lang]?.categories?.[name];
+      return translated || name;
+    },
+    [lang]
+  );
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang, t, tc }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -14,7 +14,7 @@ const EMPTY_FORM = { name: '', targetAmount: '', categoryName: '', note: '', due
 export default function Goals() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
-  const { t, lang } = useLanguage();
+  const { t, lang, tc } = useLanguage();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -174,7 +174,7 @@ export default function Goals() {
                 >
                   <option value="">{t('goals.selectCategory')}</option>
                   {incomeCategories.map((c) => (
-                    <option key={c.id} value={c.name}>{c.name}</option>
+                    <option key={c.id} value={c.name}>{tc(c.name)}</option>
                   ))}
                 </select>
                 <label className="profile-label">{t('goals.note')}</label>
@@ -251,7 +251,7 @@ export default function Goals() {
                         <span>{pct.toFixed(0)}%</span>
                         <span>{formatUAH(goal.targetAmount)}</span>
                       </div>
-                      <p className="goals__category">{t('goals.category', { name: goal.categoryName })}</p>
+                      <p className="goals__category">{t('goals.category', { name: tc(goal.categoryName) })}</p>
                       {due && (
                         <p className={`goals__deadline${due.overdue ? ' goals__deadline--overdue' : ''}`}>
                           {due.label}

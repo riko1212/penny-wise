@@ -16,7 +16,7 @@ const INCOME_COLORS  = ['#69db7c', '#38d9a9', '#4dabf7', '#74c0fc', '#a9e34b', '
 export default function Dashboard() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
-  const { t } = useLanguage();
+  const { t, tc } = useLanguage();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -42,6 +42,7 @@ export default function Dashboard() {
         setExpense(exp);
         setExpenseSummary(expSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
         setIncomeSummary(incSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
+        // Note: names are translated in render via tc()
       })
       .catch(() => setError(t('dashboard.errorLoad')))
       .finally(() => setLoading(false));
@@ -96,7 +97,7 @@ export default function Dashboard() {
                       <h2 className="dashboard__chart-title">{t('dashboard.expensesByCategory')}</h2>
                       <ResponsiveContainer width="100%" height={320}>
                         <PieChart>
-                          <Pie data={expenseSummary} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={110} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                          <Pie data={expenseSummary.map((e) => ({ ...e, name: tc(e.name) }))} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={110} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                             {expenseSummary.map((_, i) => (
                               <Cell key={i} fill={EXPENSE_COLORS[i % EXPENSE_COLORS.length]} />
                             ))}
@@ -112,7 +113,7 @@ export default function Dashboard() {
                       <h2 className="dashboard__chart-title">{t('dashboard.incomeByCategory')}</h2>
                       <ResponsiveContainer width="100%" height={320}>
                         <PieChart>
-                          <Pie data={incomeSummary} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={110} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                          <Pie data={incomeSummary.map((e) => ({ ...e, name: tc(e.name) }))} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={110} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                             {incomeSummary.map((_, i) => (
                               <Cell key={i} fill={INCOME_COLORS[i % INCOME_COLORS.length]} />
                             ))}

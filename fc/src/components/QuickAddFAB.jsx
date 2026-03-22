@@ -11,7 +11,7 @@ const HIDDEN_PATHS = ['/', '/register', '/restore-pass'];
 export default function QuickAddFAB() {
   const location = useLocation();
   const currentUser = useCurrentUser();
-  const { t } = useLanguage();
+  const { t, tc } = useLanguage();
 
   const [open, setOpen] = useState(false);
   const [type, setType] = useState('EXPENSE');
@@ -154,7 +154,7 @@ export default function QuickAddFAB() {
               >
                 <option value="">{t('fab.selectCategory')}</option>
                 {categories.map((c) => (
-                  <option key={c.id} value={c.name}>{c.name}</option>
+                  <option key={c.id} value={c.name}>{tc(c.name)}</option>
                 ))}
               </select>
 
