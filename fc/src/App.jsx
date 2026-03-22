@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from './context/LanguageContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RestorePass from './pages/RestorePass';
@@ -15,22 +16,24 @@ import QuickAddFAB from './components/QuickAddFAB';
 
 function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/restore-pass" element={<RestorePass />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
-        <Route path="/main" element={<ProtectedRoute><Main /></ProtectedRoute>} />
-        <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <ToastContainer />
-      <QuickAddFAB />
-    </HashRouter>
+    <LanguageProvider>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/restore-pass" element={<RestorePass />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+          <Route path="/main" element={<ProtectedRoute><Main /></ProtectedRoute>} />
+          <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <ToastContainer />
+        <QuickAddFAB />
+      </HashRouter>
+    </LanguageProvider>
   );
 }
 

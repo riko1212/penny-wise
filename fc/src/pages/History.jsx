@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import ChartTooltip from '../components/ChartTooltip';
 import { HistorySkeleton } from '../components/Skeleton';
 import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useLanguage } from '../context/LanguageContext';
 import '../index.css';
 
 const now = new Date();
@@ -30,6 +31,7 @@ function getChange(current, previous) {
 export default function History() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -53,7 +55,7 @@ export default function History() {
     fetch(`/api/transactions/history?userId=${currentUser.id}&type=${type}&groupBy=${groupBy}`)
       .then((r) => r.json())
       .then(setData)
-      .catch(() => setError('Failed to load history. Check your connection.'))
+      .catch(() => setError(t('history.errorLoad')))
       .finally(() => setLoading(false));
   }, [currentUser, type, groupBy]);
 
@@ -64,7 +66,7 @@ export default function History() {
     fetch(`/api/transactions/history/categories?userId=${currentUser.id}&type=${type}&groupBy=${groupBy}`)
       .then((r) => r.json())
       .then(setCatData)
-      .catch(() => setCatError('Failed to load category history. Check your connection.'))
+      .catch(() => setCatError(t('history.errorCatLoad')))
       .finally(() => setCatLoading(false));
   }, [currentUser, type, groupBy, viewMode]);
 
@@ -80,7 +82,6 @@ export default function History() {
 
   const color = type === 'EXPENSE' ? '#ff6b6b' : '#69db7c';
 
-  // Category view helpers
   const categories = [...new Set(catData.map((d) => d.categoryName))];
   const currentPeriod = groupBy === 'year' ? String(currentYear) : currentMonth;
   const prevPeriod = groupBy === 'year' ? String(prevYear) : prevMonth;
@@ -101,7 +102,7 @@ export default function History() {
       <div className="page-wrap">
         <div className="container">
           <div className="dashboard">
-            <h1 className="dashboard__title">History</h1>
+            <h1 className="dashboard__title">{t('history.title')}</h1>
 
             <div className="history__controls">
               <div className="history__toggle">
@@ -109,13 +110,13 @@ export default function History() {
                   className={`btn ${type === 'EXPENSE' ? 'history__toggle-btn--active' : ''}`}
                   onClick={() => setType('EXPENSE')}
                 >
-                  Expenses
+                  {t('history.expenses')}
                 </button>
                 <button
                   className={`btn ${type === 'INCOME' ? 'history__toggle-btn--active' : ''}`}
                   onClick={() => setType('INCOME')}
                 >
-                  Income
+                  {t('history.income')}
                 </button>
               </div>
               <div className="history__toggle">
@@ -123,13 +124,13 @@ export default function History() {
                   className={`btn ${groupBy === 'month' ? 'history__toggle-btn--active' : ''}`}
                   onClick={() => setGroupBy('month')}
                 >
-                  Monthly
+                  {t('history.monthly')}
                 </button>
                 <button
                   className={`btn ${groupBy === 'year' ? 'history__toggle-btn--active' : ''}`}
                   onClick={() => setGroupBy('year')}
                 >
-                  Yearly
+                  {t('history.yearly')}
                 </button>
               </div>
               <div className="history__toggle">
@@ -137,13 +138,13 @@ export default function History() {
                   className={`btn ${viewMode === 'total' ? 'history__toggle-btn--active' : ''}`}
                   onClick={() => setViewMode('total')}
                 >
-                  Total
+                  {t('history.total')}
                 </button>
                 <button
                   className={`btn ${viewMode === 'category' ? 'history__toggle-btn--active' : ''}`}
                   onClick={() => setViewMode('category')}
                 >
-                  By category
+                  {t('history.byCategory')}
                 </button>
               </div>
             </div>
@@ -157,31 +158,31 @@ export default function History() {
                 <>
                   <div className="dashboard__cards history__cards">
                     <div className="dashboard__card">
-                      <span className="dashboard__card-label">This month</span>
+                      <span className="dashboard__card-label">{t('history.thisMonth')}</span>
                       <span className="dashboard__card-amount" style={{ color }}>{formatUAH(thisMonth)}</span>
                       <span className={`history__change ${monthChange >= 0 ? 'history__change--up' : 'history__change--down'}`}>
-                        {monthChange >= 0 ? '↑' : '↓'} {Math.abs(monthChange)}% vs last month
+                        {monthChange >= 0 ? '↑' : '↓'} {Math.abs(monthChange)}% {t('history.vsLastMonth')}
                       </span>
                     </div>
                     <div className="dashboard__card">
-                      <span className="dashboard__card-label">Last month</span>
+                      <span className="dashboard__card-label">{t('history.lastMonth')}</span>
                       <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{formatUAH(lastMonth)}</span>
                     </div>
                     <div className="dashboard__card">
-                      <span className="dashboard__card-label">This year</span>
+                      <span className="dashboard__card-label">{t('history.thisYear')}</span>
                       <span className="dashboard__card-amount" style={{ color }}>{formatUAH(thisYear)}</span>
                       <span className={`history__change ${yearChange >= 0 ? 'history__change--up' : 'history__change--down'}`}>
-                        {yearChange >= 0 ? '↑' : '↓'} {Math.abs(yearChange)}% vs last year
+                        {yearChange >= 0 ? '↑' : '↓'} {Math.abs(yearChange)}% {t('history.vsLastYear')}
                       </span>
                     </div>
                     <div className="dashboard__card">
-                      <span className="dashboard__card-label">Last year</span>
+                      <span className="dashboard__card-label">{t('history.lastYear')}</span>
                       <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{formatUAH(lastYear)}</span>
                     </div>
                   </div>
 
                   {data.length === 0 ? (
-                    <p className="loading">No data for selected period.</p>
+                    <p className="loading">{t('history.noData')}</p>
                   ) : (
                     <div className="dashboard__chart history__chart-wide">
                       <ResponsiveContainer width="100%" height={360}>
@@ -190,7 +191,7 @@ export default function History() {
                           <XAxis dataKey="period" stroke="#aaa" tick={{ fontSize: 12 }} />
                           <YAxis stroke="#aaa" tick={{ fontSize: 12 }} />
                           <Tooltip
-                            content={<ChartTooltip valueLabel={type === 'EXPENSE' ? 'Expenses' : 'Income'} />}
+                            content={<ChartTooltip valueLabel={type === 'EXPENSE' ? t('history.expenses') : t('history.income')} />}
                           />
                           <Bar dataKey="total" radius={[6, 6, 0, 0]}>
                             {data.map((_, i) => (
@@ -211,18 +212,17 @@ export default function History() {
               ) : catError ? (
                 <p className="api-error">{catError}</p>
               ) : catData.length === 0 ? (
-                <p className="loading">No category data for selected period.</p>
+                <p className="loading">{t('history.noCatData')}</p>
               ) : (
                 <>
-                  {/* Comparison table */}
                   <div className="dashboard__chart history__cat-section">
                     <table className="history__cat-table">
                       <thead>
                         <tr>
-                          <th className="history__cat-th">Category</th>
+                          <th className="history__cat-th">{t('history.category')}</th>
                           <th className="history__cat-th">{currentPeriod}</th>
                           <th className="history__cat-th">{prevPeriod}</th>
-                          <th className="history__cat-th">Change</th>
+                          <th className="history__cat-th">{t('history.change')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -254,7 +254,6 @@ export default function History() {
                     </table>
                   </div>
 
-                  {/* Stacked bar chart */}
                   <div className="dashboard__chart history__chart-wide">
                     <ResponsiveContainer width="100%" height={360}>
                       <BarChart data={stackedData} margin={{ top: 8, right: 24, left: 16, bottom: 8 }}>

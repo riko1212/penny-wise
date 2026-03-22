@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { SidebarSkeleton } from './Skeleton.jsx';
 import { showToast } from '../utils/toast';
 import { useEscapeKey } from '../hooks/useEscapeKey';
+import { useLanguage } from '../context/LanguageContext';
 
 Sidebar.propTypes = {
     onCategorySelect: PropTypes.func.isRequired,
@@ -14,6 +15,7 @@ Sidebar.propTypes = {
 };
 
 export default function Sidebar({ onCategorySelect, userId, type }) {
+    const { t } = useLanguage();
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
@@ -34,7 +36,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 return res.json();
             })
             .then(setCategories)
-            .catch(() => showToast('error', 'Failed to load categories.'))
+            .catch(() => showToast('error', t('sidebar.failedLoad')))
             .finally(() => setLoading(false));
     }, [userId, type]);
 
@@ -52,7 +54,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 setCategories((prev) => [...prev, savedCategory]);
                 setShowAddCategory(false);
             })
-            .catch(() => showToast('error', 'Failed to add category.'));
+            .catch(() => showToast('error', t('sidebar.failedAdd')));
     }
 
     function handleDeleteClick(category) {
@@ -70,7 +72,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                 );
                 setCategoryToDelete(null);
             })
-            .catch(() => showToast('error', 'Failed to delete category.'));
+            .catch(() => showToast('error', t('sidebar.failedDelete')));
     }
 
     const handleCloseCategoryDelete = useCallback(() => setCategoryToDelete(null), []);
@@ -88,7 +90,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                     type="button"
                     className="sidebar-toggle"
                     onClick={() => setCollapsed((c) => !c)}
-                    title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                    title={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
                 >
                     {collapsed ? '›' : '‹'}
                 </button>
@@ -109,7 +111,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                             type="button"
                             className={!showAddCategory ? 'add-category-btn' : 'add-category-btn close'}
                         >
-                            {!showAddCategory ? 'Add category' : 'Close'}
+                            {!showAddCategory ? t('sidebar.addCategory') : t('sidebar.close')}
                         </button>
                     </>
                 )}

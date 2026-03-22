@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import InfoItem from './InfoItem';
+import { useLanguage } from '../context/LanguageContext';
 
 const PAGE_SIZE = 20;
 
@@ -23,6 +24,7 @@ export default function InfoList({
   onAddClick,
   type = 'expense',
 }) {
+  const { t } = useLanguage();
   const [sortBy, setSortBy] = useState('order');
   const [search, setSearch] = useState('');
   const [minAmount, setMinAmount] = useState('');
@@ -81,12 +83,10 @@ export default function InfoList({
     }
   }
 
-  // Reset visible count whenever filters/sort/items change
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
   }, [search, minAmount, maxAmount, dateFrom, dateTo, sortBy, items]);
 
-  // IntersectionObserver — load next page when sentinel enters viewport
   useEffect(() => {
     if (!sentinelEl) return;
     const observer = new IntersectionObserver(
@@ -111,12 +111,11 @@ export default function InfoList({
 
   return (
     <>
-      {/* Search & filter bar */}
       <div className="filter-bar">
         <input
           type="text"
           className="filter-search"
-          placeholder="Search by description..."
+          placeholder={t('infoList.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -124,12 +123,12 @@ export default function InfoList({
           className={`btn filter-toggle-btn ${filtersOpen ? 'filter-toggle-btn--active' : ''}`}
           onClick={() => setFiltersOpen((p) => !p)}
         >
-          {filtersOpen ? 'Hide filters' : 'Filters'}
+          {filtersOpen ? t('infoList.hideFilters') : t('infoList.filters')}
           {hasActiveFilters && !filtersOpen && <span className="filter-dot" />}
         </button>
         {hasActiveFilters && (
           <button className="btn filter-clear-btn" onClick={handleClearFilters}>
-            Clear
+            {t('infoList.clear')}
           </button>
         )}
       </div>
@@ -137,12 +136,12 @@ export default function InfoList({
       {filtersOpen && (
         <div className="filter-panel">
           <div className="filter-group">
-            <label className="filter-label">Amount</label>
+            <label className="filter-label">{t('infoList.amount')}</label>
             <div className="filter-range">
               <input
                 type="number"
                 className={`filter-input${amountRangeError ? ' form-input--error' : ''}`}
-                placeholder="Min"
+                placeholder={t('infoList.min')}
                 value={minAmount}
                 min="0"
                 onChange={(e) => setMinAmount(e.target.value)}
@@ -151,16 +150,16 @@ export default function InfoList({
               <input
                 type="number"
                 className={`filter-input${amountRangeError ? ' form-input--error' : ''}`}
-                placeholder="Max"
+                placeholder={t('infoList.max')}
                 value={maxAmount}
                 min="0"
                 onChange={(e) => setMaxAmount(e.target.value)}
               />
             </div>
-            {amountRangeError && <span className="form-error">Min cannot exceed Max.</span>}
+            {amountRangeError && <span className="form-error">{t('infoList.amountRangeError')}</span>}
           </div>
           <div className="filter-group">
-            <label className="filter-label">Date range</label>
+            <label className="filter-label">{t('infoList.dateRange')}</label>
             <div className="filter-range">
               <input
                 type="date"
@@ -176,7 +175,7 @@ export default function InfoList({
                 onChange={(e) => setDateTo(e.target.value)}
               />
             </div>
-            {dateRangeError && <span className="form-error">Start date cannot be after end date.</span>}
+            {dateRangeError && <span className="form-error">{t('infoList.dateRangeError')}</span>}
           </div>
         </div>
       )}
@@ -185,16 +184,18 @@ export default function InfoList({
         {items.length === 0 ? (
           <li className="info-list__empty-state">
             <span className="info-empty__icon">{type === 'income' ? '💰' : '💸'}</span>
-            <p className="info-empty__title">No transactions yet</p>
-            <p className="info-empty__text">Add your first {type === 'income' ? 'income' : 'expense'} to start tracking.</p>
+            <p className="info-empty__title">{t('infoList.noTransactions')}</p>
+            <p className="info-empty__text">
+              {type === 'income' ? t('infoList.addFirstIncome') : t('infoList.addFirstExpense')}
+            </p>
             {onAddClick && (
               <button className="btn info-empty__cta" onClick={onAddClick}>
-                + Add {type === 'income' ? 'income' : 'expense'}
+                {type === 'income' ? t('infoList.addIncome') : t('infoList.addExpense')}
               </button>
             )}
           </li>
         ) : filtered.length === 0 ? (
-          <li className="info-list__empty">No transactions match your filters.</li>
+          <li className="info-list__empty">{t('infoList.noMatch')}</li>
         ) : (
           filtered.slice(0, visibleCount).map((item) => (
             <InfoItem
@@ -210,17 +211,17 @@ export default function InfoList({
 
       {filtered.length > visibleCount && (
         <div ref={setSentinelEl} className="info-list__sentinel">
-          <span className="info-list__sentinel-text">Loading more…</span>
+          <span className="info-list__sentinel-text">{t('infoList.loadingMore')}</span>
         </div>
       )}
       {filtered.length > 0 && filtered.length <= visibleCount && filtered.length > PAGE_SIZE && (
-        <p className="info-list__count">Showing all {filtered.length} transactions</p>
+        <p className="info-list__count">{t('infoList.showingAll', { count: filtered.length })}</p>
       )}
 
       <div className="info-actions">
         <div className="info-sorting">
           <label className="info-sort-text" htmlFor="sort-select">
-            Sort by:
+            {t('infoList.sortBy')}
           </label>
           <select
             className="info-sort-select"
@@ -228,16 +229,16 @@ export default function InfoList({
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="order">order</option>
-            <option value="highest">from highest</option>
-            <option value="lowest">from lowest</option>
-            <option value="description">description</option>
-            <option value="first">from first</option>
-            <option value="last">from last</option>
+            <option value="order">{t('infoList.sortOrder')}</option>
+            <option value="highest">{t('infoList.sortHighest')}</option>
+            <option value="lowest">{t('infoList.sortLowest')}</option>
+            <option value="description">{t('infoList.sortDescription')}</option>
+            <option value="first">{t('infoList.sortFirst')}</option>
+            <option value="last">{t('infoList.sortLast')}</option>
           </select>
         </div>
         <button className="btn" onClick={onClearModal}>
-          Clear list
+          {t('infoList.clearList')}
         </button>
       </div>
     </>

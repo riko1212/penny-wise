@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Plus, X } from 'lucide-react';
 import { formatUAH } from '../utils/format';
+import { useLanguage } from '../context/LanguageContext';
 
 Info.propTypes = {
   sum: PropTypes.number,
@@ -11,7 +12,8 @@ Info.propTypes = {
 };
 
 export default function Info({ sum, children, type = 'expense', onAddClick, showForm }) {
-  const label = type === 'income' ? 'Income' : 'Expenses';
+  const { t } = useLanguage();
+  const label = type === 'income' ? t('info.income') : t('info.expenses');
   const amountClass = `info-amount info-amount--${type}`;
 
   return (
@@ -25,10 +27,10 @@ export default function Info({ sum, children, type = 'expense', onAddClick, show
             type="button"
             className={`info-add-btn${showForm ? ' info-add-btn--active' : ''}`}
             onClick={onAddClick}
-            title={showForm ? 'Cancel' : 'Add transaction'}
+            title={showForm ? t('info.cancel') : t('info.add')}
           >
             {showForm ? <X size={18} strokeWidth={2.5} /> : <Plus size={18} strokeWidth={2.5} />}
-            {showForm ? 'Cancel' : 'Add'}
+            {showForm ? t('info.cancel') : t('info.add')}
           </button>
         )}
       </div>

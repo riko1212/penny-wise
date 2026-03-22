@@ -1,30 +1,40 @@
 import { MAX_DESCRIPTION_LENGTH, MAX_AMOUNT } from '../constants';
 
-export function validateTransaction(topic, amount, date) {
+export function validateTransaction(topic, amount, date, msgs = {}) {
   const errors = {};
 
+  const m = {
+    descriptionRequired: msgs.descriptionRequired || 'Description is required.',
+    maxChars: msgs.maxChars || `Max ${MAX_DESCRIPTION_LENGTH} characters.`,
+    amountRequired: msgs.amountRequired || 'Amount is required.',
+    amountPositive: msgs.amountPositive || 'Amount must be a positive number.',
+    amountMax: msgs.amountMax || 'Amount cannot exceed 1 000 000.',
+    dateRequired: msgs.dateRequired || 'Date is required.',
+    dateFuture: msgs.dateFuture || 'Date cannot be in the future.',
+  };
+
   if (!topic.trim()) {
-    errors.topic = 'Description is required.';
+    errors.topic = m.descriptionRequired;
   } else if (topic.trim().length > MAX_DESCRIPTION_LENGTH) {
-    errors.topic = `Max ${MAX_DESCRIPTION_LENGTH} characters.`;
+    errors.topic = m.maxChars;
   }
 
   const num = parseFloat(amount);
   if (!amount) {
-    errors.income = 'Amount is required.';
+    errors.income = m.amountRequired;
   } else if (isNaN(num) || num <= 0) {
-    errors.income = 'Amount must be a positive number.';
+    errors.income = m.amountPositive;
   } else if (num > MAX_AMOUNT) {
-    errors.income = 'Amount cannot exceed 1 000 000.';
+    errors.income = m.amountMax;
   }
 
   if (!date) {
-    errors.date = 'Date is required.';
+    errors.date = m.dateRequired;
   } else {
     const today = new Date();
     today.setHours(23, 59, 59, 999);
     if (new Date(date) > today) {
-      errors.date = 'Date cannot be in the future.';
+      errors.date = m.dateFuture;
     }
   }
 

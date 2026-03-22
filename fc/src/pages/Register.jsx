@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 function Register() {
+  const { t } = useLanguage();
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -16,26 +18,24 @@ function Register() {
     const repeatPassword = e.target.elements['login-pass-repeat'].value;
 
     if (!password) {
-      setErrorMessage('Please enter a password');
+      setErrorMessage(t('auth.passwordEmpty'));
       return;
     }
 
     if (password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters long');
+      setErrorMessage(t('auth.passwordMin'));
       return;
     }
 
     if (password !== repeatPassword) {
-      setErrorMessage('Passwords do not match');
+      setErrorMessage(t('auth.passwordNoMatch'));
       return;
     }
 
     try {
       const response = await fetch('/api/users', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
       });
 
@@ -45,74 +45,73 @@ function Register() {
         return;
       }
 
-      // Якщо все пройшло успішно — перенаправляємо на головну
       navigate('/');
-    } catch (error) {
-      setErrorMessage('Network error. Please try again later.');
+    } catch {
+      setErrorMessage(t('auth.networkError'));
     }
   };
 
   return (
-      <div className="login-wrapper">
-        <div className="login-block">
-          <p className="login-text">Register</p>
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-          <form className="login-form" onSubmit={handleRegister}>
+    <div className="login-wrapper">
+      <div className="login-block">
+        <p className="login-text">{t('auth.register')}</p>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <form className="login-form" onSubmit={handleRegister}>
+          <input
+            type="text"
+            name="login-name"
+            className="form-input"
+            placeholder={t('auth.enterName')}
+            required
+          />
+          <input
+            type="email"
+            name="email-name"
+            className="form-input"
+            placeholder={t('auth.enterEmail')}
+            required
+          />
+          <div className="password-wrap">
             <input
-                type="text"
-                name="login-name"
-                className="form-input"
-                placeholder="Enter name"
-                required
+              type={showPassword ? 'text' : 'password'}
+              name="login-pass"
+              className="form-input"
+              placeholder={t('auth.enterPassword')}
+              required
             />
-            <input
-                type="email"
-                name="email-name"
-                className="form-input"
-                placeholder="Enter email"
-                required
-            />
-            <div className="password-wrap">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="login-pass"
-                className="form-input"
-                placeholder="Enter password"
-                required
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword((v) => !v)}
-              >
-                {showPassword ? '🙈' : '👁'}
-              </button>
-            </div>
-            <div className="password-wrap">
-              <input
-                type={showRepeatPassword ? 'text' : 'password'}
-                name="login-pass-repeat"
-                className="form-input"
-                placeholder="Repeat password"
-                required
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowRepeatPassword((v) => !v)}
-              >
-                {showRepeatPassword ? '🙈' : '👁'}
-              </button>
-            </div>
-            <button type="submit" className="btn form-btn">
-              Register
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? '🙈' : '👁'}
             </button>
-            <Link to="/" className="btn form-btn back-btn">
-              Back to Login
-            </Link>
-          </form>
-        </div>
+          </div>
+          <div className="password-wrap">
+            <input
+              type={showRepeatPassword ? 'text' : 'password'}
+              name="login-pass-repeat"
+              className="form-input"
+              placeholder={t('auth.repeatPassword')}
+              required
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowRepeatPassword((v) => !v)}
+            >
+              {showRepeatPassword ? '🙈' : '👁'}
+            </button>
+          </div>
+          <button type="submit" className="btn form-btn">
+            {t('auth.register')}
+          </button>
+          <Link to="/" className="btn form-btn back-btn">
+            {t('auth.backToLogin')}
+          </Link>
+        </form>
       </div>
+    </div>
   );
 }
 

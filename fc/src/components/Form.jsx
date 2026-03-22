@@ -2,6 +2,8 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { validateTransaction } from '../utils/validate';
 import { todayStr } from '../constants';
+import { useLanguage } from '../context/LanguageContext';
+import { MAX_DESCRIPTION_LENGTH } from '../constants';
 
 Form.propTypes = {
   onAddItems: PropTypes.func.isRequired,
@@ -9,17 +11,30 @@ Form.propTypes = {
 };
 
 export default function Form({ onAddItems, selectedCategory }) {
+  const { t } = useLanguage();
   const [income, setIncome] = useState('');
   const [topic, setTopic] = useState('');
   const [date, setDate] = useState(todayStr);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
+  function getMsgs() {
+    return {
+      descriptionRequired: t('validate.descriptionRequired'),
+      maxChars: t('validate.maxChars', { max: MAX_DESCRIPTION_LENGTH }),
+      amountRequired: t('validate.amountRequired'),
+      amountPositive: t('validate.amountPositive'),
+      amountMax: t('validate.amountMax'),
+      dateRequired: t('validate.dateRequired'),
+      dateFuture: t('validate.dateFuture'),
+    };
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     setSubmitted(true);
 
-    const errs = validateTransaction(topic, income, date);
+    const errs = validateTransaction(topic, income, date, getMsgs());
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
@@ -41,7 +56,7 @@ export default function Form({ onAddItems, selectedCategory }) {
     setter(value);
     if (submitted) {
       const next = { topic, income, date, [field]: value };
-      const errs = validateTransaction(next.topic, next.income, next.date);
+      const errs = validateTransaction(next.topic, next.income, next.date, getMsgs());
       setErrors(errs);
     }
   }
@@ -53,7 +68,7 @@ export default function Form({ onAddItems, selectedCategory }) {
           type="text"
           name="user-text"
           className={`form-input${errors.topic ? ' form-input--error' : ''}`}
-          placeholder="Description"
+          placeholder={t('form.description')}
           value={topic}
           onChange={(e) => handleChange('topic', e.target.value, setTopic)}
           maxLength={110}
@@ -64,7 +79,7 @@ export default function Form({ onAddItems, selectedCategory }) {
           type="number"
           name="user-sum"
           className={`form-input${errors.income ? ' form-input--error' : ''}`}
-          placeholder="Amount"
+          placeholder={t('form.amount')}
           value={income}
           min="0.01"
           step="0.01"
@@ -83,7 +98,7 @@ export default function Form({ onAddItems, selectedCategory }) {
         {errors.date && <span className="form-error">{errors.date}</span>}
       </div>
       <button type="submit" className="form-btn btn">
-        Save
+        {t('form.save')}
       </button>
     </form>
   );

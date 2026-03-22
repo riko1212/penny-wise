@@ -4,6 +4,8 @@ import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
 import { formatUAH } from '../utils/format';
 import { validateTransaction } from '../utils/validate';
 import { todayStr } from '../constants';
+import { useLanguage } from '../context/LanguageContext';
+import { MAX_DESCRIPTION_LENGTH } from '../constants';
 
 InfoItem.propTypes = {
   onDeleteItemId: PropTypes.func,
@@ -12,6 +14,7 @@ InfoItem.propTypes = {
 };
 
 export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
+  const { t, lang } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [editedTopic, setEditedTopic] = useState(item.topic);
   const [editedIncome, setEditedIncome] = useState(item.income);
@@ -26,6 +29,18 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     setEditedDate(new Date(item.date).toISOString().slice(0, 10));
     setErrors({});
   }, [item]);
+
+  function getMsgs() {
+    return {
+      descriptionRequired: t('validate.descriptionRequired'),
+      maxChars: t('validate.maxChars', { max: MAX_DESCRIPTION_LENGTH }),
+      amountRequired: t('validate.amountRequired'),
+      amountPositive: t('validate.amountPositive'),
+      amountMax: t('validate.amountMax'),
+      dateRequired: t('validate.dateRequired'),
+      dateFuture: t('validate.dateFuture'),
+    };
+  }
 
   function isToday(date) {
     const now = new Date();
@@ -45,12 +60,12 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     if (field === 'income') setEditedIncome(value);
     if (field === 'date') setEditedDate(value);
     if (Object.keys(errors).length > 0) {
-      setErrors(validateTransaction(next.topic, next.income, next.date));
+      setErrors(validateTransaction(next.topic, next.income, next.date, getMsgs()));
     }
   }
 
   async function handleSave() {
-    const errs = validateTransaction(editedTopic, editedIncome, editedDate);
+    const errs = validateTransaction(editedTopic, editedIncome, editedDate, getMsgs());
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
@@ -77,6 +92,8 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     setErrors({});
     setIsEditing(false);
   }
+
+  const dateLocale = lang === 'uk' ? 'uk-UA' : 'en-GB';
 
   return (
     <li className="info-item">
@@ -125,8 +142,8 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
             <p className="info-item-data">
               <Calendar size={13} style={{ opacity: 0.5, verticalAlign: 'middle', marginRight: 4 }} />
               {isToday(item.date)
-                ? 'Today'
-                : new Date(item.date).toLocaleDateString('uk-UA')}
+                ? t('common.today')
+                : new Date(item.date).toLocaleDateString(dateLocale)}
             </p>
           </>
         )}

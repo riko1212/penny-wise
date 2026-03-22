@@ -13,6 +13,7 @@ import ClearModal from '../components/ClearModal';
 import { useTransactions } from '../hooks/useTransactions';
 import TotalCard from '../components/TotalCard';
 import { TransactionsSkeleton } from '../components/Skeleton';
+import { useLanguage } from '../context/LanguageContext';
 
 TransactionPage.propTypes = {
   type: PropTypes.oneOf(['EXPENSE', 'INCOME']).isRequired,
@@ -20,6 +21,7 @@ TransactionPage.propTypes = {
 
 export default function TransactionPage({ type }) {
   const [showForm, setShowForm] = useState(false);
+  const { t } = useLanguage();
   const {
     currentUser,
     currentMonthLabel,
@@ -44,8 +46,8 @@ export default function TransactionPage({ type }) {
   const typeLabel = type === 'EXPENSE' ? 'expense' : 'income';
   const emptyIcon = type === 'EXPENSE' ? '🗂️' : '📊';
   const emptyText = type === 'EXPENSE'
-    ? 'Choose a category from the sidebar to view and manage your expenses.'
-    : 'Choose a category from the sidebar to view and manage your income.';
+    ? t('transaction.emptyExpense')
+    : t('transaction.emptyIncome');
 
   return (
     <>
@@ -58,12 +60,14 @@ export default function TransactionPage({ type }) {
             type={type}
           />
           <main className="main">
-            <h1 className="page-type-title">{type === 'EXPENSE' ? 'Expenses' : 'Income'}</h1>
+            <h1 className="page-type-title">
+              {type === 'EXPENSE' ? t('transaction.titleExpense') : t('transaction.titleIncome')}
+            </h1>
             <TotalCard total={totalSum} type={typeLabel} monthLabel={currentMonthLabel} />
             {!selectedCategory && (
               <div className="category-empty-state">
                 <span className="category-empty__icon">{emptyIcon}</span>
-                <h2 className="category-empty__title">Select a category</h2>
+                <h2 className="category-empty__title">{t('transaction.selectCategory')}</h2>
                 <p className="category-empty__text">{emptyText}</p>
               </div>
             )}

@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 function RestorePass() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -16,12 +18,12 @@ function RestorePass() {
     const repeatPassword = e.target.elements['repeat-pass'].value;
 
     if (newPassword.length < 8) {
-      setErrorMessage('Password must be at least 8 characters long');
+      setErrorMessage(t('auth.passwordMin'));
       return;
     }
 
     if (newPassword !== repeatPassword) {
-      setErrorMessage('Passwords do not match');
+      setErrorMessage(t('auth.passwordNoMatch'));
       return;
     }
 
@@ -35,21 +37,21 @@ function RestorePass() {
       const text = await res.text();
 
       if (!res.ok) {
-        setErrorMessage(text || 'Failed to update password');
+        setErrorMessage(text || t('auth.failedUpdate'));
         return;
       }
 
-      setSuccessMessage('Password successfully updated');
+      setSuccessMessage(t('auth.passwordUpdated'));
       setTimeout(() => navigate('/'), 1500);
     } catch {
-      setErrorMessage('Server error. Please try again.');
+      setErrorMessage(t('auth.serverError'));
     }
   };
 
   return (
     <div className="login-wrapper">
       <div className="login-block">
-        <p className="login-text">Restore Pass</p>
+        <p className="login-text">{t('auth.restorePass')}</p>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         {successMessage && <p className="success-message">{successMessage}</p>}
         <form className="login-form" onSubmit={handleRestorePass}>
@@ -57,28 +59,28 @@ function RestorePass() {
             type="text"
             name="login-name"
             className="form-input"
-            placeholder="Enter name"
+            placeholder={t('auth.enterName')}
             required
           />
           <input
             type="password"
             name="new-pass"
             className="form-input"
-            placeholder="Enter new password"
+            placeholder={t('auth.enterNewPassword')}
             required
           />
           <input
             type="password"
             name="repeat-pass"
             className="form-input"
-            placeholder="Repeat new password"
+            placeholder={t('auth.repeatNewPassword')}
             required
           />
           <button type="submit" className="btn form-btn">
-            Restore Password
+            {t('auth.restorePassword')}
           </button>
           <Link to="/" className="btn form-btn back-btn">
-            Back to Login
+            {t('auth.backToLogin')}
           </Link>
         </form>
       </div>

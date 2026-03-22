@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { formatUAH } from '../utils/format';
+import { useLanguage } from '../context/LanguageContext';
 
 TotalCard.propTypes = {
   total: PropTypes.number.isRequired,
@@ -8,7 +9,8 @@ TotalCard.propTypes = {
 };
 
 export default function TotalCard({ total, type, monthLabel }) {
-  const label = type === 'income' ? 'Total Income' : 'Total Expenses';
+  const { t } = useLanguage();
+  const label = type === 'income' ? t('dashboard.totalIncome') : t('dashboard.totalExpenses');
   const amountClass = `total-card__amount total-card__amount--${type}`;
 
   return (

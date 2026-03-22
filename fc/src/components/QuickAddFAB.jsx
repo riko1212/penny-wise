@@ -4,12 +4,14 @@ import { showToast } from '../utils/toast';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { todayStr } from '../constants';
+import { useLanguage } from '../context/LanguageContext';
 
 const HIDDEN_PATHS = ['/', '/register', '/restore-pass'];
 
 export default function QuickAddFAB() {
   const location = useLocation();
   const currentUser = useCurrentUser();
+  const { t } = useLanguage();
 
   const [open, setOpen] = useState(false);
   const [type, setType] = useState('EXPENSE');
@@ -56,10 +58,10 @@ export default function QuickAddFAB() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!description.trim()) { showToast('error', 'Description is required.'); return; }
-    if (!amount || Number(amount) <= 0) { showToast('error', 'Amount must be greater than 0.'); return; }
-    if (!categoryName) { showToast('error', 'Please select a category.'); return; }
-    if (!date) { showToast('error', 'Date is required.'); return; }
+    if (!description.trim()) { showToast('error', t('fab.descriptionRequired')); return; }
+    if (!amount || Number(amount) <= 0) { showToast('error', t('fab.amountRequired')); return; }
+    if (!categoryName) { showToast('error', t('fab.categoryRequired')); return; }
+    if (!date) { showToast('error', t('fab.dateRequired')); return; }
 
     setSaving(true);
     try {
@@ -76,10 +78,10 @@ export default function QuickAddFAB() {
         }),
       });
       if (!res.ok) throw new Error(await res.text());
-      showToast('success', `${type === 'INCOME' ? 'Income' : 'Expense'} added.`);
+      showToast('success', type === 'INCOME' ? t('fab.addedIncome') : t('fab.addedExpense'));
       handleClose();
     } catch (err) {
-      showToast('error', err.message || 'Failed to add transaction.');
+      showToast('error', err.message || t('fab.failedAdd'));
     } finally {
       setSaving(false);
     }
@@ -90,8 +92,8 @@ export default function QuickAddFAB() {
       <button
         className={`fab${open ? ' fab--open' : ''}`}
         onClick={() => (open ? handleClose() : setOpen(true))}
-        title={open ? 'Close' : 'Quick add transaction'}
-        aria-label={open ? 'Close' : 'Add transaction'}
+        title={open ? t('fab.close') : t('fab.quickAdd')}
+        aria-label={open ? t('fab.close') : t('fab.quickAdd')}
       >
         <span className="fab__icon">+</span>
       </button>
@@ -99,10 +101,10 @@ export default function QuickAddFAB() {
       {open && (
         <>
           <div className="fab-backdrop" onClick={handleClose} />
-          <div className="fab-modal" role="dialog" aria-modal="true" aria-label="Quick add transaction">
+          <div className="fab-modal" role="dialog" aria-modal="true" aria-label={t('fab.quickAdd')}>
             <div className="fab-modal__header">
-              <h2 className="fab-modal__title">Quick add</h2>
-              <button type="button" className="fab-modal__close" onClick={handleClose} aria-label="Close">✕</button>
+              <h2 className="fab-modal__title">{t('fab.quickAdd')}</h2>
+              <button type="button" className="fab-modal__close" onClick={handleClose} aria-label={t('fab.close')}>✕</button>
             </div>
 
             <div className="fab-type-toggle">
@@ -111,29 +113,29 @@ export default function QuickAddFAB() {
                 className={`fab-type-btn${type === 'EXPENSE' ? ' fab-type-btn--active fab-type-btn--expense' : ''}`}
                 onClick={() => handleTypeChange('EXPENSE')}
               >
-                Expense
+                {t('fab.expense')}
               </button>
               <button
                 type="button"
                 className={`fab-type-btn${type === 'INCOME' ? ' fab-type-btn--active fab-type-btn--income' : ''}`}
                 onClick={() => handleTypeChange('INCOME')}
               >
-                Income
+                {t('fab.income')}
               </button>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <label className="profile-label">Description</label>
+              <label className="profile-label">{t('fab.description')}</label>
               <input
                 className="form-input"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g. Grocery shopping"
+                placeholder={t('fab.descriptionPlaceholder')}
                 maxLength={100}
                 autoFocus
               />
 
-              <label className="profile-label">Amount (₴)</label>
+              <label className="profile-label">{t('fab.amount')}</label>
               <input
                 className="form-input"
                 type="number"
@@ -144,19 +146,19 @@ export default function QuickAddFAB() {
                 placeholder="0.00"
               />
 
-              <label className="profile-label">Category</label>
+              <label className="profile-label">{t('fab.category')}</label>
               <select
                 className="form-input"
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
               >
-                <option value="">— select category —</option>
+                <option value="">{t('fab.selectCategory')}</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.name}>{c.name}</option>
                 ))}
               </select>
 
-              <label className="profile-label">Date</label>
+              <label className="profile-label">{t('fab.date')}</label>
               <input
                 className="form-input"
                 type="date"
@@ -166,7 +168,7 @@ export default function QuickAddFAB() {
               />
 
               <button type="submit" className="btn fab-modal__submit" disabled={saving}>
-                {saving ? 'Saving…' : `Add ${type === 'INCOME' ? 'income' : 'expense'}`}
+                {saving ? t('fab.saving') : type === 'INCOME' ? t('fab.addIncome') : t('fab.addExpense')}
               </button>
             </form>
           </div>

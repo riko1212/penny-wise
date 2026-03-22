@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEscapeKey } from '../hooks/useEscapeKey';
+import { useLanguage } from '../context/LanguageContext';
 
 DeleteModal.propTypes = {
   onDeleteModalClose: PropTypes.func,
@@ -8,6 +9,7 @@ DeleteModal.propTypes = {
 };
 
 export default function DeleteModal({ onDeleteModalClose, isOpen, onItemDelete }) {
+  const { t } = useLanguage();
   useEscapeKey(onDeleteModalClose, isOpen);
 
   return (
@@ -20,13 +22,13 @@ export default function DeleteModal({ onDeleteModalClose, isOpen, onItemDelete }
         >
           ✕
         </button>
-        <p className="modal-text">Sure?</p>
+        <p className="modal-text">{t('modal.sure')}</p>
         <div className="modal-btns">
           <button type="button" className="btn" onClick={onItemDelete}>
-            Yep
+            {t('modal.yep')}
           </button>
           <button type="button" className="btn" onClick={onDeleteModalClose}>
-            Nope
+            {t('modal.nope')}
           </button>
         </div>
       </div>

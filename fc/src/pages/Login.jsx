@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
+import { useLanguage } from '../context/LanguageContext';
 
 function Login() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
@@ -22,7 +24,7 @@ function Login() {
 
       if (!response.ok) {
         const text = await response.text();
-        setErrorMessage(text || 'Login failed');
+        setErrorMessage(text || t('auth.loginFailed'));
         return;
       }
 
@@ -30,7 +32,7 @@ function Login() {
       localStorage.setItem('loggedInUser', JSON.stringify(user));
       navigate('/dashboard');
     } catch {
-      setErrorMessage('Network error. Please try again later.');
+      setErrorMessage(t('auth.networkError'));
     }
   };
 
@@ -40,14 +42,14 @@ function Login() {
         <div className="login-logo">
           <Logo />
         </div>
-        <p className="login-text">Login</p>
+        <p className="login-text">{t('auth.login')}</p>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form className="login-form" onSubmit={handleLogin}>
           <input
             type="text"
             name="login-name"
             className="form-input"
-            placeholder="Enter name"
+            placeholder={t('auth.enterName')}
             required
           />
           <div className="password-wrap">
@@ -55,7 +57,7 @@ function Login() {
               type={showPassword ? 'text' : 'password'}
               name="login-pass"
               className="form-input"
-              placeholder="Enter password"
+              placeholder={t('auth.enterPassword')}
               required
             />
             <button
@@ -67,18 +69,18 @@ function Login() {
             </button>
           </div>
           <button type="submit" className="btn form-btn login-btn">
-            Login
+            {t('auth.login')}
           </button>
         </form>
         <ul className="login-actions">
           <li>
             <Link className="login-link" to="/register">
-              Register?
+              {t('auth.registerLink')}
             </Link>
           </li>
           <li>
             <Link className="login-link" to="/restore-pass">
-              Forgot Password?
+              {t('auth.forgotPassword')}
             </Link>
           </li>
         </ul>

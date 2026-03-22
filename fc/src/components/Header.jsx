@@ -5,14 +5,7 @@ import Logo from './Logo';
 import { AVATAR_COLORS, THEMES } from '../constants';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useEscapeKey } from '../hooks/useEscapeKey';
-
-const NAV_LINKS = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/history',   label: 'History' },
-  { to: '/goals',     label: 'Goals' },
-  { to: '/main',      label: 'Expenses' },
-  { to: '/income',    label: 'Income' },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 function getInitialTheme() {
   return localStorage.getItem('theme') || 'default';
@@ -27,6 +20,15 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const userName = useCurrentUser();
+  const { lang, setLang, t } = useLanguage();
+
+  const NAV_LINKS = [
+    { to: '/dashboard', label: t('nav.dashboard') },
+    { to: '/history',   label: t('nav.history') },
+    { to: '/goals',     label: t('nav.goals') },
+    { to: '/main',      label: t('nav.expenses') },
+    { to: '/income',    label: t('nav.income') },
+  ];
 
   const [theme, setTheme] = useState(getInitialTheme);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -88,7 +90,7 @@ export default function Header() {
     });
   };
 
-  const currentTheme = THEMES.find((t) => t.id === theme) || THEMES[0];
+  const currentTheme = THEMES.find((th) => th.id === theme) || THEMES[0];
   const themeIcon = currentTheme.icon;
   const themeLabel = currentTheme.label;
 
@@ -129,7 +131,7 @@ export default function Header() {
                 className="user-avatar"
                 onClick={() => setDropdownOpen((o) => !o)}
                 aria-expanded={dropdownOpen}
-                title="User menu"
+                title={t('nav.userMenu')}
                 style={avatarStyle}
               >
                 {avatarImage
@@ -153,7 +155,7 @@ export default function Header() {
                     onClick={() => setDropdownOpen(false)}
                   >
                     <User size={15} />
-                    <span>Profile</span>
+                    <span>{t('nav.profile')}</span>
                   </Link>
                   <div className="user-dropdown__divider" />
                   <button
@@ -162,7 +164,15 @@ export default function Header() {
                     onClick={handleThemeToggle}
                   >
                     <span>{themeIcon}</span>
-                    <span>Theme: {themeLabel}</span>
+                    <span>{t('common.theme', { label: themeLabel })}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="user-dropdown__item"
+                    onClick={() => setLang(lang === 'en' ? 'uk' : 'en')}
+                  >
+                    <span>🌐</span>
+                    <span>{lang === 'en' ? 'EN → UK' : 'UK → EN'}</span>
                   </button>
                   <div className="user-dropdown__divider" />
                   <button
@@ -171,7 +181,7 @@ export default function Header() {
                     onClick={handleLogout}
                   >
                     <span>↩</span>
-                    <span>Log Out</span>
+                    <span>{t('nav.logout')}</span>
                   </button>
                 </div>
               )}
@@ -184,7 +194,7 @@ export default function Header() {
               type="button"
               className="user-avatar"
               onClick={() => { navigate('/profile'); }}
-              title="Profile"
+              title={t('nav.profile')}
               style={avatarStyle}
             >
               {avatarImage
@@ -225,10 +235,16 @@ export default function Header() {
         <div className="mobile-nav__divider" />
         <div className="mobile-nav__footer">
           <button className="mobile-nav__link mobile-nav__link--action" onClick={handleThemeToggle}>
-            {themeIcon} Theme: {themeLabel}
+            {themeIcon} {t('common.theme', { label: themeLabel })}
+          </button>
+          <button
+            className="mobile-nav__link mobile-nav__link--action"
+            onClick={() => setLang(lang === 'en' ? 'uk' : 'en')}
+          >
+            🌐 {lang === 'en' ? 'EN → UK' : 'UK → EN'}
           </button>
           <button className="mobile-nav__link mobile-nav__link--danger" onClick={handleLogout}>
-            ↩ Log Out
+            ↩ {t('nav.logout')}
           </button>
         </div>
       </nav>

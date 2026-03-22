@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { showToast } from '../utils/toast';
 import { AVATAR_COLORS, THEMES } from '../constants';
 import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useLanguage } from '../context/LanguageContext';
 import '../index.css';
 
 function getInitials(name) {
@@ -15,10 +16,10 @@ function getInitials(name) {
 export default function Profile() {
   const navigate = useNavigate();
   const storedUser = useCurrentUser();
+  const { t, lang, setLang } = useLanguage();
   const [currentUser, setCurrentUser] = useState(storedUser);
   const [activeTab, setActiveTab] = useState('profile');
 
-  // Profile tab state
   const [name, setName] = useState(currentUser?.name || '');
   const [email, setEmail] = useState(currentUser?.email || '');
   const [avatarColor, setAvatarColor] = useState(
@@ -28,22 +29,16 @@ export default function Profile() {
     () => localStorage.getItem('avatarImage') || null
   );
   const fileInputRef = useRef(null);
-  // Security tab state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  // Appearance tab state
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'default');
-
-  // Danger zone state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // ── Profile save ──────────────────────────────────────
   async function handleProfileSave(e) {
     e.preventDefault();
     if (!name.trim()) {
-      showToast('error', 'Name cannot be empty.');
+      showToast('error', t('profile.nameEmpty'));
       return;
     }
     try {
@@ -62,9 +57,9 @@ export default function Profile() {
       localStorage.setItem('loggedInUser', JSON.stringify(stored));
       localStorage.setItem('avatarColor', avatarColor);
       setCurrentUser(stored);
-      showToast('success', 'Profile updated successfully.');
+      showToast('success', t('profile.updated'));
     } catch {
-      showToast('error', 'Network error. Try again.');
+      showToast('error', t('profile.networkError'));
     }
   }
 
@@ -84,7 +79,6 @@ export default function Profile() {
         canvas.width = 100;
         canvas.height = 100;
         const ctx = canvas.getContext('2d');
-        // crop to square from center
         const size = Math.min(img.width, img.height);
         const sx = (img.width - size) / 2;
         const sy = (img.height - size) / 2;
@@ -106,19 +100,18 @@ export default function Profile() {
     window.dispatchEvent(new StorageEvent('storage', { key: 'avatarImage', newValue: null }));
   }
 
-  // ── Security save ─────────────────────────────────────
   async function handlePasswordSave(e) {
     e.preventDefault();
     if (!currentPassword) {
-      showToast('error', 'Enter your current password.');
+      showToast('error', t('profile.enterCurrentPass'));
       return;
     }
     if (newPassword.length < 8) {
-      showToast('error', 'New password must be at least 8 characters.');
+      showToast('error', t('profile.newPasswordMin'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      showToast('error', 'Passwords do not match.');
+      showToast('error', t('profile.passwordNoMatch'));
       return;
     }
     try {
@@ -129,42 +122,47 @@ export default function Profile() {
       });
       if (!res.ok) {
         const text = await res.text();
-        showToast('error', text || 'Failed to update password.');
+        showToast('error', text || t('profile.failedPassword'));
         return;
       }
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-      showToast('success', 'Password changed successfully.');
+      showToast('success', t('profile.passwordChanged'));
     } catch {
-      showToast('error', 'Network error. Try again.');
+      showToast('error', t('profile.networkError'));
     }
   }
 
-  // ── Theme change ──────────────────────────────────────
   function handleThemeChange(themeId) {
     setTheme(themeId);
     localStorage.setItem('theme', themeId);
     document.documentElement.dataset.theme = themeId === 'default' ? '' : themeId;
   }
 
-  // ── Delete account ────────────────────────────────────
   async function handleDeleteAccount() {
     try {
       const res = await fetch(`/api/users/${currentUser.id}`, { method: 'DELETE' });
       if (!res.ok) {
-        showToast('error', 'Failed to delete account.');
+        showToast('error', t('profile.failedDelete'));
         return;
       }
       localStorage.clear();
       navigate('/');
     } catch {
-      showToast('error', 'Network error. Try again.');
+      showToast('error', t('profile.networkError'));
     }
   }
 
   const selectedColor = AVATAR_COLORS.find((c) => c.id === avatarColor)?.value
     || AVATAR_COLORS[0].value;
+
+  const TABS = [
+    { id: 'profile',    label: t('profile.title') },
+    { id: 'security',   label: t('profile.security') },
+    { id: 'appearance', label: t('profile.appearance') },
+    { id: 'danger',     label: t('profile.danger') },
+  ];
 
   return (
     <>
@@ -173,7 +171,6 @@ export default function Profile() {
         <div className="container">
           <div className="profile-page">
 
-            {/* Avatar + name header */}
             <div className="profile-hero">
               <div
                 className="avatar-preview"
@@ -190,14 +187,8 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Tab navigation */}
             <div className="profile-tabs">
-              {[
-                { id: 'profile',    label: 'Profile' },
-                { id: 'security',   label: 'Security' },
-                { id: 'appearance', label: 'Appearance' },
-                { id: 'danger',     label: 'Danger Zone' },
-              ].map((tab) => (
+              {TABS.map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
@@ -212,9 +203,9 @@ export default function Profile() {
             {/* ── Tab: Profile ── */}
             {activeTab === 'profile' && (
               <div className="profile-section">
-                <h2 className="profile-section__title">Profile information</h2>
+                <h2 className="profile-section__title">{t('profile.information')}</h2>
                 <form onSubmit={handleProfileSave}>
-                  <label className="profile-label">Name</label>
+                  <label className="profile-label">{t('profile.name')}</label>
                   <input
                     type="text"
                     className="form-input"
@@ -222,7 +213,7 @@ export default function Profile() {
                     onChange={(e) => setName(e.target.value)}
                     maxLength={50}
                   />
-                  <label className="profile-label">Email</label>
+                  <label className="profile-label">{t('profile.email')}</label>
                   <input
                     type="email"
                     className="form-input"
@@ -230,14 +221,14 @@ export default function Profile() {
                     onChange={(e) => setEmail(e.target.value)}
                   />
 
-                  <label className="profile-label">Avatar photo</label>
+                  <label className="profile-label">{t('profile.avatarPhoto')}</label>
                   <div className="avatar-upload-row">
                     <button
                       type="button"
                       className="btn avatar-upload-btn"
                       onClick={() => fileInputRef.current.click()}
                     >
-                      Upload photo
+                      {t('profile.uploadPhoto')}
                     </button>
                     {avatarImage && (
                       <button
@@ -245,7 +236,7 @@ export default function Profile() {
                         className="btn avatar-remove-btn"
                         onClick={handleAvatarRemove}
                       >
-                        Remove
+                        {t('profile.remove')}
                       </button>
                     )}
                     <input
@@ -257,7 +248,7 @@ export default function Profile() {
                     />
                   </div>
 
-                  <label className="profile-label">Avatar color</label>
+                  <label className="profile-label">{t('profile.avatarColor')}</label>
                   <div className="avatar-colors">
                     {AVATAR_COLORS.map((color) => (
                       <button
@@ -271,7 +262,7 @@ export default function Profile() {
                     ))}
                   </div>
 
-                  <button type="submit" className="btn form-btn">Save changes</button>
+                  <button type="submit" className="btn form-btn">{t('profile.saveChanges')}</button>
                 </form>
               </div>
             )}
@@ -279,33 +270,33 @@ export default function Profile() {
             {/* ── Tab: Security ── */}
             {activeTab === 'security' && (
               <div className="profile-section">
-                <h2 className="profile-section__title">Change password</h2>
+                <h2 className="profile-section__title">{t('profile.changePassword')}</h2>
                 <form onSubmit={handlePasswordSave}>
-                  <label className="profile-label">Current password</label>
+                  <label className="profile-label">{t('profile.currentPassword')}</label>
                   <input
                     type="password"
                     className="form-input"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Enter current password"
+                    placeholder={t('profile.enterCurrentPassword')}
                   />
-                  <label className="profile-label">New password</label>
+                  <label className="profile-label">{t('profile.newPassword')}</label>
                   <input
                     type="password"
                     className="form-input"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="At least 8 characters"
+                    placeholder={t('profile.atLeast8')}
                   />
-                  <label className="profile-label">Confirm new password</label>
+                  <label className="profile-label">{t('profile.confirmNewPassword')}</label>
                   <input
                     type="password"
                     className="form-input"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat new password"
+                    placeholder={t('profile.repeatNewPassword')}
                   />
-                  <button type="submit" className="btn form-btn">Update password</button>
+                  <button type="submit" className="btn form-btn">{t('profile.updatePassword')}</button>
                 </form>
               </div>
             )}
@@ -313,19 +304,39 @@ export default function Profile() {
             {/* ── Tab: Appearance ── */}
             {activeTab === 'appearance' && (
               <div className="profile-section">
-                <h2 className="profile-section__title">Theme</h2>
+                <h2 className="profile-section__title">{t('profile.theme')}</h2>
                 <div className="profile-theme-cards">
-                  {THEMES.map((t) => (
+                  {THEMES.map((th) => (
                     <button
-                      key={t.id}
+                      key={th.id}
                       type="button"
-                      className={`profile-theme-card${theme === t.id ? ' profile-theme-card--active' : ''}`}
-                      onClick={() => handleThemeChange(t.id)}
+                      className={`profile-theme-card${theme === th.id ? ' profile-theme-card--active' : ''}`}
+                      onClick={() => handleThemeChange(th.id)}
                     >
-                      <span className="profile-theme-card__icon">{t.icon}</span>
-                      <span className="profile-theme-card__label">{t.label}</span>
+                      <span className="profile-theme-card__icon">{th.icon}</span>
+                      <span className="profile-theme-card__label">{th.label}</span>
                     </button>
                   ))}
+                </div>
+
+                <h2 className="profile-section__title" style={{ marginTop: 24 }}>{t('profile.language')}</h2>
+                <div className="profile-theme-cards">
+                  <button
+                    type="button"
+                    className={`profile-theme-card${lang === 'en' ? ' profile-theme-card--active' : ''}`}
+                    onClick={() => setLang('en')}
+                  >
+                    <span className="profile-theme-card__icon">🇬🇧</span>
+                    <span className="profile-theme-card__label">English</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`profile-theme-card${lang === 'uk' ? ' profile-theme-card--active' : ''}`}
+                    onClick={() => setLang('uk')}
+                  >
+                    <span className="profile-theme-card__icon">🇺🇦</span>
+                    <span className="profile-theme-card__label">Українська</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -333,27 +344,25 @@ export default function Profile() {
             {/* ── Tab: Danger Zone ── */}
             {activeTab === 'danger' && (
               <div className="profile-section danger-zone">
-                <h2 className="profile-section__title danger-zone__title">Danger Zone</h2>
-                <p className="danger-zone__text">
-                  Deleting your account is permanent. All your transactions and categories will be removed and cannot be recovered.
-                </p>
+                <h2 className="profile-section__title danger-zone__title">{t('profile.danger')}</h2>
+                <p className="danger-zone__text">{t('profile.dangerText')}</p>
                 {!showDeleteConfirm ? (
                   <button
                     type="button"
                     className="btn danger-zone__btn"
                     onClick={() => setShowDeleteConfirm(true)}
                   >
-                    Delete account
+                    {t('profile.deleteAccount')}
                   </button>
                 ) : (
                   <div className="danger-zone__confirm">
-                    <p className="danger-zone__confirm-text">Are you sure? This cannot be undone.</p>
+                    <p className="danger-zone__confirm-text">{t('profile.confirmDelete')}</p>
                     <div className="danger-zone__confirm-actions">
                       <button type="button" className="btn danger-zone__btn" onClick={handleDeleteAccount}>
-                        Yes, delete my account
+                        {t('profile.yesDelete')}
                       </button>
                       <button type="button" className="btn danger-zone__cancel" onClick={() => setShowDeleteConfirm(false)}>
-                        Cancel
+                        {t('profile.cancel')}
                       </button>
                     </div>
                   </div>
@@ -363,7 +372,7 @@ export default function Profile() {
 
             <div style={{ marginTop: 24, textAlign: 'center' }}>
               <Link to="/dashboard" className="login-link" style={{ fontSize: 14 }}>
-                ← Back to Dashboard
+                {t('profile.backToDashboard')}
               </Link>
             </div>
           </div>

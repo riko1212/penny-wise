@@ -6,24 +6,15 @@ import Footer from '../components/Footer';
 import { DashboardSkeleton } from '../components/Skeleton';
 import { showToast } from '../utils/toast';
 import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useLanguage } from '../context/LanguageContext';
 import '../index.css';
 
 const EMPTY_FORM = { name: '', targetAmount: '', categoryName: '', note: '', dueDate: '' };
 
-function dueDateInfo(dueDate, reached) {
-  if (!dueDate) return null;
-  const due = new Date(dueDate);
-  const now = new Date();
-  const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-  const label = due.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  if (reached) return { label: `Досягнуто до ${label}`, overdue: false };
-  if (diffDays < 0) return { label: `Прострочено (${label})`, overdue: true };
-  return { label: `До ${label} · ${diffDays} дн.`, overdue: false };
-}
-
 export default function Goals() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -39,13 +30,26 @@ export default function Goals() {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
+  const dateLocale = lang === 'uk' ? 'uk-UA' : 'en-GB';
+
+  function dueDateInfo(dueDate, reached) {
+    if (!dueDate) return null;
+    const due = new Date(dueDate);
+    const now = new Date();
+    const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+    const label = due.toLocaleDateString(dateLocale, { day: '2-digit', month: '2-digit', year: 'numeric' });
+    if (reached) return { label: t('goals.reachedBy', { date: label }), overdue: false };
+    if (diffDays < 0) return { label: t('goals.overdue', { date: label }), overdue: true };
+    return { label: t('goals.daysLeft', { date: label, days: diffDays }), overdue: false };
+  }
+
   useEffect(() => {
     if (!currentUser) return;
     setLoading(true);
     fetch(`/api/goals?userId=${currentUser.id}`)
       .then((r) => r.json())
       .then(setGoals)
-      .catch(() => setError('Failed to load goals.'))
+      .catch(() => setError(t('goals.failedLoad')))
       .finally(() => setLoading(false));
   }, [currentUser]);
 
@@ -82,9 +86,9 @@ export default function Goals() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!formData.name.trim()) { showToast('error', 'Name is required.'); return; }
-    if (!formData.targetAmount || Number(formData.targetAmount) <= 0) { showToast('error', 'Target amount must be greater than 0.'); return; }
-    if (!formData.categoryName) { showToast('error', 'Please select a category.'); return; }
+    if (!formData.name.trim()) { showToast('error', t('goals.nameRequired')); return; }
+    if (!formData.targetAmount || Number(formData.targetAmount) <= 0) { showToast('error', t('goals.amountRequired')); return; }
+    if (!formData.categoryName) { showToast('error', t('goals.categoryRequired')); return; }
 
     const payload = {
       userId: currentUser.id,
@@ -104,7 +108,6 @@ export default function Goals() {
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error(await res.text());
-        // refresh goals to get updated currentAmount
         const updated = await fetch(`/api/goals?userId=${currentUser.id}`).then((r) => r.json());
         setGoals(updated);
       } else {
@@ -117,17 +120,17 @@ export default function Goals() {
         const refreshed = await fetch(`/api/goals?userId=${currentUser.id}`).then((r) => r.json());
         setGoals(refreshed);
       }
-      showToast('success', editingGoal ? 'Goal updated.' : 'Goal created.');
+      showToast('success', editingGoal ? t('goals.updated') : t('goals.created'));
       closeForm();
     } catch (err) {
-      showToast('error', err.message || 'Failed to save goal.');
+      showToast('error', err.message || t('goals.failedSave'));
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(goal) {
-    if (!window.confirm(`Delete goal "${goal.name}"?`)) return;
+    if (!window.confirm(t('goals.deleteConfirm', { name: goal.name }))) return;
     await fetch(`/api/goals/${goal.id}?userId=${currentUser.id}`, { method: 'DELETE' });
     setGoals((prev) => prev.filter((g) => g.id !== goal.id));
   }
@@ -139,22 +142,22 @@ export default function Goals() {
         <div className="container">
           <div className="dashboard">
             <div className="goals__header">
-              <h1 className="dashboard__title goals__header-title">Goals</h1>
-              <button className="btn" onClick={openAdd}>+ Add goal</button>
+              <h1 className="dashboard__title goals__header-title">{t('goals.title')}</h1>
+              <button className="btn" onClick={openAdd}>{t('goals.addGoal')}</button>
             </div>
 
             {showForm && (
               <form className="goals__form" onSubmit={handleSubmit}>
-                <h2 className="goals__form-title">{editingGoal ? 'Edit goal' : 'New goal'}</h2>
-                <label className="profile-label">Name</label>
+                <h2 className="goals__form-title">{editingGoal ? t('goals.editGoal') : t('goals.newGoal')}</h2>
+                <label className="profile-label">{t('goals.name')}</label>
                 <input
                   className="form-input"
                   value={formData.name}
                   onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
-                  placeholder="e.g. Vacation"
+                  placeholder={t('goals.namePlaceholder')}
                   maxLength={80}
                 />
-                <label className="profile-label">Target amount (₴)</label>
+                <label className="profile-label">{t('goals.targetAmount')}</label>
                 <input
                   className="form-input"
                   type="number"
@@ -163,26 +166,26 @@ export default function Goals() {
                   onChange={(e) => setFormData((p) => ({ ...p, targetAmount: e.target.value }))}
                   placeholder="50000"
                 />
-                <label className="profile-label">Income category</label>
+                <label className="profile-label">{t('goals.incomeCategory')}</label>
                 <select
                   className="form-input"
                   value={formData.categoryName}
                   onChange={(e) => setFormData((p) => ({ ...p, categoryName: e.target.value }))}
                 >
-                  <option value="">— select category —</option>
+                  <option value="">{t('goals.selectCategory')}</option>
                   {incomeCategories.map((c) => (
                     <option key={c.id} value={c.name}>{c.name}</option>
                   ))}
                 </select>
-                <label className="profile-label">Note (optional)</label>
+                <label className="profile-label">{t('goals.note')}</label>
                 <textarea
                   className="form-input"
                   rows={2}
                   value={formData.note}
                   onChange={(e) => setFormData((p) => ({ ...p, note: e.target.value }))}
-                  placeholder="Any details..."
+                  placeholder={t('goals.notePlaceholder')}
                 />
-                <label className="profile-label">Deadline (optional)</label>
+                <label className="profile-label">{t('goals.deadline')}</label>
                 <input
                   className="form-input"
                   type="date"
@@ -191,10 +194,10 @@ export default function Goals() {
                 />
                 <div className="goals__form-actions">
                   <button className="btn" type="submit" disabled={saving}>
-                    {saving ? 'Saving…' : editingGoal ? 'Save changes' : 'Create goal'}
+                    {saving ? t('goals.saving') : editingGoal ? t('goals.saveChanges') : t('goals.createGoal')}
                   </button>
                   <button className="btn goals__cancel-btn" type="button" onClick={closeForm}>
-                    Cancel
+                    {t('goals.cancel')}
                   </button>
                 </div>
               </form>
@@ -207,9 +210,9 @@ export default function Goals() {
             ) : goals.length === 0 ? (
               <div className="dashboard__empty">
                 <span className="dashboard__empty-icon">🎯</span>
-                <h2 className="dashboard__empty-title">No goals yet</h2>
-                <p className="dashboard__empty-text">Create your first savings goal and track your progress.</p>
-                <button className="btn" onClick={openAdd}>Add goal</button>
+                <h2 className="dashboard__empty-title">{t('goals.noGoals')}</h2>
+                <p className="dashboard__empty-text">{t('goals.noGoalsText')}</p>
+                <button className="btn" onClick={openAdd}>{t('goals.addGoalBtn')}</button>
               </div>
             ) : (
               <div className="goals__grid">
@@ -248,14 +251,14 @@ export default function Goals() {
                         <span>{pct.toFixed(0)}%</span>
                         <span>{formatUAH(goal.targetAmount)}</span>
                       </div>
-                      <p className="goals__category">Category: {goal.categoryName}</p>
+                      <p className="goals__category">{t('goals.category', { name: goal.categoryName })}</p>
                       {due && (
                         <p className={`goals__deadline${due.overdue ? ' goals__deadline--overdue' : ''}`}>
                           {due.label}
                         </p>
                       )}
                       {reached && (
-                        <p className="goals__reached">Goal reached!</p>
+                        <p className="goals__reached">{t('goals.reached')}</p>
                       )}
                     </div>
                   );

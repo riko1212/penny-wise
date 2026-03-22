@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEscapeKey } from '../hooks/useEscapeKey';
+import { useLanguage } from '../context/LanguageContext';
 
 ClearModal.propTypes = {
   onClearModalClose: PropTypes.func,
@@ -8,6 +9,7 @@ ClearModal.propTypes = {
 };
 
 export default function ClearModal({ onClearModalClose, isOpen, onClearList }) {
+  const { t } = useLanguage();
   useEscapeKey(onClearModalClose, isOpen);
 
   return (
@@ -20,13 +22,13 @@ export default function ClearModal({ onClearModalClose, isOpen, onClearList }) {
         >
           ✕
         </button>
-        <p className="modal-text">Sure?</p>
+        <p className="modal-text">{t('modal.sure')}</p>
         <div className="modal-btns">
           <button type="button" className="btn" onClick={onClearList}>
-            Yep
+            {t('modal.yep')}
           </button>
           <button type="button" className="btn" onClick={onClearModalClose}>
-            Nope
+            {t('modal.nope')}
           </button>
         </div>
       </div>
