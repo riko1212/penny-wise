@@ -20,13 +20,10 @@ export function CurrencyProvider({ children }) {
       .then((r) => r.json())
       .then((data) => {
         const newRates = { USD: data.uah.usd, EUR: data.uah.eur, UAH: 1 };
-        console.log('[CurrencyContext] rates loaded from API:', newRates);
         setRates(newRates);
         localStorage.setItem('exchangeRates', JSON.stringify(newRates));
       })
-      .catch((err) => {
-        console.warn('[CurrencyContext] failed to load rates, using fallback:', err);
-      });
+      .catch(() => {}); // keep cached/fallback rates
   }, []);
 
   const setCurrency = useCallback((code) => {
