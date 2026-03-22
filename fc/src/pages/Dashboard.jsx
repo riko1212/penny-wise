@@ -117,14 +117,14 @@ export default function Dashboard() {
             ) : (
               <>
                 <div className="dashboard__cards">
-                  <div className="dashboard__card dashboard__card--income">
+                  <Link to="/income" className="dashboard__card dashboard__card--income dashboard__card--link">
                     <span className="dashboard__card-label">{t('dashboard.totalIncome')}</span>
                     <span className="dashboard__card-amount">{formatUAH(income)}</span>
-                  </div>
-                  <div className="dashboard__card dashboard__card--expense">
+                  </Link>
+                  <Link to="/main" className="dashboard__card dashboard__card--expense dashboard__card--link">
                     <span className="dashboard__card-label">{t('dashboard.totalExpenses')}</span>
                     <span className="dashboard__card-amount">{formatUAH(expense)}</span>
-                  </div>
+                  </Link>
                   <div className={`dashboard__card dashboard__card--balance ${balance >= 0 ? 'dashboard__card--positive' : 'dashboard__card--negative'}`}>
                     <span className="dashboard__card-label">{t('dashboard.balance')}</span>
                     <span className="dashboard__card-amount">
