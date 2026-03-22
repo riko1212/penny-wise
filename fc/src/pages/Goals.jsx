@@ -15,7 +15,7 @@ export default function Goals() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const { t, lang, tc } = useLanguage();
-  const { fmt } = useCurrency();
+  const { fmt, fromUAH, toUAH, CURRENCY_SYMBOLS, currency } = useCurrency();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -72,7 +72,7 @@ export default function Goals() {
     setEditingGoal(goal);
     setFormData({
       name: goal.name,
-      targetAmount: String(goal.targetAmount),
+      targetAmount: String(Number(fromUAH(goal.targetAmount).toFixed(2))),
       categoryName: goal.categoryName,
       note: goal.note || '',
       dueDate: goal.dueDate ? new Date(goal.dueDate).toISOString().slice(0, 10) : '',
@@ -94,7 +94,7 @@ export default function Goals() {
     const payload = {
       userId: currentUser.id,
       name: formData.name.trim(),
-      targetAmount: Number(formData.targetAmount),
+      targetAmount: toUAH(Number(formData.targetAmount)),
       categoryName: formData.categoryName,
       note: formData.note.trim() || null,
       dueDate: formData.dueDate ? new Date(formData.dueDate).getTime() : null,
@@ -158,7 +158,7 @@ export default function Goals() {
                   placeholder={t('goals.namePlaceholder')}
                   maxLength={80}
                 />
-                <label className="profile-label">{t('goals.targetAmount')}</label>
+                <label className="profile-label">{CURRENCY_SYMBOLS[currency]} {t('goals.targetAmount')}</label>
                 <input
                   className="form-input"
                   type="number"

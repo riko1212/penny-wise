@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { validateTransaction } from '../utils/validate';
 import { todayStr } from '../constants';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 import { MAX_DESCRIPTION_LENGTH } from '../constants';
 
 Form.propTypes = {
@@ -12,6 +13,7 @@ Form.propTypes = {
 
 export default function Form({ onAddItems, selectedCategory }) {
   const { t } = useLanguage();
+  const { toUAH, CURRENCY_SYMBOLS, currency } = useCurrency();
   const [income, setIncome] = useState('');
   const [topic, setTopic] = useState('');
   const [date, setDate] = useState(todayStr);
@@ -39,7 +41,7 @@ export default function Form({ onAddItems, selectedCategory }) {
     if (Object.keys(errs).length > 0) return;
 
     onAddItems({
-      income: parseFloat(income),
+      income: toUAH(parseFloat(income)),
       topic: topic.trim(),
       date: new Date(date).getTime(),
       categoryName: selectedCategory,
@@ -79,7 +81,7 @@ export default function Form({ onAddItems, selectedCategory }) {
           type="number"
           name="user-sum"
           className={`form-input${errors.income ? ' form-input--error' : ''}`}
-          placeholder={t('form.amount')}
+          placeholder={`${CURRENCY_SYMBOLS[currency]} ${t('form.amount')}`}
           value={income}
           min="0.01"
           step="0.01"

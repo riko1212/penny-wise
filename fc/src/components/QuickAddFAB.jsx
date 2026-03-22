@@ -5,6 +5,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { todayStr } from '../constants';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 
 const HIDDEN_PATHS = ['/', '/register', '/restore-pass'];
 
@@ -12,6 +13,7 @@ export default function QuickAddFAB() {
   const location = useLocation();
   const currentUser = useCurrentUser();
   const { t, tc } = useLanguage();
+  const { toUAH, CURRENCY_SYMBOLS, currency } = useCurrency();
 
   const [open, setOpen] = useState(false);
   const [type, setType] = useState('EXPENSE');
@@ -71,7 +73,7 @@ export default function QuickAddFAB() {
         body: JSON.stringify({
           userId: currentUser.id,
           topic: description.trim(),
-          income: Number(amount),
+          income: toUAH(Number(amount)),
           categoryName,
           type,
           date: new Date(date).getTime(),
@@ -135,7 +137,7 @@ export default function QuickAddFAB() {
                 autoFocus
               />
 
-              <label className="profile-label">{t('fab.amount')}</label>
+              <label className="profile-label">{CURRENCY_SYMBOLS[currency]} {t('fab.amount')}</label>
               <input
                 className="form-input"
                 type="number"

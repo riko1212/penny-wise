@@ -15,10 +15,10 @@ InfoItem.propTypes = {
 
 export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   const { t, lang } = useLanguage();
-  const { fmt } = useCurrency();
+  const { fmt, fromUAH, toUAH } = useCurrency();
   const [isEditing, setIsEditing] = useState(false);
   const [editedTopic, setEditedTopic] = useState(item.topic);
-  const [editedIncome, setEditedIncome] = useState(item.income);
+  const [editedIncome, setEditedIncome] = useState(() => fromUAH(item.income));
   const [editedDate, setEditedDate] = useState(
     new Date(item.date).toISOString().slice(0, 10)
   );
@@ -26,7 +26,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
 
   useEffect(() => {
     setEditedTopic(item.topic);
-    setEditedIncome(item.income);
+    setEditedIncome(fromUAH(item.income));
     setEditedDate(new Date(item.date).toISOString().slice(0, 10));
     setErrors({});
   }, [item]);
@@ -74,7 +74,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
     const updatedItem = {
       ...item,
       topic: editedTopic.trim(),
-      income: parseFloat(editedIncome),
+      income: toUAH(parseFloat(editedIncome)),
       date: new Date(editedDate).getTime(),
     };
     try {
@@ -88,7 +88,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
 
   function handleCancel() {
     setEditedTopic(item.topic);
-    setEditedIncome(item.income);
+    setEditedIncome(fromUAH(item.income));
     setEditedDate(new Date(item.date).toISOString().slice(0, 10));
     setErrors({});
     setIsEditing(false);
