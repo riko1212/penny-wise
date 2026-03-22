@@ -24,6 +24,24 @@ export function CurrencyProvider({ children }) {
     localStorage.setItem('currency', code);
   }, []);
 
+  // Convert display-currency amount → UAH for storage
+  const toUAH = useCallback(
+    (displayAmount) => {
+      if (currency === 'UAH') return displayAmount;
+      return displayAmount / (rates[currency] ?? 1);
+    },
+    [currency, rates]
+  );
+
+  // Convert stored UAH → display currency (raw number, no formatting)
+  const fromUAH = useCallback(
+    (uahAmount) => {
+      if (currency === 'UAH') return uahAmount;
+      return uahAmount * (rates[currency] ?? 1);
+    },
+    [currency, rates]
+  );
+
   const fmt = useCallback(
     (amount) => {
       if (amount == null) return '';
@@ -42,7 +60,7 @@ export function CurrencyProvider({ children }) {
   );
 
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, fmt, rates, CURRENCIES, CURRENCY_SYMBOLS }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, fmt, toUAH, fromUAH, rates, CURRENCIES, CURRENCY_SYMBOLS }}>
       {children}
     </CurrencyContext.Provider>
   );
