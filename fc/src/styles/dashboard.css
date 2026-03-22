@@ -125,6 +125,12 @@
   max-width: 520px;
 }
 
+.dashboard__chart--wide {
+  max-width: 100%;
+  flex: none;
+  width: 100%;
+}
+
 .dashboard__chart-title {
   font-size: 16px;
   font-weight: 600;

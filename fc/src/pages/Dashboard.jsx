@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [expenseSummary, setExpenseSummary] = useState([]);
   const [incomeSummary, setIncomeSummary] = useState([]);
   const [recentTx, setRecentTx] = useState([]);
+  const [barData, setBarData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -52,13 +53,25 @@ export default function Dashboard() {
       fetch(`/api/transactions/summary?userId=${currentUser.id}&type=EXPENSE${periodParams}`).then((r) => r.json()),
       fetch(`/api/transactions/summary?userId=${currentUser.id}&type=INCOME${periodParams}`).then((r) => r.json()),
       fetch(`/api/transactions/recent?userId=${currentUser.id}`).then((r) => r.json()),
+      fetch(`/api/transactions/history?userId=${currentUser.id}&type=INCOME&groupBy=month`).then((r) => r.json()),
+      fetch(`/api/transactions/history?userId=${currentUser.id}&type=EXPENSE&groupBy=month`).then((r) => r.json()),
     ])
-      .then(([inc, exp, expSum, incSum, recent]) => {
+      .then(([inc, exp, expSum, incSum, recent, incHistory, expHistory]) => {
         setIncome(inc);
         setExpense(exp);
         setExpenseSummary(expSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
         setIncomeSummary(incSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
         setRecentTx(recent);
+
+        const allPeriods = [...new Set([...incHistory.map((d) => d.period), ...expHistory.map((d) => d.period)])].sort();
+        const merged = allPeriods
+          .filter((p) => period === 'year' ? p.startsWith(String(curYear)) : true)
+          .map((p) => ({
+            period: p,
+            income: incHistory.find((d) => d.period === p)?.total ?? 0,
+            expense: expHistory.find((d) => d.period === p)?.total ?? 0,
+          }));
+        setBarData(merged);
       })
       .catch(() => setError(t('dashboard.errorLoad')))
       .finally(() => setLoading(false));
@@ -148,6 +161,23 @@ export default function Dashboard() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+
+                {period !== 'month' && barData.length > 0 && (
+                  <div className="dashboard__chart dashboard__chart--wide" style={{ marginTop: 40 }}>
+                    <h2 className="dashboard__chart-title">{t('dashboard.incomeVsExpenses')}</h2>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <BarChart data={barData} margin={{ top: 8, right: 24, left: 16, bottom: 8 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.07)" />
+                        <XAxis dataKey="period" stroke="#aaa" tick={{ fontSize: 12 }} />
+                        <YAxis stroke="#aaa" tick={{ fontSize: 12 }} />
+                        <Tooltip content={<ChartTooltip />} />
+                        <Legend />
+                        <Bar dataKey="income" name={t('nav.income')} fill="#69db7c" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="expense" name={t('nav.expenses')} fill="#ff6b6b" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
                 )}
 

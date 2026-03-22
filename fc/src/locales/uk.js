@@ -51,6 +51,7 @@ export default {
     incomeByCategory: 'Доходи за категоріями',
     errorLoad: "Не вдалося завантажити дані. Перевірте з'єднання.",
     recentTransactions: 'Останні транзакції',
+    incomeVsExpenses: 'Доходи vs Витрати',
     seeAll: 'Всі',
     noRecent: 'Немає транзакцій',
     thisMonth: 'Цей місяць',
