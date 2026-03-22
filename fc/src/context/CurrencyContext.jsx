@@ -10,13 +10,20 @@ export function CurrencyProvider({ children }) {
     () => localStorage.getItem('currency') || 'USD'
   );
   // rates are UAH → target, e.g. { USD: 0.024, EUR: 0.022, UAH: 1 }
-  const [rates, setRates] = useState({ USD: 1, EUR: 1, UAH: 1 });
+  const [rates, setRates] = useState(() => {
+    const cached = localStorage.getItem('exchangeRates');
+    return cached ? JSON.parse(cached) : { USD: 0.024, EUR: 0.022, UAH: 1 };
+  });
 
   useEffect(() => {
     fetch('https://api.frankfurter.app/latest?from=UAH&to=USD,EUR')
       .then((r) => r.json())
-      .then((data) => setRates({ ...data.rates, UAH: 1 }))
-      .catch(() => {}); // keep fallback rates
+      .then((data) => {
+        const newRates = { ...data.rates, UAH: 1 };
+        setRates(newRates);
+        localStorage.setItem('exchangeRates', JSON.stringify(newRates));
+      })
+      .catch(() => {}); // keep cached/fallback rates
   }, []);
 
   const setCurrency = useCallback((code) => {
