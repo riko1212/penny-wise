@@ -17,6 +17,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }: Inf
   const { t, lang } = useLanguage();
   const { fmt, fromUAH, toUAH } = useCurrency();
   const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [editedTopic, setEditedTopic] = useState(item.topic);
   const [editedIncome, setEditedIncome] = useState<number | string>(() => fromUAH(item.income));
   const [editedDate, setEditedDate] = useState(
@@ -74,15 +75,18 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }: Inf
     const updatedItem = {
       ...item,
       topic: editedTopic.trim(),
-      income: toUAH(parseFloat(editedIncome)),
+      income: toUAH(parseFloat(String(editedIncome))),
       date: new Date(editedDate).getTime(),
     };
+    setSaving(true);
     try {
       await onUpdateItemData(item.id, updatedItem);
       setIsEditing(false);
       setErrors({});
     } catch {
       // error already shown via showError in the hook; keep edit mode open
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -156,9 +160,10 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }: Inf
               type="button"
               className="info-icon-btn info-icon-btn--save"
               onClick={handleSave}
+              disabled={saving}
               title="Save"
             >
-              <Check size={16} strokeWidth={2.5} />
+              {saving ? <span className="info-icon-spinner" /> : <Check size={16} strokeWidth={2.5} />}
             </button>
             <button
               type="button"
