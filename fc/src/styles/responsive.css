@@ -27,15 +27,87 @@
     display: block;
   }
 
-  /* Page layout: sidebar above main */
+  /* Page layout: main takes full width, sidebar is a drawer */
   .page-wrap-container {
-    flex-direction: column;
     height: auto;
   }
 
+  /* Sidebar drawer */
   .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px !important;
+    height: 100%;
+    padding: 60px 16px 24px;
+    z-index: 150;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    border-right: 1px solid var(--glass-border);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background: var(--theme-bg-header);
+  }
+
+  .sidebar--mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Backdrop */
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 149;
+    animation: sidebar-fade-in 0.2s ease;
+  }
+
+  @keyframes sidebar-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Close button inside drawer */
+  .sidebar-mobile-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--theme-text-primary);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Trigger button — shown only on mobile */
+  .sidebar-drawer-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--theme-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
     width: 100%;
-    padding: 20px 16px;
+  }
+
+  .sidebar-drawer-trigger__icon {
+    font-size: 18px;
   }
 
   /* Hide collapse toggle — meaningless on mobile */
@@ -45,6 +117,7 @@
 
   .main {
     padding: 20px 16px;
+    width: 100%;
   }
 
   /* Form */

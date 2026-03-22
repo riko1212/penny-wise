@@ -37,6 +37,7 @@ export default {
     selectCategory: 'Select a category',
     emptyExpense: 'Choose a category from the sidebar to view and manage your expenses.',
     emptyIncome: 'Choose a category from the sidebar to view and manage your income.',
+    categories: 'Categories',
   },
   dashboard: {
     title: 'Overview',

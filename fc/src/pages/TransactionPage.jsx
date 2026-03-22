@@ -21,7 +21,8 @@ TransactionPage.propTypes = {
 
 export default function TransactionPage({ type }) {
   const [showForm, setShowForm] = useState(false);
-  const { t } = useLanguage();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { t, tc } = useLanguage();
   const {
     currentUser,
     currentMonthLabel,
@@ -55,11 +56,21 @@ export default function TransactionPage({ type }) {
       <div className="page-wrap">
         <div className="container page-wrap-container">
           <Sidebar
-            onCategorySelect={(cat) => { setShowForm(false); handleCategoryChange(cat); }}
+            onCategorySelect={(cat) => { setDrawerOpen(false); setShowForm(false); handleCategoryChange(cat); }}
             userId={currentUser.id}
             type={type}
+            mobileOpen={drawerOpen}
+            onMobileClose={() => setDrawerOpen(false)}
           />
           <main className="main">
+            <button
+              type="button"
+              className="sidebar-drawer-trigger"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <span className="sidebar-drawer-trigger__icon">☰</span>
+              {selectedCategory ? tc(selectedCategory) : t('transaction.categories')}
+            </button>
             <h1 className="page-type-title">
               {type === 'EXPENSE' ? t('transaction.titleExpense') : t('transaction.titleIncome')}
             </h1>

@@ -12,9 +12,11 @@ Sidebar.propTypes = {
     onCategorySelect: PropTypes.func.isRequired,
     userId: PropTypes.number.isRequired,
     type: PropTypes.oneOf(['INCOME', 'EXPENSE']).isRequired,
+    mobileOpen: PropTypes.bool,
+    onMobileClose: PropTypes.func,
 };
 
-export default function Sidebar({ onCategorySelect, userId, type }) {
+export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, onMobileClose }) {
     const { t } = useLanguage();
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
@@ -110,7 +112,9 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
 
     return (
         <>
-            <aside className={`sidebar${collapsed ? ' sidebar--collapsed' : ''}`}>
+            {mobileOpen && <div className="sidebar-backdrop" onClick={onMobileClose} />}
+            <aside className={`sidebar${collapsed ? ' sidebar--collapsed' : ''}${mobileOpen ? ' sidebar--mobile-open' : ''}`}>
+                <button type="button" className="sidebar-mobile-close" onClick={onMobileClose} aria-label="Close">✕</button>
                 <button
                     type="button"
                     className="sidebar-toggle"
