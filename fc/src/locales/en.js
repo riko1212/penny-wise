@@ -50,6 +50,9 @@ export default {
     expensesByCategory: 'Expenses by category',
     incomeByCategory: 'Income by category',
     errorLoad: 'Failed to load dashboard data. Check your connection.',
+    recentTransactions: 'Recent transactions',
+    seeAll: 'See all',
+    noRecent: 'No recent transactions',
   },
   history: {
     title: 'History',

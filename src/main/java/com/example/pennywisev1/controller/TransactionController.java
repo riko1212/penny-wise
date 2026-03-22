@@ -64,6 +64,12 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getTotalByType(userId, type, month, year));
     }
 
+    // Get recent transactions (last 10) across all categories/types
+    @GetMapping("/recent")
+    public ResponseEntity<List<TransactionEntity>> getRecent(@RequestParam Long userId) {
+        return ResponseEntity.ok(transactionService.getRecentTransactions(userId));
+    }
+
     // Create transaction
     @PostMapping
     public ResponseEntity<?> createTransaction(@RequestBody TransactionEntity transaction) {

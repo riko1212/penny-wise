@@ -50,6 +50,9 @@ export default {
     expensesByCategory: 'Витрати за категоріями',
     incomeByCategory: 'Доходи за категоріями',
     errorLoad: "Не вдалося завантажити дані. Перевірте з'єднання.",
+    recentTransactions: 'Останні транзакції',
+    seeAll: 'Всі',
+    noRecent: 'Немає транзакцій',
   },
   history: {
     title: 'Історія',

@@ -10,6 +10,11 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
 import '../index.css';
 
+function formatDate(epochMs) {
+  if (!epochMs) return '';
+  return new Date(epochMs).toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
 const EXPENSE_COLORS = ['#ff6b6b', '#ff8e53', '#ffd43b', '#ff922b', '#f783ac', '#e64980', '#cc5de8', '#845ef7', '#5c7cfa', '#339af0'];
 const INCOME_COLORS  = ['#69db7c', '#38d9a9', '#4dabf7', '#74c0fc', '#a9e34b', '#63e6be', '#94d82d', '#20c997', '#1c7ed6', '#7048e8'];
 
@@ -26,6 +31,7 @@ export default function Dashboard() {
   const [expense, setExpense] = useState(0);
   const [expenseSummary, setExpenseSummary] = useState([]);
   const [incomeSummary, setIncomeSummary] = useState([]);
+  const [recentTx, setRecentTx] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -36,13 +42,14 @@ export default function Dashboard() {
       fetch(`/api/transactions/total?userId=${currentUser.id}&type=EXPENSE`).then((r) => r.json()),
       fetch(`/api/transactions/summary?userId=${currentUser.id}&type=EXPENSE`).then((r) => r.json()),
       fetch(`/api/transactions/summary?userId=${currentUser.id}&type=INCOME`).then((r) => r.json()),
+      fetch(`/api/transactions/recent?userId=${currentUser.id}`).then((r) => r.json()),
     ])
-      .then(([inc, exp, expSum, incSum]) => {
+      .then(([inc, exp, expSum, incSum, recent]) => {
         setIncome(inc);
         setExpense(exp);
         setExpenseSummary(expSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
         setIncomeSummary(incSum.map((e) => ({ name: e.categoryName, value: Number(Number(e.total).toFixed(2)) })));
-        // Note: names are translated in render via tc()
+        setRecentTx(recent);
       })
       .catch(() => setError(t('dashboard.errorLoad')))
       .finally(() => setLoading(false));
@@ -90,6 +97,37 @@ export default function Dashboard() {
                     </span>
                   </div>
                 </div>
+
+                {recentTx.length > 0 && (
+                  <div className="dashboard__recent">
+                    <div className="dashboard__recent-header">
+                      <h2 className="dashboard__chart-title">{t('dashboard.recentTransactions')}</h2>
+                      <div className="dashboard__recent-links">
+                        <Link to="/income" className="dashboard__see-all">{t('nav.income')}</Link>
+                        <Link to="/main" className="dashboard__see-all">{t('nav.expenses')}</Link>
+                      </div>
+                    </div>
+                    <ul className="dashboard__recent-list">
+                      {recentTx.map((tx) => (
+                        <li key={tx.id} className="dashboard__recent-item">
+                          <span className={`dashboard__recent-badge dashboard__recent-badge--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
+                            {tx.type === 'INCOME' ? '+' : '−'}
+                          </span>
+                          <div className="dashboard__recent-info">
+                            <span className="dashboard__recent-topic">{tx.topic}</span>
+                            <span className="dashboard__recent-cat">{tc(tx.categoryName)}</span>
+                          </div>
+                          <div className="dashboard__recent-right">
+                            <span className={`dashboard__recent-amount dashboard__recent-amount--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
+                              {tx.type === 'INCOME' ? '+' : '−'}{formatUAH(tx.income)}
+                            </span>
+                            <span className="dashboard__recent-date">{formatDate(tx.date)}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div className="dashboard__charts">
                   {expenseSummary.length > 0 && (

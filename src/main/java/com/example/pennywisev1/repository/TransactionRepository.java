@@ -15,6 +15,7 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     )
     List<Object[]> sumByCategory(@org.springframework.data.repository.query.Param("userId") Long userId,
                                   @org.springframework.data.repository.query.Param("type") String type);
+    List<TransactionEntity> findTop10ByUserIdOrderByDateDesc(Long userId);
     void deleteByIdAndUserId(Long id, Long userId);
     void deleteByUserIdAndCategoryNameAndType(Long userId, String categoryName, String type);
     void deleteByUserId(Long userId);

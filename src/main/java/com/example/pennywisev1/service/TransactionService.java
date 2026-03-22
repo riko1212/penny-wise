@@ -91,6 +91,10 @@ public class TransactionService {
                 .collect(java.util.stream.Collectors.toList());
     }
 
+    public List<TransactionEntity> getRecentTransactions(Long userId) {
+        return transactionRepository.findTop10ByUserIdOrderByDateDesc(userId);
+    }
+
     public Double getTotalByType(Long userId, String type, Integer month, Integer year) {
         return transactionRepository.findByUserIdAndType(userId, type).stream()
                 .filter(t -> {
