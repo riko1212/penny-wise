@@ -16,14 +16,17 @@ export function CurrencyProvider({ children }) {
   });
 
   useEffect(() => {
-    fetch('https://api.frankfurter.app/latest?from=UAH&to=USD,EUR')
+    fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/uah.json')
       .then((r) => r.json())
       .then((data) => {
-        const newRates = { ...data.rates, UAH: 1 };
+        const newRates = { USD: data.uah.usd, EUR: data.uah.eur, UAH: 1 };
+        console.log('[CurrencyContext] rates loaded from API:', newRates);
         setRates(newRates);
         localStorage.setItem('exchangeRates', JSON.stringify(newRates));
       })
-      .catch(() => {}); // keep cached/fallback rates
+      .catch((err) => {
+        console.warn('[CurrencyContext] failed to load rates, using fallback:', err);
+      });
   }, []);
 
   const setCurrency = useCallback((code) => {
