@@ -80,12 +80,30 @@ public class UserService {
         return toDTO(saved);
     }
 
+    @Transactional
     public UserResponseDTO loginUser(String name, String password) {
         UserEntity user = userRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("Invalid credentials");
+        }
+
+        if (categoryRepository.countByUserId(user.getId()) == 0) {
+            for (String catName : DEFAULT_EXPENSE_CATEGORIES) {
+                CategoryEntity cat = new CategoryEntity();
+                cat.setUserId(user.getId());
+                cat.setName(catName);
+                cat.setType("EXPENSE");
+                categoryRepository.save(cat);
+            }
+            for (String catName : DEFAULT_INCOME_CATEGORIES) {
+                CategoryEntity cat = new CategoryEntity();
+                cat.setUserId(user.getId());
+                cat.setName(catName);
+                cat.setType("INCOME");
+                categoryRepository.save(cat);
+            }
         }
 
         return toDTO(user);
