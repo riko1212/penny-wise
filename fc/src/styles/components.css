@@ -931,15 +931,20 @@
 
 .password-toggle {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  padding: 0;
-  line-height: 1;
+  padding: 2px;
+  line-height: 0;
+  color: var(--theme-text-muted);
+  transition: color 0.15s;
+}
+
+.password-toggle:hover {
+  color: var(--theme-text-primary);
 }
 
 .login-wrapper {

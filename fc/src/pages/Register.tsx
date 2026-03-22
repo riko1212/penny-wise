@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import apiFetch from '../utils/apiFetch';
 
@@ -91,7 +92,7 @@ function Register() {
               className="password-toggle"
               onClick={() => setShowPassword((v) => !v)}
             >
-              {showPassword ? '🙈' : '👁'}
+              {showPassword ? <EyeOff size={18} strokeWidth={1.75} /> : <Eye size={18} strokeWidth={1.75} />}
             </button>
           </div>
           <div className="password-wrap">
@@ -107,7 +108,7 @@ function Register() {
               className="password-toggle"
               onClick={() => setShowRepeatPassword((v) => !v)}
             >
-              {showRepeatPassword ? '🙈' : '👁'}
+              {showRepeatPassword ? <EyeOff size={18} strokeWidth={1.75} /> : <Eye size={18} strokeWidth={1.75} />}
             </button>
           </div>
           <button type="submit" className="btn form-btn">
