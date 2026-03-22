@@ -7,6 +7,7 @@ import { SidebarSkeleton } from './Skeleton.jsx';
 import { showToast } from '../utils/toast';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useLanguage } from '../context/LanguageContext';
+import apiFetch from '../utils/apiFetch';
 
 Sidebar.propTypes = {
     onCategorySelect: PropTypes.func.isRequired,
@@ -39,7 +40,7 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/api/categories?userId=${userId}&type=${type}`)
+        apiFetch(`/api/categories?userId=${userId}&type=${type}`)
             .then((res) => {
                 if (!res.ok) throw new Error('Failed to fetch categories');
                 return res.json();
@@ -50,7 +51,7 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
     }, [userId, type]);
 
     function handleAddCategory(categoryName) {
-        fetch('/api/categories', {
+        apiFetch('/api/categories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: categoryName, userId, type }),
@@ -71,7 +72,7 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
     }
 
     function handleRenameCategory(category, newName) {
-        fetch(`/api/categories/${category.id}?userId=${userId}`, {
+        apiFetch(`/api/categories/${category.id}?userId=${userId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: newName }),
@@ -89,7 +90,7 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
     }
 
     function handleConfirmDelete() {
-        fetch(`/api/categories/${categoryToDelete.id}?userId=${userId}`, {
+        apiFetch(`/api/categories/${categoryToDelete.id}?userId=${userId}`, {
             method: 'DELETE',
         })
             .then((res) => {

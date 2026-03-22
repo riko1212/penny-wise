@@ -11,6 +11,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
 import { useCurrency } from '../context/CurrencyContext';
 import '../index.css';
+import apiFetch from '../utils/apiFetch';
 
 const now = new Date();
 const currentYear = now.getFullYear();
@@ -53,7 +54,7 @@ export default function History() {
     if (!currentUser) return;
     setLoading(true);
     setError(null);
-    fetch(`/api/transactions/history?userId=${currentUser.id}&type=${type}&groupBy=${groupBy}`)
+    apiFetch(`/api/transactions/history?userId=${currentUser.id}&type=${type}&groupBy=${groupBy}`)
       .then((r) => r.json())
       .then(setData)
       .catch(() => setError(t('history.errorLoad')))
@@ -64,7 +65,7 @@ export default function History() {
     if (!currentUser || viewMode !== 'category') return;
     setCatLoading(true);
     setCatError(null);
-    fetch(`/api/transactions/history/categories?userId=${currentUser.id}&type=${type}&groupBy=${groupBy}`)
+    apiFetch(`/api/transactions/history/categories?userId=${currentUser.id}&type=${type}&groupBy=${groupBy}`)
       .then((r) => r.json())
       .then(setCatData)
       .catch(() => setCatError(t('history.errorCatLoad')))

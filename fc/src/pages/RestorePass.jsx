@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import apiFetch from '../utils/apiFetch';
 
 function RestorePass() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function RestorePass() {
     }
 
     try {
-      const res = await fetch('/api/users/password', {
+      const res = await apiFetch('/api/users/password', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, newPassword }),

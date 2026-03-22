@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../utils/toast';
+import apiFetch from '../utils/apiFetch';
 
 const now = new Date();
 const CURRENT_MONTH = now.getMonth() + 1;
@@ -33,7 +34,7 @@ export function useTransactions(type) {
 
   useEffect(() => {
     if (!currentUser) return;
-    fetch(`/api/transactions/total?userId=${currentUser.id}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
+    apiFetch(`/api/transactions/total?userId=${currentUser.id}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
       .then((res) => res.json())
       .then(setTotalSum)
       .catch(() => showError('Failed to load total. Check your connection.'));
@@ -42,7 +43,7 @@ export function useTransactions(type) {
   useEffect(() => {
     if (!selectedCategory || !currentUser) return;
     setLoading(true);
-    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
+    apiFetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}&month=${CURRENT_MONTH}&year=${CURRENT_YEAR}`)
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json();
@@ -58,7 +59,7 @@ export function useTransactions(type) {
 
   function handleAddItems(formData) {
     if (!currentUser) return;
-    fetch('/api/transactions', {
+    apiFetch('/api/transactions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -83,7 +84,7 @@ export function useTransactions(type) {
 
   function handleConfirmDelete() {
     if (!currentUser) return;
-    fetch(`/api/transactions/${itemIdToDelete}?userId=${currentUser.id}`, {
+    apiFetch(`/api/transactions/${itemIdToDelete}?userId=${currentUser.id}`, {
       method: 'DELETE',
     })
       .then((res) => {
@@ -96,7 +97,7 @@ export function useTransactions(type) {
 
   function handleUpdateItemData(id, updatedItem) {
     if (!currentUser) return Promise.resolve();
-    return fetch(`/api/transactions/${id}?userId=${currentUser.id}`, {
+    return apiFetch(`/api/transactions/${id}?userId=${currentUser.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedItem),
@@ -116,7 +117,7 @@ export function useTransactions(type) {
 
   function handleClearList() {
     if (!currentUser) return;
-    fetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}`, {
+    apiFetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}`, {
       method: 'DELETE',
     })
       .then((res) => {

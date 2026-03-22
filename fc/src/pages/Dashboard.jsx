@@ -9,6 +9,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
 import { useCurrency } from '../context/CurrencyContext';
 import '../index.css';
+import apiFetch from '../utils/apiFetch';
 
 function formatDate(epochMs) {
   if (!epochMs) return '';
@@ -49,13 +50,13 @@ export default function Dashboard() {
       period === 'year'  ? `&year=${curYear}` :
       '';
     Promise.all([
-      fetch(`/api/transactions/total?userId=${currentUser.id}&type=INCOME${periodParams}`).then((r) => r.json()),
-      fetch(`/api/transactions/total?userId=${currentUser.id}&type=EXPENSE${periodParams}`).then((r) => r.json()),
-      fetch(`/api/transactions/summary?userId=${currentUser.id}&type=EXPENSE${periodParams}`).then((r) => r.json()),
-      fetch(`/api/transactions/summary?userId=${currentUser.id}&type=INCOME${periodParams}`).then((r) => r.json()),
-      fetch(`/api/transactions/recent?userId=${currentUser.id}`).then((r) => r.json()),
-      fetch(`/api/transactions/history?userId=${currentUser.id}&type=INCOME&groupBy=month`).then((r) => r.json()),
-      fetch(`/api/transactions/history?userId=${currentUser.id}&type=EXPENSE&groupBy=month`).then((r) => r.json()),
+      apiFetch(`/api/transactions/total?userId=${currentUser.id}&type=INCOME${periodParams}`).then((r) => r.json()),
+      apiFetch(`/api/transactions/total?userId=${currentUser.id}&type=EXPENSE${periodParams}`).then((r) => r.json()),
+      apiFetch(`/api/transactions/summary?userId=${currentUser.id}&type=EXPENSE${periodParams}`).then((r) => r.json()),
+      apiFetch(`/api/transactions/summary?userId=${currentUser.id}&type=INCOME${periodParams}`).then((r) => r.json()),
+      apiFetch(`/api/transactions/recent?userId=${currentUser.id}`).then((r) => r.json()),
+      apiFetch(`/api/transactions/history?userId=${currentUser.id}&type=INCOME&groupBy=month`).then((r) => r.json()),
+      apiFetch(`/api/transactions/history?userId=${currentUser.id}&type=EXPENSE&groupBy=month`).then((r) => r.json()),
     ])
       .then(([inc, exp, expSum, incSum, recent, incHistory, expHistory]) => {
         setIncome(inc);

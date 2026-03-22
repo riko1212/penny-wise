@@ -8,6 +8,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
 import { useCurrency } from '../context/CurrencyContext';
 import '../index.css';
+import apiFetch from '../utils/apiFetch';
 
 const EMPTY_FORM = { name: '', targetAmount: '', categoryName: '', note: '', dueDate: '' };
 
@@ -47,7 +48,7 @@ export default function Goals() {
   useEffect(() => {
     if (!currentUser) return;
     setLoading(true);
-    fetch(`/api/goals?userId=${currentUser.id}`)
+    apiFetch(`/api/goals?userId=${currentUser.id}`)
       .then((r) => r.json())
       .then(setGoals)
       .catch(() => setError(t('goals.failedLoad')))
@@ -56,7 +57,7 @@ export default function Goals() {
 
   useEffect(() => {
     if (!currentUser) return;
-    fetch(`/api/categories?userId=${currentUser.id}&type=INCOME`)
+    apiFetch(`/api/categories?userId=${currentUser.id}&type=INCOME`)
       .then((r) => r.json())
       .then(setIncomeCategories)
       .catch(() => {});
@@ -103,22 +104,22 @@ export default function Goals() {
     setSaving(true);
     try {
       if (editingGoal) {
-        const res = await fetch(`/api/goals/${editingGoal.id}?userId=${currentUser.id}`, {
+        const res = await apiFetch(`/api/goals/${editingGoal.id}?userId=${currentUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error(await res.text());
-        const updated = await fetch(`/api/goals?userId=${currentUser.id}`).then((r) => r.json());
+        const updated = await apiFetch(`/api/goals?userId=${currentUser.id}`).then((r) => r.json());
         setGoals(updated);
       } else {
-        const res = await fetch('/api/goals', {
+        const res = await apiFetch('/api/goals', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error(await res.text());
-        const refreshed = await fetch(`/api/goals?userId=${currentUser.id}`).then((r) => r.json());
+        const refreshed = await apiFetch(`/api/goals?userId=${currentUser.id}`).then((r) => r.json());
         setGoals(refreshed);
       }
       showToast('success', editingGoal ? t('goals.updated') : t('goals.created'));
@@ -132,7 +133,7 @@ export default function Goals() {
 
   async function handleDelete(goal) {
     if (!window.confirm(t('goals.deleteConfirm', { name: goal.name }))) return;
-    await fetch(`/api/goals/${goal.id}?userId=${currentUser.id}`, { method: 'DELETE' });
+    await apiFetch(`/api/goals/${goal.id}?userId=${currentUser.id}`, { method: 'DELETE' });
     setGoals((prev) => prev.filter((g) => g.id !== goal.id));
   }
 

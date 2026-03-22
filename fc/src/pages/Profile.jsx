@@ -8,6 +8,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
 import { useCurrency, CURRENCIES, CURRENCY_SYMBOLS } from '../context/CurrencyContext';
 import '../index.css';
+import apiFetch from '../utils/apiFetch';
 
 function getInitials(name) {
   if (!name) return '?';
@@ -44,7 +45,7 @@ export default function Profile() {
       return;
     }
     try {
-      const res = await fetch(`/api/users/${currentUser.id}`, {
+      const res = await apiFetch(`/api/users/${currentUser.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), email: email.trim() }),
@@ -117,7 +118,7 @@ export default function Profile() {
       return;
     }
     try {
-      const res = await fetch(`/api/users/${currentUser.id}/password`, {
+      const res = await apiFetch(`/api/users/${currentUser.id}/password`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),
@@ -144,7 +145,7 @@ export default function Profile() {
 
   async function handleDeleteAccount() {
     try {
-      const res = await fetch(`/api/users/${currentUser.id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/users/${currentUser.id}`, { method: 'DELETE' });
       if (!res.ok) {
         showToast('error', t('profile.failedDelete'));
         return;

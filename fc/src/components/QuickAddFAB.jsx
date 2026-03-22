@@ -6,6 +6,7 @@ import { useEscapeKey } from '../hooks/useEscapeKey';
 import { todayStr } from '../constants';
 import { useLanguage } from '../context/LanguageContext';
 import { useCurrency } from '../context/CurrencyContext';
+import apiFetch from '../utils/apiFetch';
 
 const HIDDEN_PATHS = ['/', '/register', '/restore-pass'];
 
@@ -26,7 +27,7 @@ export default function QuickAddFAB() {
 
   useEffect(() => {
     if (!open || !currentUser) return;
-    fetch(`/api/categories?userId=${currentUser.id}&type=${type}`)
+    apiFetch(`/api/categories?userId=${currentUser.id}&type=${type}`)
       .then((r) => r.json())
       .then((cats) => {
         setCategories(cats);
@@ -67,7 +68,7 @@ export default function QuickAddFAB() {
 
     setSaving(true);
     try {
-      const res = await fetch('/api/transactions', {
+      const res = await apiFetch('/api/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

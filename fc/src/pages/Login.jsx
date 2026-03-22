@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { useLanguage } from '../context/LanguageContext';
+import apiFetch from '../utils/apiFetch';
 
 function Login() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function Login() {
     const password = e.target.elements['login-pass'].value;
 
     try {
-      const response = await fetch('/api/users/login', {
+      const response = await apiFetch('/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, password }),
