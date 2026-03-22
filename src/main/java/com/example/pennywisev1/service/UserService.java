@@ -4,6 +4,7 @@ import com.example.pennywisev1.dto.UserResponseDTO;
 import com.example.pennywisev1.repository.CategoryRepository;
 import com.example.pennywisev1.repository.TransactionRepository;
 import com.example.pennywisev1.repository.UserRepository;
+import com.example.pennywisev1.repository.entity.CategoryEntity;
 import com.example.pennywisev1.repository.entity.UserEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,15 @@ public class UserService {
         return userRepository.findById(id).map(this::toDTO);
     }
 
+    private static final List<String> DEFAULT_EXPENSE_CATEGORIES = List.of(
+            "Food", "Transport", "Utilities", "Entertainment", "Health"
+    );
+
+    private static final List<String> DEFAULT_INCOME_CATEGORIES = List.of(
+            "Salary", "Freelance", "Other"
+    );
+
+    @Transactional
     public UserResponseDTO registerUser(UserEntity userEntity) {
         if (userRepository.existsByName(userEntity.getName())) {
             throw new IllegalArgumentException("User with this name already exists");
@@ -49,7 +59,25 @@ public class UserService {
         }
 
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        return toDTO(userRepository.save(userEntity));
+        UserEntity saved = userRepository.save(userEntity);
+
+        for (String name : DEFAULT_EXPENSE_CATEGORIES) {
+            CategoryEntity cat = new CategoryEntity();
+            cat.setUserId(saved.getId());
+            cat.setName(name);
+            cat.setType("EXPENSE");
+            categoryRepository.save(cat);
+        }
+
+        for (String name : DEFAULT_INCOME_CATEGORIES) {
+            CategoryEntity cat = new CategoryEntity();
+            cat.setUserId(saved.getId());
+            cat.setName(name);
+            cat.setType("INCOME");
+            categoryRepository.save(cat);
+        }
+
+        return toDTO(saved);
     }
 
     public UserResponseDTO loginUser(String name, String password) {
