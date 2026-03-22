@@ -10,4 +10,5 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     void deleteByIdAndUserId(Long id, Long userId);
     void deleteByUserId(Long userId);
     long countByUserId(Long userId);
+    java.util.Optional<CategoryEntity> findByIdAndUserId(Long id, Long userId);
 }

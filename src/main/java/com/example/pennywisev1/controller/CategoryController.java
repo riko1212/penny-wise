@@ -41,6 +41,19 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.saveCategory(category));
     }
 
+    // Перейменувати категорію
+    @PutMapping("/{id}")
+    public ResponseEntity<?> renameCategory(
+            @PathVariable Long id,
+            @RequestParam Long userId,
+            @RequestBody java.util.Map<String, String> body) {
+        String newName = body.get("name");
+        if (newName == null || newName.isBlank()) {
+            return ResponseEntity.badRequest().body("Category name is required");
+        }
+        return ResponseEntity.ok(categoryService.renameCategory(id, userId, newName.trim()));
+    }
+
     // Видалити категорію
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id, @RequestParam Long userId) {

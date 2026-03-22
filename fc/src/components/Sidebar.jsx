@@ -61,6 +61,24 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
         setCategoryToDelete(category);
     }
 
+    function handleRenameCategory(category, newName) {
+        fetch(`/api/categories/${category.id}?userId=${userId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newName }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to rename category');
+                return res.json();
+            })
+            .then((updated) => {
+                setCategories((prev) =>
+                    prev.map((c) => (c.id === updated.id ? updated : c))
+                );
+            })
+            .catch(() => showToast('error', t('sidebar.failedRename')));
+    }
+
     function handleConfirmDelete() {
         fetch(`/api/categories/${categoryToDelete.id}?userId=${userId}`, {
             method: 'DELETE',
@@ -101,6 +119,7 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
                         <TopicList
                             categories={categories}
                             onDelete={handleDeleteClick}
+                            onRename={handleRenameCategory}
                             onSelect={handleCategorySelect}
                         />
                         {showAddCategory && (

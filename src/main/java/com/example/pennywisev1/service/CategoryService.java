@@ -27,4 +27,12 @@ public class CategoryService {
     public void deleteCategory(Long id, Long userId) {
         categoryRepository.deleteByIdAndUserId(id, userId);
     }
+
+    @Transactional
+    public CategoryEntity renameCategory(Long id, Long userId, String newName) {
+        CategoryEntity category = categoryRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        category.setName(newName);
+        return categoryRepository.save(category);
+    }
 }

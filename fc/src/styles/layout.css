@@ -404,6 +404,85 @@
   opacity: 1;
 }
 
+.sidebar-item-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-item-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.sidebar-item:hover .sidebar-item-actions,
+.sidebar-item:focus-within .sidebar-item-actions {
+  opacity: 1;
+}
+
+.sidebar-item-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  color: var(--theme-text-on-sidebar);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s, color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.sidebar-item-action:hover {
+  opacity: 1;
+}
+
+.sidebar-item-action--delete:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+}
+
+.sidebar-item-action--save:hover {
+  background: rgba(105, 219, 124, 0.2);
+  color: #69db7c;
+}
+
+.sidebar-item-action--cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-link--editing {
+  cursor: default;
+  gap: 6px;
+}
+
+.sidebar-link--editing:is(:hover, :focus) {
+  transform: none;
+  border-color: var(--glass-border);
+  background: var(--theme-bg-sidebar-link);
+}
+
+.sidebar-rename-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--theme-text-on-sidebar);
+  padding: 0;
+}
+
 .sidebar-link:is(:hover, :focus) {
   background: var(--theme-bg-sidebar-hover);
   border-color: var(--theme-accent);

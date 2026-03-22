@@ -153,6 +153,7 @@ export default {
     failedLoad: 'Не вдалося завантажити категорії.',
     failedAdd: 'Не вдалося додати категорію.',
     failedDelete: 'Не вдалося видалити категорію.',
+    failedRename: 'Не вдалося перейменувати категорію.',
   },
   form: {
     description: 'Опис',

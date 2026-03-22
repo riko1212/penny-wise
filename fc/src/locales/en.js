@@ -153,6 +153,7 @@ export default {
     failedLoad: 'Failed to load categories.',
     failedAdd: 'Failed to add category.',
     failedDelete: 'Failed to delete category.',
+    failedRename: 'Failed to rename category.',
   },
   form: {
     description: 'Description',
