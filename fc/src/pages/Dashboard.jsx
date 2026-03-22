@@ -135,6 +135,14 @@ export default function Dashboard() {
                     <span className="dashboard__card-amount">
                       {balance >= 0 ? '+' : ''}{formatUAH(Math.abs(balance))}
                     </span>
+                    {income > 0 && (
+                      <div className="dashboard__balance-bar-wrap">
+                        <div
+                          className={`dashboard__balance-bar${balance < 0 ? ' dashboard__balance-bar--over' : ''}`}
+                          style={{ width: `${Math.min(100, Math.max(0, (balance / income) * 100)).toFixed(1)}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
