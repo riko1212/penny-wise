@@ -135,6 +135,37 @@
   letter-spacing: 1px;
 }
 
+/* ── Period filter ────────────────────────────────────── */
+.dashboard__period-filter {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.dashboard__period-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--theme-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.dashboard__period-btn:hover {
+  background: var(--glass-bg-strong);
+  color: var(--theme-text-primary);
+}
+
+.dashboard__period-btn--active {
+  background: rgba(129, 140, 248, 0.25);
+  border-color: rgba(129, 140, 248, 0.4);
+  color: #a5b4fc;
+}
+
 /* ── Recent transactions ──────────────────────────────── */
 .dashboard__recent {
   margin-top: 40px;

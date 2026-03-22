@@ -53,6 +53,9 @@ export default {
     recentTransactions: 'Останні транзакції',
     seeAll: 'Всі',
     noRecent: 'Немає транзакцій',
+    thisMonth: 'Цей місяць',
+    thisYear: 'Цей рік',
+    allTime: 'Весь час',
   },
   history: {
     title: 'Історія',

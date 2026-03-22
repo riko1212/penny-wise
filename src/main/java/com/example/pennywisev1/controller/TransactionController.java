@@ -46,12 +46,14 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getCategoryHistory(userId, type, groupBy));
     }
 
-    // Get per-category summary by user and type
+    // Get per-category summary by user and type (optional month/year filter)
     @GetMapping("/summary")
     public ResponseEntity<List<java.util.Map<String, Object>>> getSummary(
             @RequestParam Long userId,
-            @RequestParam String type) {
-        return ResponseEntity.ok(transactionService.getSummaryByType(userId, type));
+            @RequestParam String type,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(transactionService.getSummaryByType(userId, type, month, year));
     }
 
     // Get total sum by user and type (optional month/year filter)

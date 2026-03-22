@@ -80,15 +80,22 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
-    public List<java.util.Map<String, Object>> getSummaryByType(Long userId, String type) {
-        return transactionRepository.sumByCategory(userId, type).stream()
-                .map(row -> {
-                    java.util.Map<String, Object> entry = new java.util.LinkedHashMap<>();
-                    entry.put("categoryName", row[0]);
-                    entry.put("total", row[1]);
+    public List<java.util.Map<String, Object>> getSummaryByType(Long userId, String type, Integer month, Integer year) {
+        return transactionRepository.findByUserIdAndType(userId, type).stream()
+                .filter(t -> matchesPeriod(t, month, year))
+                .collect(Collectors.groupingBy(
+                        t -> t.getCategoryName() != null ? t.getCategoryName() : "Uncategorized",
+                        LinkedHashMap::new,
+                        Collectors.summingDouble(t -> t.getIncome() != null ? t.getIncome() : 0.0)
+                ))
+                .entrySet().stream()
+                .map(e -> {
+                    java.util.Map<String, Object> entry = new LinkedHashMap<>();
+                    entry.put("categoryName", e.getKey());
+                    entry.put("total", Math.round(e.getValue() * 100.0) / 100.0);
                     return entry;
                 })
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public List<TransactionEntity> getRecentTransactions(Long userId) {
@@ -97,14 +104,17 @@ public class TransactionService {
 
     public Double getTotalByType(Long userId, String type, Integer month, Integer year) {
         return transactionRepository.findByUserIdAndType(userId, type).stream()
-                .filter(t -> {
-                    if (month == null || year == null) return true;
-                    if (t.getDate() == null) return false;
-                    LocalDate d = Instant.ofEpochMilli(t.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
-                    return d.getMonthValue() == month && d.getYear() == year;
-                })
+                .filter(t -> matchesPeriod(t, month, year))
                 .mapToDouble(t -> t.getIncome() != null ? t.getIncome() : 0.0)
                 .sum();
+    }
+
+    private boolean matchesPeriod(TransactionEntity t, Integer month, Integer year) {
+        if (year == null) return true;
+        if (t.getDate() == null) return false;
+        LocalDate d = Instant.ofEpochMilli(t.getDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+        if (d.getYear() != year) return false;
+        return month == null || d.getMonthValue() == month;
     }
 
     public TransactionEntity createTransaction(TransactionEntity transaction) {

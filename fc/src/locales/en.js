@@ -53,6 +53,9 @@ export default {
     recentTransactions: 'Recent transactions',
     seeAll: 'See all',
     noRecent: 'No recent transactions',
+    thisMonth: 'This month',
+    thisYear: 'This year',
+    allTime: 'All time',
   },
   history: {
     title: 'History',

@@ -27,6 +27,7 @@ export default function Dashboard() {
     if (!currentUser) navigate('/');
   }, [currentUser, navigate]);
 
+  const [period, setPeriod] = useState('month');
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [expenseSummary, setExpenseSummary] = useState([]);
@@ -37,11 +38,19 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!currentUser) return;
+    setLoading(true);
+    const now = new Date();
+    const curMonth = now.getMonth() + 1;
+    const curYear = now.getFullYear();
+    const periodParams =
+      period === 'month' ? `&month=${curMonth}&year=${curYear}` :
+      period === 'year'  ? `&year=${curYear}` :
+      '';
     Promise.all([
-      fetch(`/api/transactions/total?userId=${currentUser.id}&type=INCOME`).then((r) => r.json()),
-      fetch(`/api/transactions/total?userId=${currentUser.id}&type=EXPENSE`).then((r) => r.json()),
-      fetch(`/api/transactions/summary?userId=${currentUser.id}&type=EXPENSE`).then((r) => r.json()),
-      fetch(`/api/transactions/summary?userId=${currentUser.id}&type=INCOME`).then((r) => r.json()),
+      fetch(`/api/transactions/total?userId=${currentUser.id}&type=INCOME${periodParams}`).then((r) => r.json()),
+      fetch(`/api/transactions/total?userId=${currentUser.id}&type=EXPENSE${periodParams}`).then((r) => r.json()),
+      fetch(`/api/transactions/summary?userId=${currentUser.id}&type=EXPENSE${periodParams}`).then((r) => r.json()),
+      fetch(`/api/transactions/summary?userId=${currentUser.id}&type=INCOME${periodParams}`).then((r) => r.json()),
       fetch(`/api/transactions/recent?userId=${currentUser.id}`).then((r) => r.json()),
     ])
       .then(([inc, exp, expSum, incSum, recent]) => {
@@ -53,7 +62,7 @@ export default function Dashboard() {
       })
       .catch(() => setError(t('dashboard.errorLoad')))
       .finally(() => setLoading(false));
-  }, [currentUser]);
+  }, [currentUser, period]);
 
   const balance = income - expense;
   const isEmpty = income === 0 && expense === 0 && expenseSummary.length === 0 && incomeSummary.length === 0;
@@ -65,6 +74,19 @@ export default function Dashboard() {
         <div className="container">
           <div className="dashboard">
             <h1 className="dashboard__title">{t('dashboard.title')}</h1>
+            <div className="dashboard__period-filter">
+              {['month', 'year', 'all'].map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`dashboard__period-btn${period === p ? ' dashboard__period-btn--active' : ''}`}
+                  onClick={() => setPeriod(p)}
+                >
+                  {t(`dashboard.${p === 'month' ? 'thisMonth' : p === 'year' ? 'thisYear' : 'allTime'}`)}
+                </button>
+              ))}
+            </div>
+
             {loading ? (
               <DashboardSkeleton />
             ) : error ? (
