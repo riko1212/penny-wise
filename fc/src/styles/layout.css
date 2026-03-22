@@ -578,4 +578,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+}
+
+.footer-copy {
+  font-size: 13px;
+  color: #777;
+  white-space: nowrap;
+}
+
+.footer-nav {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-nav__link {
+  font-size: 13px;
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-nav__link:hover {
+  color: #fff;
 }
