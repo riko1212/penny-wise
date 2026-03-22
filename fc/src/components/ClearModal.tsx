@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -10,6 +11,11 @@ interface ClearModalProps {
 export default function ClearModal({ onClearModalClose, isOpen, onClearList }: ClearModalProps) {
   const { t } = useLanguage();
   useEscapeKey(onClearModalClose, isOpen);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   return (
     <div className={isOpen ? 'backdrop' : 'backdrop clicked'}>

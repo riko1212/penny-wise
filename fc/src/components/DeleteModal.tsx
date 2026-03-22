@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -10,6 +11,11 @@ interface DeleteModalProps {
 export default function DeleteModal({ onDeleteModalClose, isOpen, onItemDelete }: DeleteModalProps) {
   const { t } = useLanguage();
   useEscapeKey(onDeleteModalClose, isOpen);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   return (
     <div className={isOpen ? 'backdrop' : 'backdrop clicked'}>
