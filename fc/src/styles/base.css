@@ -6,7 +6,7 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
   background: var(--theme-gradient);
   min-height: 100vh;
   background-attachment: fixed;

@@ -373,12 +373,12 @@
 
 .sidebar-link {
   display: flex;
-  padding: 14px 16px;
+  padding: 10px 14px;
   background: var(--theme-bg-sidebar-link);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
-  font-size: 17px;
+  font-size: 14px;
   color: var(--theme-text-on-sidebar);
   font-weight: 600;
   border-radius: 12px;
@@ -565,7 +565,7 @@
 .main {
   flex-grow: 1;
   height: 100%;
-  padding: 40px;
+  padding: 28px 32px;
 }
 
 .footer {
