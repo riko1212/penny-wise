@@ -38,6 +38,11 @@
     padding: 20px 16px;
   }
 
+  /* Hide collapse toggle — meaningless on mobile */
+  .sidebar-toggle {
+    display: none;
+  }
+
   .main {
     padding: 20px 16px;
   }
@@ -84,6 +89,39 @@
     min-width: 100%;
   }
 
+  .dashboard__period-filter {
+    gap: 6px;
+  }
+
+  .dashboard__recent-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Profile */
+  .profile-page {
+    padding: 24px 0 40px;
+  }
+
+  .profile-section {
+    padding: 20px 16px;
+  }
+
+  .profile-hero {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Goals */
+  .goals__form {
+    padding: 20px 16px;
+  }
+
+  /* History */
+  .history__controls {
+    gap: 8px;
+  }
+
   /* Total card */
   .total-card {
     padding: 16px 20px;
@@ -125,32 +163,66 @@
     width: auto;
   }
 
-  /* Dashboard cards */
+  /* Dashboard cards — stack vertically */
   .dashboard__cards {
+    flex-direction: column;
     gap: 12px;
   }
 
   .dashboard__card {
-    padding: 16px;
-    min-width: 120px;
+    padding: 16px 20px;
+    min-width: unset;
+    width: 100%;
   }
 
   .dashboard__card-amount {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .dashboard__card-label {
     font-size: 11px;
   }
 
+  /* Dashboard period filter */
+  .dashboard__period-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  /* Dashboard recent — simplify on small screens */
+  .dashboard__recent {
+    padding: 20px 16px;
+  }
+
+  .dashboard__recent-date {
+    display: none;
+  }
+
+  .dashboard__recent-amount {
+    font-size: 13px;
+  }
+
+  .dashboard__recent-topic {
+    font-size: 13px;
+  }
+
   /* History controls */
   .history__controls {
+    flex-direction: column;
+    align-items: center;
     gap: 8px;
   }
 
+  .history__toggle {
+    width: 100%;
+    justify-content: center;
+  }
+
   .history__toggle .btn {
+    flex: 1;
     padding: 8px 14px;
     font-size: 13px;
+    text-align: center;
   }
 
   /* Total card */
@@ -177,5 +249,32 @@
 
   .login-text {
     font-size: 24px;
+  }
+
+  /* Profile */
+  .profile-section {
+    padding: 16px;
+  }
+
+  .profile-theme-cards {
+    flex-wrap: wrap;
+  }
+
+  .profile-theme-card {
+    min-width: calc(50% - 8px);
+  }
+
+  /* Goals */
+  .goals__form {
+    padding: 16px;
+  }
+
+  .goals__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Dashboard bar chart — reduce height */
+  .dashboard__chart--wide {
+    margin-top: 24px !important;
   }
 }

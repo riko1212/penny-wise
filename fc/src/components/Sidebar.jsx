@@ -29,6 +29,13 @@ export default function Sidebar({ onCategorySelect, userId, type }) {
     }, [collapsed]);
 
     useEffect(() => {
+        const onResize = () => { if (window.innerWidth <= 768) setCollapsed(false); };
+        onResize();
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+
+    useEffect(() => {
         setLoading(true);
         fetch(`/api/categories?userId=${userId}&type=${type}`)
             .then((res) => {
