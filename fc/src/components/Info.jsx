@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Plus, X } from 'lucide-react';
-import { formatUAH } from '../utils/format';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 
 Info.propTypes = {
   sum: PropTypes.number,
@@ -13,6 +13,7 @@ Info.propTypes = {
 
 export default function Info({ sum, children, type = 'expense', onAddClick, showForm }) {
   const { t } = useLanguage();
+  const { fmt } = useCurrency();
   const label = type === 'income' ? t('info.income') : t('info.expenses');
   const amountClass = `info-amount info-amount--${type}`;
 
@@ -20,7 +21,7 @@ export default function Info({ sum, children, type = 'expense', onAddClick, show
     <div className="info">
       <div className="info-header">
         <p className="info-text">
-          {label}: <span className={amountClass}>{formatUAH(sum)}</span>
+          {label}: <span className={amountClass}>{fmt(sum)}</span>
         </p>
         {onAddClick && (
           <button

@@ -6,6 +6,7 @@ import { showToast } from '../utils/toast';
 import { AVATAR_COLORS, THEMES } from '../constants';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency, CURRENCIES, CURRENCY_SYMBOLS } from '../context/CurrencyContext';
 import '../index.css';
 
 function getInitials(name) {
@@ -17,6 +18,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const storedUser = useCurrentUser();
   const { t, lang, setLang } = useLanguage();
+  const { currency, setCurrency } = useCurrency();
   const [currentUser, setCurrentUser] = useState(storedUser);
   const [activeTab, setActiveTab] = useState('profile');
 
@@ -337,6 +339,21 @@ export default function Profile() {
                     <span className="profile-theme-card__icon">🇺🇦</span>
                     <span className="profile-theme-card__label">Українська</span>
                   </button>
+                </div>
+
+                <h2 className="profile-section__title" style={{ marginTop: 24 }}>{t('profile.currency')}</h2>
+                <div className="profile-theme-cards">
+                  {CURRENCIES.map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      className={`profile-theme-card${currency === code ? ' profile-theme-card--active' : ''}`}
+                      onClick={() => setCurrency(code)}
+                    >
+                      <span className="profile-theme-card__icon">{CURRENCY_SYMBOLS[code]}</span>
+                      <span className="profile-theme-card__label">{code}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             )}

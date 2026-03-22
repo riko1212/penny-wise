@@ -138,6 +138,7 @@ export default {
     updatePassword: 'Оновити пароль',
     theme: 'Тема',
     language: 'Мова',
+    currency: 'Валюта',
     dangerText: 'Видалення акаунту незворотнє. Всі ваші транзакції та категорії буде видалено.',
     deleteAccount: 'Видалити акаунт',
     confirmDelete: 'Ви впевнені? Цю дію не можна скасувати.',

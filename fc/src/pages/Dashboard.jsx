@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChartTooltip from '../components/ChartTooltip';
 import { DashboardSkeleton } from '../components/Skeleton';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 import '../index.css';
 
 function formatDate(epochMs) {
@@ -22,6 +22,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const { t, tc } = useLanguage();
+  const { fmt } = useCurrency();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -119,11 +120,11 @@ export default function Dashboard() {
                 <div className="dashboard__cards">
                   <Link to="/income" className="dashboard__card dashboard__card--income dashboard__card--link">
                     <span className="dashboard__card-label">{t('dashboard.totalIncome')}</span>
-                    <span className="dashboard__card-amount">{formatUAH(income)}</span>
+                    <span className="dashboard__card-amount">{fmt(income)}</span>
                   </Link>
                   <Link to="/main" className="dashboard__card dashboard__card--expense dashboard__card--link">
                     <span className="dashboard__card-label">{t('dashboard.totalExpenses')}</span>
-                    <span className="dashboard__card-amount">{formatUAH(expense)}</span>
+                    <span className="dashboard__card-amount">{fmt(expense)}</span>
                     {income > 0 && (
                       <span className={`dashboard__card-pct${expense > income ? ' dashboard__card-pct--over' : ''}`}>
                         {((expense / income) * 100).toFixed(1)}% {t('dashboard.ofIncome')}
@@ -133,7 +134,7 @@ export default function Dashboard() {
                   <div className={`dashboard__card dashboard__card--balance ${balance >= 0 ? 'dashboard__card--positive' : 'dashboard__card--negative'}`}>
                     <span className="dashboard__card-label">{t('dashboard.balance')}</span>
                     <span className="dashboard__card-amount">
-                      {balance >= 0 ? '+' : ''}{formatUAH(Math.abs(balance))}
+                      {balance >= 0 ? '+' : ''}{fmt(Math.abs(balance))}
                     </span>
                     {income > 0 && (
                       <div className="dashboard__balance-bar-wrap">
@@ -167,7 +168,7 @@ export default function Dashboard() {
                           </div>
                           <div className="dashboard__recent-right">
                             <span className={`dashboard__recent-amount dashboard__recent-amount--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
-                              {tx.type === 'INCOME' ? '+' : '−'}{formatUAH(tx.income)}
+                              {tx.type === 'INCOME' ? '+' : '−'}{fmt(tx.income)}
                             </span>
                             <span className="dashboard__recent-date">{formatDate(tx.date)}</span>
                           </div>

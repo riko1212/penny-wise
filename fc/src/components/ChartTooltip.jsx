@@ -1,4 +1,4 @@
-import { formatUAH } from '../utils/format';
+import { useCurrency } from '../context/CurrencyContext';
 
 /**
  * Custom Recharts tooltip that uses CSS theme variables.
@@ -6,6 +6,7 @@ import { formatUAH } from '../utils/format';
  * or:      <Tooltip content={<ChartTooltip label="Income" />} />
  */
 export default function ChartTooltip({ active, payload, label, valueLabel }) {
+  const { fmt } = useCurrency();
   if (!active || !payload || payload.length === 0) return null;
 
   return (
@@ -21,7 +22,7 @@ export default function ChartTooltip({ active, payload, label, valueLabel }) {
             {valueLabel ?? entry.name}:
           </span>
           <span className="chart-tooltip__value">
-            {formatUAH(Number(entry.value))}
+            {fmt(Number(entry.value))}
           </span>
         </p>
       ))}

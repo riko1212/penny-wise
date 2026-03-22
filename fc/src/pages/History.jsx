@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend,
 } from 'recharts';
-import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChartTooltip from '../components/ChartTooltip';
 import { HistorySkeleton } from '../components/Skeleton';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 import '../index.css';
 
 const now = new Date();
@@ -32,6 +32,7 @@ export default function History() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const { t, tc } = useLanguage();
+  const { fmt } = useCurrency();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -159,25 +160,25 @@ export default function History() {
                   <div className="dashboard__cards history__cards">
                     <div className="dashboard__card">
                       <span className="dashboard__card-label">{t('history.thisMonth')}</span>
-                      <span className="dashboard__card-amount" style={{ color }}>{formatUAH(thisMonth)}</span>
+                      <span className="dashboard__card-amount" style={{ color }}>{fmt(thisMonth)}</span>
                       <span className={`history__change ${monthChange >= 0 ? 'history__change--up' : 'history__change--down'}`}>
                         {monthChange >= 0 ? '↑' : '↓'} {Math.abs(monthChange)}% {t('history.vsLastMonth')}
                       </span>
                     </div>
                     <div className="dashboard__card">
                       <span className="dashboard__card-label">{t('history.lastMonth')}</span>
-                      <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{formatUAH(lastMonth)}</span>
+                      <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{fmt(lastMonth)}</span>
                     </div>
                     <div className="dashboard__card">
                       <span className="dashboard__card-label">{t('history.thisYear')}</span>
-                      <span className="dashboard__card-amount" style={{ color }}>{formatUAH(thisYear)}</span>
+                      <span className="dashboard__card-amount" style={{ color }}>{fmt(thisYear)}</span>
                       <span className={`history__change ${yearChange >= 0 ? 'history__change--up' : 'history__change--down'}`}>
                         {yearChange >= 0 ? '↑' : '↓'} {Math.abs(yearChange)}% {t('history.vsLastYear')}
                       </span>
                     </div>
                     <div className="dashboard__card">
                       <span className="dashboard__card-label">{t('history.lastYear')}</span>
-                      <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{formatUAH(lastYear)}</span>
+                      <span className="dashboard__card-amount" style={{ color: '#aaa' }}>{fmt(lastYear)}</span>
                     </div>
                   </div>
 
@@ -240,8 +241,8 @@ export default function History() {
                                 />
                                 {tc(cat)}
                               </td>
-                              <td className="history__cat-td">{formatUAH(curr)}</td>
-                              <td className="history__cat-td history__cat-td--muted">{formatUAH(prev)}</td>
+                              <td className="history__cat-td">{fmt(curr)}</td>
+                              <td className="history__cat-td history__cat-td--muted">{fmt(prev)}</td>
                               <td className="history__cat-td">
                                 <span style={{ color: up ? '#69db7c' : '#ff6b6b', fontWeight: 600 }}>
                                   {up ? '↑' : '↓'} {Math.abs(change)}%

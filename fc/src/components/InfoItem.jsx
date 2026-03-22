@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
-import { formatUAH } from '../utils/format';
 import { validateTransaction } from '../utils/validate';
 import { todayStr } from '../constants';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 import { MAX_DESCRIPTION_LENGTH } from '../constants';
 
 InfoItem.propTypes = {
@@ -15,6 +15,7 @@ InfoItem.propTypes = {
 
 export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
   const { t, lang } = useLanguage();
+  const { fmt } = useCurrency();
   const [isEditing, setIsEditing] = useState(false);
   const [editedTopic, setEditedTopic] = useState(item.topic);
   const [editedIncome, setEditedIncome] = useState(item.income);
@@ -138,7 +139,7 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }) {
         ) : (
           <>
             <p className="info-item-text">{item.topic}:</p>
-            <p className="info-item-count">{formatUAH(item.income)}</p>
+            <p className="info-item-count">{fmt(item.income)}</p>
             <p className="info-item-data">
               <Calendar size={13} style={{ opacity: 0.5, verticalAlign: 'middle', marginRight: 4 }} />
               {isToday(item.date)

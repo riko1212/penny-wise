@@ -138,6 +138,7 @@ export default {
     updatePassword: 'Update password',
     theme: 'Theme',
     language: 'Language',
+    currency: 'Currency',
     dangerText: 'Deleting your account is permanent. All your transactions and categories will be removed and cannot be recovered.',
     deleteAccount: 'Delete account',
     confirmDelete: 'Are you sure? This cannot be undone.',

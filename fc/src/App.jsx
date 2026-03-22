@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RestorePass from './pages/RestorePass';
@@ -17,6 +18,7 @@ import QuickAddFAB from './components/QuickAddFAB';
 function App() {
   return (
     <LanguageProvider>
+      <CurrencyProvider>
       <HashRouter>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -33,6 +35,7 @@ function App() {
         <ToastContainer />
         <QuickAddFAB />
       </HashRouter>
+      </CurrencyProvider>
     </LanguageProvider>
   );
 }

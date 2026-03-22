@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { formatUAH } from '../utils/format';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { DashboardSkeleton } from '../components/Skeleton';
 import { showToast } from '../utils/toast';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 import '../index.css';
 
 const EMPTY_FORM = { name: '', targetAmount: '', categoryName: '', note: '', dueDate: '' };
@@ -15,6 +15,7 @@ export default function Goals() {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const { t, lang, tc } = useLanguage();
+  const { fmt } = useCurrency();
 
   useEffect(() => {
     if (!currentUser) navigate('/');
@@ -247,9 +248,9 @@ export default function Goals() {
                         />
                       </div>
                       <div className="goals__amounts">
-                        <span style={{ color: barColor, fontWeight: 600 }}>{formatUAH(goal.currentAmount)}</span>
+                        <span style={{ color: barColor, fontWeight: 600 }}>{fmt(goal.currentAmount)}</span>
                         <span>{pct.toFixed(0)}%</span>
-                        <span>{formatUAH(goal.targetAmount)}</span>
+                        <span>{fmt(goal.targetAmount)}</span>
                       </div>
                       <p className="goals__category">{t('goals.category', { name: tc(goal.categoryName) })}</p>
                       {due && (
