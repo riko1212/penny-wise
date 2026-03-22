@@ -1184,7 +1184,8 @@
   min-width: 0;
 }
 
-.filter-input::-webkit-calendar-picker-indicator {
+.filter-input::-webkit-calendar-picker-indicator,
+.form-input::-webkit-calendar-picker-indicator {
   filter: invert(0.7) sepia(1) saturate(3) hue-rotate(200deg);
   cursor: pointer;
   border-radius: 4px;
@@ -1193,11 +1194,13 @@
   transition: opacity 0.15s;
 }
 
-.filter-input::-webkit-calendar-picker-indicator:hover {
+.filter-input::-webkit-calendar-picker-indicator:hover,
+.form-input::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
 }
 
-[data-theme="light"] .filter-input::-webkit-calendar-picker-indicator {
+[data-theme="light"] .filter-input::-webkit-calendar-picker-indicator,
+[data-theme="light"] .form-input::-webkit-calendar-picker-indicator {
   filter: invert(0.2) sepia(1) saturate(3) hue-rotate(200deg);
 }
 
