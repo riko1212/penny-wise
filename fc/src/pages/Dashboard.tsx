@@ -20,8 +20,18 @@ function formatDate(epochMs: number | null | undefined): string {
   return new Date(epochMs).toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-const EXPENSE_COLORS = ['#ff6b6b', '#ff8e53', '#ffd43b', '#ff922b', '#f783ac', '#e64980', '#cc5de8', '#845ef7', '#5c7cfa', '#339af0'];
-const INCOME_COLORS  = ['#69db7c', '#38d9a9', '#4dabf7', '#74c0fc', '#a9e34b', '#63e6be', '#94d82d', '#20c997', '#1c7ed6', '#7048e8'];
+const EXPENSE_COLORS = [
+  '#ff6b6b', '#ff922b', '#ffd43b', '#f783ac', '#cc5de8',
+  '#845ef7', '#5c7cfa', '#339af0', '#e64980', '#ff8e53',
+  '#ff4757', '#ffa502', '#a29bfe', '#fd79a8', '#e17055',
+  '#fdcb6e', '#d63031', '#e84393', '#6c5ce7', '#b8860b',
+];
+const INCOME_COLORS = [
+  '#69db7c', '#38d9a9', '#4dabf7', '#a9e34b', '#63e6be',
+  '#94d82d', '#20c997', '#1c7ed6', '#7048e8', '#74c0fc',
+  '#00cec9', '#55efc4', '#81ecec', '#26de81', '#2bcbba',
+  '#45aaf2', '#4b7bec', '#8854d0', '#00b894', '#a3cb38',
+];
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -158,37 +168,6 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {recentTx.length > 0 && (
-                  <div className="dashboard__recent">
-                    <div className="dashboard__recent-header">
-                      <h2 className="dashboard__chart-title">{t('dashboard.recentTransactions')}</h2>
-                      <div className="dashboard__recent-links">
-                        <Link to="/income" className="dashboard__see-all">{t('nav.income')}</Link>
-                        <Link to="/main" className="dashboard__see-all">{t('nav.expenses')}</Link>
-                      </div>
-                    </div>
-                    <ul className="dashboard__recent-list">
-                      {recentTx.map((tx) => (
-                        <li key={tx.id} className="dashboard__recent-item">
-                          <span className={`dashboard__recent-badge dashboard__recent-badge--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
-                            {tx.type === 'INCOME' ? '+' : '−'}
-                          </span>
-                          <div className="dashboard__recent-info">
-                            <span className="dashboard__recent-topic">{tx.topic}</span>
-                            <span className="dashboard__recent-cat">{tc(tx.categoryName)}</span>
-                          </div>
-                          <div className="dashboard__recent-right">
-                            <span className={`dashboard__recent-amount dashboard__recent-amount--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
-                              {tx.type === 'INCOME' ? '+' : '−'}{fmt(tx.income)}
-                            </span>
-                            <span className="dashboard__recent-date">{formatDate(tx.date)}</span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
                 {period !== 'month' && barData.length > 0 && (
                   <div className="dashboard__chart dashboard__chart--wide" style={{ marginTop: 40 }}>
                     <h2 className="dashboard__chart-title">{t('dashboard.incomeVsExpenses')}</h2>
@@ -240,6 +219,37 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
+
+                {recentTx.length > 0 && (
+                  <div className="dashboard__recent">
+                    <div className="dashboard__recent-header">
+                      <h2 className="dashboard__chart-title">{t('dashboard.recentTransactions')}</h2>
+                      <div className="dashboard__recent-links">
+                        <Link to="/income" className="dashboard__see-all">{t('nav.income')}</Link>
+                        <Link to="/main" className="dashboard__see-all">{t('nav.expenses')}</Link>
+                      </div>
+                    </div>
+                    <ul className="dashboard__recent-list">
+                      {recentTx.slice(0, 10).map((tx) => (
+                        <li key={tx.id} className="dashboard__recent-item">
+                          <span className={`dashboard__recent-badge dashboard__recent-badge--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
+                            {tx.type === 'INCOME' ? '+' : '−'}
+                          </span>
+                          <div className="dashboard__recent-info">
+                            <span className="dashboard__recent-topic">{tx.topic}</span>
+                            <span className="dashboard__recent-cat">{tc(tx.categoryName)}</span>
+                          </div>
+                          <div className="dashboard__recent-right">
+                            <span className={`dashboard__recent-amount dashboard__recent-amount--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
+                              {tx.type === 'INCOME' ? '+' : '−'}{fmt(tx.income)}
+                            </span>
+                            <span className="dashboard__recent-date">{formatDate(tx.date)}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </>
             )}
           </div>
