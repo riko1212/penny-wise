@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
+import { Pencil, Trash2, Check, X, Calendar, Copy } from 'lucide-react';
 import { validateTransaction, ValidationErrors } from '../utils/validate';
 import { todayStr } from '../constants';
 import { useLanguage } from '../context/LanguageContext';
@@ -11,9 +11,10 @@ interface InfoItemProps {
   item: Transaction;
   onDeleteItemId: (id: number) => void;
   onUpdateItemData: (id: number, item: Transaction) => Promise<void>;
+  onDuplicateItem: (item: Transaction) => void;
 }
 
-export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }: InfoItemProps) {
+export default function InfoItem({ onDeleteItemId, item, onUpdateItemData, onDuplicateItem }: InfoItemProps) {
   const { t, lang } = useLanguage();
   const { fmt, fromUAH, toUAH } = useCurrency();
   const [isEditing, setIsEditing] = useState(false);
@@ -182,6 +183,16 @@ export default function InfoItem({ onDeleteItemId, item, onUpdateItemData }: Inf
             title="Edit"
           >
             <Pencil size={15} strokeWidth={2} />
+          </button>
+        )}
+        {!isEditing && (
+          <button
+            type="button"
+            className="info-icon-btn info-icon-btn--copy"
+            onClick={() => onDuplicateItem(item)}
+            title="Duplicate"
+          >
+            <Copy size={15} strokeWidth={2} />
           </button>
         )}
         <button

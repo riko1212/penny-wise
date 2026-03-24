@@ -625,6 +625,12 @@
   color: #9ca3af;
 }
 
+.info-icon-btn--copy:hover {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+}
+
 .info-icon-btn--delete:hover {
   background: rgba(248, 113, 113, 0.15);
   border-color: rgba(248, 113, 113, 0.3);

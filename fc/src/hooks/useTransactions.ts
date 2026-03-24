@@ -31,6 +31,7 @@ export interface UseTransactionsReturn {
   handleDeleteItem: (id: number) => void;
   handleConfirmDelete: () => void;
   handleUpdateItemData: (id: number, updatedItem: Transaction) => Promise<void>;
+  handleDuplicateItem: (item: Transaction) => void;
   handleClearList: () => void;
   handleDeleteModalCloseClick: () => void;
   handleClearModalCloseClick: () => void;
@@ -144,6 +145,28 @@ export function useTransactions(type: 'EXPENSE' | 'INCOME'): UseTransactionsRetu
       });
   }
 
+  function handleDuplicateItem(item: Transaction): void {
+    if (!currentUser) return;
+    apiFetch('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        topic: item.topic,
+        income: item.income,
+        date: Date.now(),
+        categoryName: item.categoryName,
+        type,
+        userId: currentUser.id,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((saved: Transaction) => setItems((prev) => [saved, ...prev]))
+      .catch(() => showError('Failed to duplicate transaction. Please try again.'));
+  }
+
   function handleClearList(): void {
     if (!currentUser || !selectedCategory) return;
     apiFetch(`/api/transactions?userId=${currentUser.id}&categoryName=${encodeURIComponent(selectedCategory)}&type=${type}`, {
@@ -184,6 +207,7 @@ export function useTransactions(type: 'EXPENSE' | 'INCOME'): UseTransactionsRetu
     handleDeleteItem,
     handleConfirmDelete,
     handleUpdateItemData,
+    handleDuplicateItem,
     handleClearList,
     handleDeleteModalCloseClick,
     handleClearModalCloseClick,

@@ -11,6 +11,7 @@ interface InfoListProps {
   onDeleteItemId: (id: number) => void;
   onClearModal: () => void;
   onUpdateItemData: (id: number, item: Transaction) => Promise<void>;
+  onDuplicateItem: (item: Transaction) => void;
   onAddClick?: () => void;
   type?: 'income' | 'expense';
 }
@@ -21,6 +22,7 @@ export default function InfoList({
   onDeleteItemId,
   onClearModal,
   onUpdateItemData,
+  onDuplicateItem,
   onAddClick,
   type = 'expense',
 }: InfoListProps) {
@@ -203,6 +205,7 @@ export default function InfoList({
               onDeleteModalOpen={onDeleteModalOpen}
               onDeleteItemId={onDeleteItemId}
               onUpdateItemData={onUpdateItemData}
+              onDuplicateItem={onDuplicateItem}
             />
           ))
         )}

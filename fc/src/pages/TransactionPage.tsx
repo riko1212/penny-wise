@@ -37,6 +37,7 @@ export default function TransactionPage({ type }: TransactionPageProps) {
     handleDeleteItem,
     handleConfirmDelete,
     handleUpdateItemData,
+    handleDuplicateItem,
     handleClearList,
     handleDeleteModalCloseClick,
     handleClearModalCloseClick,
@@ -107,6 +108,7 @@ export default function TransactionPage({ type }: TransactionPageProps) {
                     onDeleteModalOpen={handleDeleteModalCloseClick}
                     onDeleteItemId={handleDeleteItem}
                     onUpdateItemData={handleUpdateItemData}
+                    onDuplicateItem={handleDuplicateItem}
                     onClearModal={handleClearModal}
                     onAddClick={() => setShowForm(true)}
                     type={typeLabel}
