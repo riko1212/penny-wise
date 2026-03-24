@@ -192,11 +192,6 @@ export default function InfoList({
             <p className="info-empty__text">
               {type === 'income' ? t('infoList.addFirstIncome') : t('infoList.addFirstExpense')}
             </p>
-            {onAddClick && (
-              <button className="btn info-empty__cta" onClick={onAddClick}>
-                {type === 'income' ? t('infoList.addIncome') : t('infoList.addExpense')}
-              </button>
-            )}
           </li>
         ) : filtered.length === 0 ? (
           <li className="info-list__empty">{t('infoList.noMatch')}</li>
