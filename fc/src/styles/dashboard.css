@@ -170,7 +170,7 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: 24px;
+  border-radius: 20px;
   padding: 28px;
   box-shadow: var(--glass-shadow);
   flex: 1;
@@ -204,7 +204,7 @@
 
 .dashboard__period-btn {
   padding: 8px 20px;
-  border-radius: 20px;
+  border-radius: 12px;
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
   color: var(--theme-text-muted);
@@ -232,7 +232,7 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: 24px;
+  border-radius: 20px;
   padding: 28px;
   box-shadow: var(--glass-shadow);
 }
@@ -371,7 +371,7 @@
 .chart-tooltip {
   background: var(--theme-bg-modal);
   border: 1px solid var(--theme-input-border);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px 14px;
   box-shadow: 0 4px 16px var(--theme-card-shadow);
   min-width: 160px;
@@ -424,7 +424,7 @@
 /* ── Primary type selector (Expenses / Income) ── */
 .history__type-seg {
   display: flex;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 4px;
   gap: 2px;
   background: var(--glass-bg-strong);
@@ -433,7 +433,7 @@
 
 .history__type-btn {
   padding: 9px 22px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
   background: transparent;
   color: var(--theme-text-muted);
@@ -487,14 +487,14 @@
   display: flex;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 3px;
   gap: 2px;
 }
 
 .history__seg-btn {
   padding: 6px 14px;
-  border-radius: 7px;
+  border-radius: 8px;
   border: none;
   background: transparent;
   color: var(--theme-text-muted);

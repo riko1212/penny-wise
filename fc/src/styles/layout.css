@@ -101,7 +101,7 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   z-index: 200;
@@ -395,7 +395,7 @@
   height: 24px;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   color: var(--theme-text-on-sidebar);
   opacity: 0.5;
   cursor: pointer;
@@ -439,7 +439,7 @@
   height: 22px;
   background: transparent;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   color: var(--theme-text-on-sidebar);
   opacity: 0.6;
   cursor: pointer;
@@ -532,7 +532,7 @@
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   padding: 16px;
-  border-radius: 16px;
+  border-radius: 20px;
   margin-top: 8px;
 }
 
@@ -546,7 +546,7 @@
   height: 50px;
   background-color: transparent;
   border: 3px solid var(--theme-input-border);
-  border-radius: 20px;
+  border-radius: 12px;
   outline: transparent;
   color: var(--theme-input-color);
   font-size: 16px;
