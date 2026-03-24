@@ -109,31 +109,35 @@ export default function InfoList({
     setDateTo('');
   }
 
+  const hasItems = items.length > 0;
+
   return (
     <>
-      <div className="filter-bar">
-        <input
-          type="text"
-          className="filter-search"
-          placeholder={t('infoList.searchPlaceholder')}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button
-          className={`btn filter-toggle-btn ${filtersOpen ? 'filter-toggle-btn--active' : ''}`}
-          onClick={() => setFiltersOpen((p) => !p)}
-        >
-          {filtersOpen ? t('infoList.hideFilters') : t('infoList.filters')}
-          {hasActiveFilters && !filtersOpen && <span className="filter-dot" />}
-        </button>
-        {hasActiveFilters && (
-          <button className="btn filter-clear-btn" onClick={handleClearFilters}>
-            {t('infoList.clear')}
+      {hasItems && (
+        <div className="filter-bar">
+          <input
+            type="text"
+            className="filter-search"
+            placeholder={t('infoList.searchPlaceholder')}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button
+            className={`btn filter-toggle-btn ${filtersOpen ? 'filter-toggle-btn--active' : ''}`}
+            onClick={() => setFiltersOpen((p) => !p)}
+          >
+            {filtersOpen ? t('infoList.hideFilters') : t('infoList.filters')}
+            {hasActiveFilters && !filtersOpen && <span className="filter-dot" />}
           </button>
-        )}
-      </div>
+          {hasActiveFilters && (
+            <button className="btn filter-clear-btn" onClick={handleClearFilters}>
+              {t('infoList.clear')}
+            </button>
+          )}
+        </div>
+      )}
 
-      {filtersOpen && (
+      {hasItems && filtersOpen && (
         <div className="filter-panel">
           <div className="filter-group">
             <label className="filter-label">{t('infoList.amount')}</label>
@@ -181,7 +185,7 @@ export default function InfoList({
       )}
 
       <ul className="info-list">
-        {items.length === 0 ? (
+        {!hasItems ? (
           <li className="info-list__empty-state">
             <span className="info-empty__icon">{type === 'income' ? '💰' : '💸'}</span>
             <p className="info-empty__title">{t('infoList.noTransactions')}</p>
@@ -218,29 +222,31 @@ export default function InfoList({
         <p className="info-list__count">{t('infoList.showingAll', { count: filtered.length })}</p>
       )}
 
-      <div className="info-actions">
-        <div className="info-sorting">
-          <label className="info-sort-text" htmlFor="sort-select">
-            {t('infoList.sortBy')}
-          </label>
-          <select
-            className="info-sort-select"
-            id="sort-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="order">{t('infoList.sortOrder')}</option>
-            <option value="highest">{t('infoList.sortHighest')}</option>
-            <option value="lowest">{t('infoList.sortLowest')}</option>
-            <option value="description">{t('infoList.sortDescription')}</option>
-            <option value="first">{t('infoList.sortFirst')}</option>
-            <option value="last">{t('infoList.sortLast')}</option>
-          </select>
+      {hasItems && (
+        <div className="info-actions">
+          <div className="info-sorting">
+            <label className="info-sort-text" htmlFor="sort-select">
+              {t('infoList.sortBy')}
+            </label>
+            <select
+              className="info-sort-select"
+              id="sort-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="order">{t('infoList.sortOrder')}</option>
+              <option value="highest">{t('infoList.sortHighest')}</option>
+              <option value="lowest">{t('infoList.sortLowest')}</option>
+              <option value="description">{t('infoList.sortDescription')}</option>
+              <option value="first">{t('infoList.sortFirst')}</option>
+              <option value="last">{t('infoList.sortLast')}</option>
+            </select>
+          </div>
+          <button className="btn" onClick={onClearModal}>
+            {t('infoList.clearList')}
+          </button>
         </div>
-        <button className="btn" onClick={onClearModal}>
-          {t('infoList.clearList')}
-        </button>
-      </div>
+      )}
     </>
   );
 }
