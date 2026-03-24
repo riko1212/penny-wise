@@ -44,6 +44,7 @@ export default function Dashboard() {
   }, [currentUser, navigate]);
 
   const [period, setPeriod] = useState<string>('month');
+  const [txFilter, setTxFilter] = useState<'all' | 'INCOME' | 'EXPENSE'>('all');
   const [income, setIncome] = useState<number>(0);
   const [expense, setExpense] = useState<number>(0);
   const [expenseSummary, setExpenseSummary] = useState<ChartEntry[]>([]);
@@ -225,12 +226,20 @@ export default function Dashboard() {
                     <div className="dashboard__recent-header">
                       <h2 className="dashboard__chart-title">{t('dashboard.recentTransactions')}</h2>
                       <div className="dashboard__recent-links">
-                        <Link to="/income" className="dashboard__see-all">{t('nav.income')}</Link>
-                        <Link to="/main" className="dashboard__see-all">{t('nav.expenses')}</Link>
+                        {(['all', 'INCOME', 'EXPENSE'] as const).map((f) => (
+                          <button
+                            key={f}
+                            type="button"
+                            className={`dashboard__see-all${txFilter === f ? ' dashboard__see-all--active' : ''}`}
+                            onClick={() => setTxFilter(f)}
+                          >
+                            {f === 'all' ? t('dashboard.seeAll') : f === 'INCOME' ? t('nav.income') : t('nav.expenses')}
+                          </button>
+                        ))}
                       </div>
                     </div>
                     <ul className="dashboard__recent-list">
-                      {recentTx.slice(0, 10).map((tx) => (
+                      {recentTx.filter((tx) => txFilter === 'all' || tx.type === txFilter).slice(0, 10).map((tx) => (
                         <li key={tx.id} className="dashboard__recent-item">
                           <span className={`dashboard__recent-badge dashboard__recent-badge--${tx.type === 'INCOME' ? 'income' : 'expense'}`}>
                             {tx.type === 'INCOME' ? '+' : '−'}

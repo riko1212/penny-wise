@@ -256,16 +256,25 @@
 .dashboard__see-all {
   font-size: 13px;
   font-weight: 600;
-  color: var(--theme-accent);
+  color: var(--theme-text-muted);
   text-decoration: none;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 8px;
-  border: 1px solid var(--glass-border);
-  transition: background 0.15s;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .dashboard__see-all:hover {
   background: var(--glass-bg-strong);
+  color: var(--theme-text-primary);
+}
+
+.dashboard__see-all--active {
+  color: var(--theme-accent);
+  border-color: var(--glass-border);
+  background: var(--glass-bg);
 }
 
 .dashboard__recent-list {

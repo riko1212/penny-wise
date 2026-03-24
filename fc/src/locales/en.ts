@@ -54,7 +54,7 @@ export default {
     recentTransactions: 'Recent transactions',
     incomeVsExpenses: 'Income vs Expenses',
     ofIncome: 'of income',
-    seeAll: 'See all',
+    seeAll: 'All',
     noRecent: 'No recent transactions',
     thisMonth: 'This month',
     thisYear: 'This year',
