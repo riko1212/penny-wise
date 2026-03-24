@@ -110,47 +110,57 @@ export default function History() {
             <h1 className="dashboard__title">{t('history.title')}</h1>
 
             <div className="history__controls">
-              <div className="history__toggle">
+              <div className={`history__type-seg history__type-seg--${type === 'EXPENSE' ? 'expense' : 'income'}`}>
                 <button
-                  className={`btn ${type === 'EXPENSE' ? 'history__toggle-btn--active' : ''}`}
+                  className={`history__type-btn${type === 'EXPENSE' ? ' history__type-btn--active' : ''}`}
                   onClick={() => setType('EXPENSE')}
                 >
                   {t('history.expenses')}
                 </button>
                 <button
-                  className={`btn ${type === 'INCOME' ? 'history__toggle-btn--active' : ''}`}
+                  className={`history__type-btn${type === 'INCOME' ? ' history__type-btn--active' : ''}`}
                   onClick={() => setType('INCOME')}
                 >
                   {t('history.income')}
                 </button>
               </div>
-              <div className="history__toggle">
-                <button
-                  className={`btn ${groupBy === 'month' ? 'history__toggle-btn--active' : ''}`}
-                  onClick={() => setGroupBy('month')}
-                >
-                  {t('history.monthly')}
-                </button>
-                <button
-                  className={`btn ${groupBy === 'year' ? 'history__toggle-btn--active' : ''}`}
-                  onClick={() => setGroupBy('year')}
-                >
-                  {t('history.yearly')}
-                </button>
-              </div>
-              <div className="history__toggle">
-                <button
-                  className={`btn ${viewMode === 'total' ? 'history__toggle-btn--active' : ''}`}
-                  onClick={() => setViewMode('total')}
-                >
-                  {t('history.total')}
-                </button>
-                <button
-                  className={`btn ${viewMode === 'category' ? 'history__toggle-btn--active' : ''}`}
-                  onClick={() => setViewMode('category')}
-                >
-                  {t('history.byCategory')}
-                </button>
+
+              <div className="history__secondary-controls">
+                <div className="history__filter-group">
+                  <span className="history__filter-label">{t('history.period')}</span>
+                  <div className="history__seg">
+                    <button
+                      className={`history__seg-btn${groupBy === 'month' ? ' history__seg-btn--active' : ''}`}
+                      onClick={() => setGroupBy('month')}
+                    >
+                      {t('history.monthly')}
+                    </button>
+                    <button
+                      className={`history__seg-btn${groupBy === 'year' ? ' history__seg-btn--active' : ''}`}
+                      onClick={() => setGroupBy('year')}
+                    >
+                      {t('history.yearly')}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="history__filter-group">
+                  <span className="history__filter-label">{t('history.view')}</span>
+                  <div className="history__seg">
+                    <button
+                      className={`history__seg-btn${viewMode === 'total' ? ' history__seg-btn--active' : ''}`}
+                      onClick={() => setViewMode('total')}
+                    >
+                      {t('history.total')}
+                    </button>
+                    <button
+                      className={`history__seg-btn${viewMode === 'category' ? ' history__seg-btn--active' : ''}`}
+                      onClick={() => setViewMode('category')}
+                    >
+                      {t('history.byCategory')}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 

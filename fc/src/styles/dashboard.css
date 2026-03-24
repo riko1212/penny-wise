@@ -414,20 +414,104 @@
 /* ── History ──────────────────────────────────────────── */
 .history__controls {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
   margin-bottom: 32px;
   flex-wrap: wrap;
 }
 
-.history__toggle {
+/* ── Primary type selector (Expenses / Income) ── */
+.history__type-seg {
   display: flex;
-  gap: 8px;
+  border-radius: 14px;
+  padding: 4px;
+  gap: 2px;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
 }
 
-.history__toggle-btn--active {
-  background: #5c7cfa;
-  color: #fff;
+.history__type-btn {
+  padding: 9px 22px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--theme-text-muted);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.history__type-seg--expense .history__type-btn--active {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+}
+
+.history__type-seg--income .history__type-btn--active {
+  background: rgba(105, 219, 124, 0.2);
+  color: #69db7c;
+  border: 1px solid rgba(105, 219, 124, 0.35);
+}
+
+.history__type-btn:not(.history__type-btn--active):hover {
+  background: var(--glass-bg);
+  color: var(--theme-text-primary);
+}
+
+/* ── Secondary controls (Period + View) ── */
+.history__secondary-controls {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.history__filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history__filter-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--theme-text-muted);
+  padding-left: 2px;
+}
+
+.history__seg {
+  display: flex;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.history__seg-btn {
+  padding: 6px 14px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--theme-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.history__seg-btn--active {
+  background: var(--glass-bg-strong);
+  color: var(--theme-accent);
+}
+
+.history__seg-btn:not(.history__seg-btn--active):hover {
+  color: var(--theme-text-primary);
 }
 
 .history__change {

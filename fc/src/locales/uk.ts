@@ -68,6 +68,8 @@ export default {
     yearly: 'Щорічно',
     total: 'Загально',
     byCategory: 'За категоріями',
+    period: 'Період',
+    view: 'Вигляд',
     thisMonth: 'Цей місяць',
     lastMonth: 'Минулий місяць',
     thisYear: 'Цей рік',

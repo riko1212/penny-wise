@@ -68,6 +68,8 @@ export default {
     yearly: 'Yearly',
     total: 'Total',
     byCategory: 'By category',
+    period: 'Period',
+    view: 'View',
     thisMonth: 'This month',
     lastMonth: 'Last month',
     thisYear: 'This year',
