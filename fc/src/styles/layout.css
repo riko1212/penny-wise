@@ -31,7 +31,7 @@
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 48px;
 }
 
 .menu-list {
@@ -559,6 +559,113 @@
 .category-btn {
   display: block;
   margin-left: auto;
+}
+
+/* ── Sidebar Goals Section ──────────────────────────────── */
+.sidebar-section-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 12px 0 8px;
+  opacity: 0.5;
+}
+
+.sidebar-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--theme-text-on-sidebar);
+  opacity: 0.55;
+  margin: 0 0 4px;
+  padding: 0 4px;
+}
+
+.sidebar-goal-item {
+  margin-bottom: 2px;
+}
+
+.sidebar-goal-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.sidebar-goal-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.sidebar-goal-pct {
+  font-size: 11px;
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.sidebar-goal-bar-wrap {
+  height: 3px;
+  background: var(--glass-border);
+  border-radius: 2px;
+  margin: 0 4px 4px;
+  overflow: hidden;
+}
+
+.sidebar-goal-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.sidebar-goal-quick-add {
+  display: flex;
+  gap: 6px;
+  padding: 4px 4px 8px;
+}
+
+.sidebar-goal-input {
+  flex: 1;
+  height: 36px;
+  background: transparent;
+  border: 2px solid var(--theme-input-border);
+  border-radius: 8px;
+  color: var(--theme-input-color);
+  font-size: 14px;
+  padding: 0 10px;
+  outline: none;
+}
+
+.sidebar-goal-input:focus {
+  border-color: var(--theme-text-on-sidebar);
+}
+
+.sidebar-goal-save-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: var(--glass-bg-strong);
+  color: var(--theme-text-on-sidebar);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-goal-save-btn:hover:not(:disabled) {
+  background: #5c7cfa;
+  color: #fff;
+}
+
+.sidebar-goal-save-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* ── Main & Footer ────────────────────────────────────── */

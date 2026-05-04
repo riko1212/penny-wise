@@ -6,8 +6,9 @@ import { SidebarSkeleton } from './Skeleton';
 import { showToast } from '../utils/toast';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useLanguage } from '../context/LanguageContext';
+import { useCurrency } from '../context/CurrencyContext';
 import apiFetch from '../utils/apiFetch';
-import type { Category } from '../types';
+import type { Category, Goal } from '../types';
 
 interface SidebarProps {
     onCategorySelect: (cat: string) => void;
@@ -19,6 +20,7 @@ interface SidebarProps {
 
 export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, onMobileClose }: SidebarProps) {
     const { t } = useLanguage();
+    const { toUAH, CURRENCY_SYMBOLS, currency } = useCurrency();
     const [categories, setCategories] = useState<Category[]>([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
@@ -26,6 +28,10 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
     const [collapsed, setCollapsed] = useState(
         () => localStorage.getItem('sidebarCollapsed') === 'true'
     );
+    const [goals, setGoals] = useState<Goal[]>([]);
+    const [activeGoalId, setActiveGoalId] = useState<number | null>(null);
+    const [quickAmount, setQuickAmount] = useState('');
+    const [savingGoal, setSavingGoal] = useState(false);
 
     useEffect(() => {
         localStorage.setItem('sidebarCollapsed', collapsed);
@@ -37,6 +43,14 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
     }, []);
+
+    useEffect(() => {
+        if (!userId) return;
+        apiFetch(`/api/goals?userId=${userId}`)
+            .then((r) => r.json())
+            .then((data: Goal[]) => setGoals(data))
+            .catch(() => {});
+    }, [userId]);
 
     useEffect(() => {
         setLoading(true);
@@ -108,6 +122,40 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
 
     useEscapeKey(handleCloseCategoryDelete, categoryToDelete !== null);
 
+    function handleGoalClick(goal: Goal): void {
+        setActiveGoalId((prev) => (prev === goal.id ? null : goal.id));
+        setQuickAmount('');
+    }
+
+    async function handleGoalQuickAdd(goal: Goal): Promise<void> {
+        const amount = Number(quickAmount);
+        if (!amount || amount <= 0) return;
+        setSavingGoal(true);
+        try {
+            await apiFetch('/api/transactions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    topic: goal.name,
+                    income: toUAH(amount),
+                    date: Date.now(),
+                    categoryName: goal.categoryName,
+                    type: 'INCOME',
+                    userId,
+                }),
+            });
+            const refreshed = await apiFetch(`/api/goals?userId=${userId}`).then((r) => r.json()) as Goal[];
+            setGoals(refreshed);
+            setActiveGoalId(null);
+            setQuickAmount('');
+            showToast('success', t('sidebar.goalAdded'));
+        } catch {
+            showToast('error', t('sidebar.goalAddFailed'));
+        } finally {
+            setSavingGoal(false);
+        }
+    }
+
     function handleCategorySelect(category: Category): void {
         onCategorySelect(category.name);
     }
@@ -135,6 +183,61 @@ export default function Sidebar({ onCategorySelect, userId, type, mobileOpen, on
                             onRename={handleRenameCategory}
                             onSelect={handleCategorySelect}
                         />
+                        {goals.length > 0 && (
+                            <>
+                                <div className="sidebar-section-divider" />
+                                <p className="sidebar-section-label">{t('sidebar.goals')}</p>
+                                {goals.map((goal) => {
+                                    const pct = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
+                                    const reached = goal.currentAmount >= goal.targetAmount;
+                                    const isActive = activeGoalId === goal.id;
+                                    return (
+                                        <div key={goal.id} className="sidebar-goal-item">
+                                            <button
+                                                type="button"
+                                                className="sidebar-link sidebar-goal-btn"
+                                                onClick={() => handleGoalClick(goal)}
+                                            >
+                                                <span className="sidebar-goal-name">{goal.name}</span>
+                                                <span className="sidebar-goal-pct">{pct.toFixed(0)}%</span>
+                                            </button>
+                                            <div className="sidebar-goal-bar-wrap">
+                                                <div
+                                                    className="sidebar-goal-bar"
+                                                    style={{ width: `${pct}%`, background: reached ? '#69db7c' : '#5c7cfa' }}
+                                                />
+                                            </div>
+                                            {isActive && (
+                                                <div className="sidebar-goal-quick-add">
+                                                    <input
+                                                        className="sidebar-goal-input"
+                                                        type="number"
+                                                        min="0.01"
+                                                        step="0.01"
+                                                        placeholder={`${CURRENCY_SYMBOLS[currency]} ${t('sidebar.goalAmount')}`}
+                                                        value={quickAmount}
+                                                        onChange={(e) => setQuickAmount(e.target.value)}
+                                                        autoFocus
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') handleGoalQuickAdd(goal);
+                                                            if (e.key === 'Escape') setActiveGoalId(null);
+                                                        }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="sidebar-goal-save-btn"
+                                                        onClick={() => handleGoalQuickAdd(goal)}
+                                                        disabled={savingGoal || !quickAmount}
+                                                    >
+                                                        {savingGoal ? '…' : '✓'}
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        )}
                         {showAddCategory && (
                             <FormAddCategory onAddCategory={handleAddCategory} />
                         )}
